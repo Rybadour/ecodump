@@ -1,21 +1,9 @@
 import React, { useState } from "react";
 import JSONTree from "react-json-tree";
-import recipes from "../../utils/recipes";
 import { getJsonDownloadHref } from '../../utils/downloadFile';
 import { FaDownload } from 'react-icons/fa';
+import useRestDb from "../../context/useRestDb";
 import "./JsonViewer.css";
-const json = {
-  array: [1, 2, 3],
-  bool: true,
-  object: {
-    foo: "bar",
-  },
-};
-
-const jsonFiles = {
-  "crafting recipes raw": recipes,
-  test: json,
-} as { [key: string]: unknown };
 
 const theme = {
   scheme: 'monokai',
@@ -38,9 +26,10 @@ const theme = {
   base0F: '#cc6633',
 };
 
-const getHref = (key: string) => getJsonDownloadHref(key, jsonFiles[key]);
+const getHref = (key: string, jsonFiles: { [key: string]: unknown }) => getJsonDownloadHref(key, jsonFiles[key]);
 
 export default () => {
+  const { jsonFiles } = useRestDb();
   const [filename, setFilename] = useState<string>();
   return (
     <div className="page">
@@ -57,7 +46,7 @@ export default () => {
                   {key}
                 </a>
                 <div className="download">
-                  <a className="json" {...getHref(key)}><FaDownload /></a>
+                  <a className="json" {...getHref(key, jsonFiles)}><FaDownload /></a>
                 </div>
               </li>
             ))}
