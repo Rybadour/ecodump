@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { listDBs, readDB } from '../sdk/restDbSdk';
 import recipes from '../utils/recipes';
 
-interface DbContent<T> {
+export interface DbContent<T> {
     isLoading: boolean;
     isReady: boolean;
     result: T;
@@ -32,8 +32,6 @@ export default () => {
         }})));
     }
 
-    console.log('dbContents', dbContents)
-
     // Fetch the list of available databases
     useEffect(() => {
         listDBs().then((dbs) => setdbs(dbs?.data?.data));
@@ -41,9 +39,10 @@ export default () => {
 
     // Preemptevely fetches all available databases
     useEffect(() => {
-        console.log(dbs);
+        console.log('dbContents', dbs)
         Object.entries(dbs).forEach(([dbname]) => fetchDb(dbname));
     }, [dbs]);
+
     return {
         jsonFiles: dbContents
     };
