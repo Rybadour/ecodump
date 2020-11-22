@@ -1,7 +1,7 @@
 import React from "react";
 import Home from "./pages/Home";
 import JsonViewer from "./pages/JsonViewer";
-import AllMaterials from "./pages/AllMaterials";
+import AllRecipes from "./pages/AllRecipes";
 import { Menu } from "antd";
 import { HomeOutlined, FileOutlined, TableOutlined } from "@ant-design/icons";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -34,7 +34,7 @@ function App() {
             <JsonViewer />
           </Route>
           <Route path={routes.Recipes}>
-            <AllMaterials />
+            <AllRecipes />
           </Route>
           <Route path="/">
             <Home />

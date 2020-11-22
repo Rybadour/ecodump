@@ -14,7 +14,6 @@ const { Option } = Select;
 type Item = {
   key: string;
   name: string;
-  price: string;
   profession: string;
   numberOfProfessions: number;
   craftStation: string;
@@ -48,7 +47,6 @@ const columns = [
       </Popover>
     ),
   },
-  getColumn("price"),
 ];
 
 const getRecipes = (file: DbContent<unknown>): Item[] => {
