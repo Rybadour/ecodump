@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Item, RecipesFile } from "../types";
+import { Recipe, RecipesFile } from "../types";
 import { filterByIncludes, filterUnique, fiterByText } from "../utils/helpers";
 import useRestDb, { DbContent } from "./useRestDb";
 
@@ -14,10 +14,10 @@ export interface HeaderFilters {
   setFilterCraftStations: React.Dispatch<React.SetStateAction<string[]>>;
   filterName: string;
   setFilterName: React.Dispatch<React.SetStateAction<string>>;
-  filteredRecipes: Item[];
+  filteredRecipes: Recipe[];
 }
 
-const getRecipes = (file: DbContent<unknown>): Item[] => {
+const getRecipes = (file: DbContent<unknown>): Recipe[] => {
   if (!file.isReady) return [];
 
   const recipesFile = file?.result as RecipesFile;
@@ -29,9 +29,7 @@ const getRecipes = (file: DbContent<unknown>): Item[] => {
     craftStation: t.craftStn[0],
     numberOfCraftStations: t.craftStn.length,
     numberOfVariants: Number(t.numberOfVariants),
-    variants: Object.keys(t.variants),
-    ingredients: t.variants[t.defaultVariant]?.ingredients,
-    products: t.variants[t.defaultVariant]?.products,
+    variants: t.variants,
   }));
 };
 

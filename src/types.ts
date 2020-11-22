@@ -16,6 +16,28 @@ export interface RecipesFile {
   };
 }
 
+export interface ItemPrice {
+  itemName: string;
+  price: number;
+}
+
+export type Recipe = {
+  key: string;
+  name: string;
+  profession: string;
+  numberOfProfessions: number;
+  craftStation: string;
+  numberOfCraftStations: number;
+  numberOfVariants: number;
+  variants: {
+    [key: string]: {
+      untranslated: string;
+      ingredients: string[][];
+      products: string[][];
+    };
+  };
+};
+
 export type Item = {
   key: string;
   name: string;

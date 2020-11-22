@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Popover, Button, PageHeader } from "antd";
-import { Item } from "../../types";
+import { Recipe } from "../../types";
 import VariantsPopupContent from "./VariantsPopupContent";
 import useRecipeHeaderFilters from "../../context/useRecipeHeaderFilters";
 import HeaderFilters from "../../components/HeaderFilters";
@@ -18,10 +18,10 @@ const columns = [
   getColumn("craftStation", "Crafting station"),
   {
     ...getColumn("numberOfVariants", "Nr of variants"),
-    render: (numberOfVariants: string, item: Item) => (
+    render: (numberOfVariants: string, item: Recipe) => (
       <Popover
         placement="left"
-        content={<VariantsPopupContent variants={item.variants} />}
+        content={<VariantsPopupContent variants={Object.keys(item.variants)} />}
         title="Available variants"
         style={{ cursor: "pointer" }}
       >

@@ -17,7 +17,7 @@ export default ({
       <Input
         value={filterName}
         onChange={(evt) => setFilterName(evt.target.value)}
-        placeholder="Filter by name"
+        placeholder="Filter by recipe name"
         style={{ width: "80%", textAlign: "center" }}
       />
       <Select
