@@ -1,10 +1,12 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { Table, Popover, Button, PageHeader } from "antd";
 import { ItemPrice, Recipe } from "../../types";
 import useRecipeHeaderFilters from "../../context/useRecipeHeaderFilters";
 import HeaderFilters from "../../components/HeaderFilters";
 import IngredientsPopupContent from "./IngredientsPopupContent";
 import { getColumn } from "../../utils/helpers";
+import useLocalStorage from "../../context/useLocalStorage";
+import ModuleSelect from "../../components/ModuleSelect";
 
 const getColumns = (
   prices: ItemPrice[],
@@ -20,7 +22,11 @@ const getColumns = (
       <Popover
         placement="left"
         content={
-          <IngredientsPopupContent ingredients={ingredients} prices={prices} />
+          <IngredientsPopupContent
+            ingredients={ingredients}
+            prices={prices}
+            setPrices={setPrices}
+          />
         }
         title="Ingredients"
         style={{ cursor: "pointer" }}
@@ -65,33 +71,74 @@ const getColumns = (
 ];
 
 export default () => {
-  const [prices, setPrices] = useState<ItemPrice[]>([]);
+  const [prices, setPrices] = useLocalStorage<ItemPrice[]>("prices", []);
+  const [upgrades, setUpgrades] = useLocalStorage<{
+    bu: number;
+    au: number;
+    mu: number;
+  }>("upgrades", { bu: 0, au: 0, mu: 0 });
   const filters = useRecipeHeaderFilters();
-  const datasource = filters.filteredRecipes
-    .map((recipe) =>
-      Object.keys(recipe.variants)
-        .map((variantKey) =>
-          recipe.variants[variantKey].products.map((product) => ({
-            ...recipe,
-            key: recipe.key + product[0],
-            name: product[0],
-            recipe: recipe.name,
-            ingredients: recipe.variants[variantKey].ingredients,
-            price: prices.find((t) => t.itemName === product[0])?.price,
-          }))
-        )
-        .flat()
-    )
-    .flat();
 
-  console.log("prices1", prices);
   const columns = useMemo(() => getColumns(prices, setPrices), [
     prices,
     setPrices,
   ]);
-  console.log("prices2", prices);
-  console.log("here", datasource);
 
+  const itemsWithRecipes = useMemo(
+    () =>
+      filters.filteredRecipes
+        .map((recipe) =>
+          Object.keys(recipe.variants)
+            .map((variantKey) =>
+              recipe.variants[variantKey].products.map((product) => ({
+                ...recipe,
+                key: `${recipe.key}_${product[0]}`,
+                name: product[0],
+                recipe: recipe.name,
+                ingredients: recipe.variants[variantKey].ingredients,
+                price: prices.find((t) => t.itemName === product[0])?.price,
+              }))
+            )
+            .flat()
+        )
+        .flat(),
+    [filters.filteredRecipes, prices]
+  );
+
+  // const allIngredients = useMemo(
+  //   () =>
+  //     itemsWithRecipes
+  //       .map((t) =>
+  //         Object.values(t.variants)
+  //           .map((tt) =>
+  //             tt.ingredients
+  //               .filter((ttt) => ttt[0] === "ITEM")
+  //               .map((ttt) => ttt[1])
+  //           )
+  //           .flat()
+  //       )
+  //       .flat()
+  //       .filter(filterUnique),
+  //   [itemsWithRecipes]
+  // );
+
+  // const itemsWithoutRecipes = useMemo(
+  //   () =>
+  //     allIngredients
+  //       .filter((t) => itemsWithRecipes.find((tt) => tt.name === t) == null)
+  //       .map((t) => ({
+  //         key: t,
+  //         name: t,
+  //       })),
+  //   [allIngredients, itemsWithRecipes]
+  // );
+
+  // const datasource = useMemo(
+  //   () => itemsWithRecipes, //.concat(itemsWithoutRecipes),
+  //   [itemsWithRecipes]
+  // );
+
+  console.log("prices", prices);
   return (
     <div>
       <PageHeader
@@ -99,7 +146,26 @@ export default () => {
         subTitle="Here you can find all the items available in the game"
       />
       <HeaderFilters {...filters} />
-      <Table dataSource={datasource} columns={columns} />
+      <div>
+        <ModuleSelect
+          value={upgrades.bu}
+          setValue={(bu: number) => setUpgrades((prev) => ({ ...prev, bu }))}
+          moduleName="Basic module"
+        />
+        &nbsp;
+        <ModuleSelect
+          value={upgrades.au}
+          setValue={(au: number) => setUpgrades((prev) => ({ ...prev, au }))}
+          moduleName="Advanced module"
+        />
+        &nbsp;
+        <ModuleSelect
+          value={upgrades.mu}
+          setValue={(mu: number) => setUpgrades((prev) => ({ ...prev, mu }))}
+          moduleName="Modern module"
+        />
+      </div>
+      <Table dataSource={itemsWithRecipes} columns={columns} />
     </div>
   );
 };

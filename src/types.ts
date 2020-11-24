@@ -21,6 +21,12 @@ export interface ItemPrice {
   price: number;
 }
 
+export type RecipeVariant = {
+  untranslated: string;
+  ingredients: string[][];
+  products: string[][];
+};
+
 export type Recipe = {
   key: string;
   name: string;
@@ -30,11 +36,7 @@ export type Recipe = {
   numberOfCraftStations: number;
   numberOfVariants: number;
   variants: {
-    [key: string]: {
-      untranslated: string;
-      ingredients: string[][];
-      products: string[][];
-    };
+    [key: string]: RecipeVariant;
   };
 };
 
