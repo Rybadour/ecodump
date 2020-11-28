@@ -1,27 +1,39 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Select, Input } from "antd";
-import { HeaderFilters } from "../../context/useRecipeHeaderFilters";
 
 const { Option } = Select;
+type PropTypes = {
+  professions: string[];
+  craftStations: string[];
+  filterProfessions: string[];
+  setFilterProfessions: Dispatch<SetStateAction<string[]>>;
+  filterCraftStations: string[];
+  setFilterCraftStations: Dispatch<SetStateAction<string[]>>;
+  filterName: string;
+  setFilterName: Dispatch<SetStateAction<string>>;
+};
 
 export default ({
   professions,
-  setFilterProfession,
   craftStations,
+  filterProfessions,
+  setFilterProfessions,
+  filterCraftStations,
   setFilterCraftStations,
   filterName,
   setFilterName,
-}: HeaderFilters) => {
+}: PropTypes) => {
   return (
     <>
       <Input
         value={filterName}
         onChange={(evt) => setFilterName(evt.target.value)}
-        placeholder="Filter by recipe name"
+        placeholder="Filter by name"
         style={{ width: "80%", textAlign: "center" }}
       />
       <Select
-        onChange={(value: string) => setFilterProfession(`${value}`.split(","))}
+        value={filterProfessions}
+        onChange={setFilterProfessions}
         mode="multiple"
         allowClear
         placeholder="Filter by profession"
@@ -34,9 +46,8 @@ export default ({
         ))}
       </Select>
       <Select
-        onChange={(value: string) =>
-          setFilterCraftStations(`${value}`.split(","))
-        }
+        value={filterCraftStations}
+        onChange={setFilterCraftStations}
         mode="multiple"
         allowClear
         placeholder="Filter by crafting station"

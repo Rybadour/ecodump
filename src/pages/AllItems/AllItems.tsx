@@ -1,109 +1,222 @@
 import React, { Dispatch, SetStateAction, useMemo } from "react";
-import { Table, Popover, Button, PageHeader } from "antd";
+import { Table, Popover, Button, PageHeader, Select } from "antd";
 import { ItemPrice, Recipe } from "../../types";
 import useRecipeHeaderFilters from "../../context/useRecipeHeaderFilters";
 import HeaderFilters from "../../components/HeaderFilters";
 import IngredientsPopupContent from "./IngredientsPopupContent";
-import { getColumn } from "../../utils/helpers";
+import { filterByIncludes, fiterByText, getColumn } from "../../utils/helpers";
 import useLocalStorage from "../../context/useLocalStorage";
 import ModuleSelect from "../../components/ModuleSelect";
+import {
+  allCraftStations,
+  allItems,
+  allProfessions,
+  Item,
+} from "../../utils/typedData";
+
+const { Option } = Select;
+console.log("typedData", allItems);
+console.log(
+  "here",
+  Object.values(allItems)
+    .map((t) => t.productInRecipes.map((tt) => tt.key))
+    .filter((t) => t.length > 1)
+);
+
+type SelectedVariants = { [item: string]: string };
 
 const getColumns = (
   prices: ItemPrice[],
-  setPrices: Dispatch<SetStateAction<ItemPrice[]>>
+  setPrices: Dispatch<SetStateAction<ItemPrice[]>>,
+  selectedVariants: SelectedVariants,
+  setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>
 ) => [
-  getColumn("name"),
-  getColumn("recipe"),
-  getColumn("profession"),
-  getColumn("craftStation", "Crafting station"),
+  getColumn("key", "Name"),
   {
-    ...getColumn("ingredients"),
-    render: (ingredients: string[][], item: Recipe) => (
-      <Popover
-        placement="left"
-        content={
-          <IngredientsPopupContent
-            ingredients={ingredients}
-            prices={prices}
-            setPrices={setPrices}
-          />
-        }
-        title="Ingredients"
-        style={{ cursor: "pointer" }}
-      >
-        <Button>{ingredients[0][0]}</Button>
-      </Popover>
-    ),
-  },
-  {
-    ...getColumn("price", "Fixed price"),
-    render: (price: number, item: Recipe) => {
+    ...getColumn("recipes"),
+    render: (recipes: any, item: Item) => {
+      const variants = item.productInRecipes
+        .map((recipe) => recipe.variants)
+        .flat();
+
+      if (variants.length === 0) {
+        return <p>none</p>;
+      }
+      if (variants.length === 1) {
+        return <p>{variants[0].key}</p>;
+      }
       return (
-        <input
-          value={prices.find((t) => t.itemName === item.name)?.price ?? ""}
-          style={{ width: 50 }}
-          onChange={(evt) => {
-            const newPrice = Number(evt.target.value);
-            if (Number.isNaN(newPrice)) return;
-            setPrices((prevPrices) => {
-              const index = prevPrices.findIndex(
-                (t) => t.itemName === item.name
-              );
-              return index >= 0
-                ? [
-                    ...prevPrices.slice(0, index),
-                    { ...prevPrices[index], price: newPrice },
-                    ...prevPrices.slice(index + 1),
-                  ]
-                : [
-                    ...prevPrices,
-                    {
-                      itemName: item.name,
-                      price: newPrice,
-                    },
-                  ];
-            });
-          }}
-        />
+        <Select
+          value={
+            selectedVariants[item.key] ??
+            item.productInRecipes[0].defaultVariant
+          }
+          style={{ width: 250 }}
+          onChange={(variant) =>
+            setSelectedVariants((prev) => ({ ...prev, [item.key]: variant }))
+          }
+        >
+          {item.productInRecipes
+            .map((recipe) => recipe.variants)
+            .flat()
+            .map((variant) => (
+              <Option key={variant.key} value={variant.key}>
+                {variant.key}
+              </Option>
+            ))}
+        </Select>
       );
     },
   },
+  {
+    ...getColumn("profession"),
+    render: (_: any, item: Item) => {
+      const variants = item.productInRecipes
+        .map((recipe) => recipe.variants)
+        .flat();
+
+      if (variants.length === 0) {
+        return <p>NA</p>;
+      }
+      const selectedVariant =
+        selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
+      const skillNeeds = item.productInRecipes.find((t) =>
+        t.variants.some((t) => t.key === selectedVariant)
+      )?.skillNeeds;
+      if (skillNeeds?.length === 0) {
+        return <p>none</p>;
+      }
+
+      return (
+        <p>
+          {skillNeeds?.[0].skill} - {skillNeeds?.[0].level}
+        </p>
+      );
+    },
+  },
+  {
+    ...getColumn("crafting station"),
+    render: (_: any, item: Item) => {
+      const variants = item.productInRecipes
+        .map((recipe) => recipe.variants)
+        .flat();
+
+      if (variants.length === 0) {
+        return <p>NA</p>;
+      }
+      const selectedVariant =
+        selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
+      const craftStation = item.productInRecipes.find((t) =>
+        t.variants.some((t) => t.key === selectedVariant)
+      )?.craftStation;
+      return <p>{craftStation ?? "none"}</p>;
+    },
+  },
+  // getColumn("craftStation", "Crafting station"),
+  // {
+  //   ...getColumn("ingredients"),
+  //   render: (ingredients: string[][], item: Recipe) => (
+  //     <Popover
+  //       placement="left"
+  //       content={
+  //         <IngredientsPopupContent
+  //           ingredients={ingredients}
+  //           prices={prices}
+  //           setPrices={setPrices}
+  //         />
+  //       }
+  //       title="Ingredients"
+  //       style={{ cursor: "pointer" }}
+  //     >
+  //       <Button>{ingredients[0][0]}</Button>
+  //     </Popover>
+  //   ),
+  // },
+  // {
+  //   ...getColumn("price", "Fixed price"),
+  //   render: (price: number, item: Recipe) => {
+  //     return (
+  //       <input
+  //         value={prices.find((t) => t.itemName === item.name)?.price ?? ""}
+  //         style={{ width: 50 }}
+  //         onChange={(evt) => {
+  //           const newPrice = Number(evt.target.value);
+  //           if (Number.isNaN(newPrice)) return;
+  //           setPrices((prevPrices) => {
+  //             const index = prevPrices.findIndex(
+  //               (t) => t.itemName === item.name
+  //             );
+  //             return index >= 0
+  //               ? [
+  //                   ...prevPrices.slice(0, index),
+  //                   { ...prevPrices[index], price: newPrice },
+  //                   ...prevPrices.slice(index + 1),
+  //                 ]
+  //               : [
+  //                   ...prevPrices,
+  //                   {
+  //                     itemName: item.name,
+  //                     price: newPrice,
+  //                   },
+  //                 ];
+  //           });
+  //         }}
+  //       />
+  //     );
+  //   },
+  // },
 ];
 
 export default () => {
   const [prices, setPrices] = useLocalStorage<ItemPrice[]>("prices", []);
-  const [upgrades, setUpgrades] = useLocalStorage<{
-    bu: number;
-    au: number;
-    mu: number;
-  }>("upgrades", { bu: 0, au: 0, mu: 0 });
-  const filters = useRecipeHeaderFilters();
+  const [
+    selectedVariants,
+    setSelectedVariants,
+  ] = useLocalStorage<SelectedVariants>("selectedVariant", {});
 
-  const columns = useMemo(() => getColumns(prices, setPrices), [
-    prices,
-    setPrices,
-  ]);
-
-  const itemsWithRecipes = useMemo(
-    () =>
-      filters.filteredRecipes
-        .map((recipe) =>
-          Object.keys(recipe.variants)
-            .map((variantKey) =>
-              recipe.variants[variantKey].products.map((product) => ({
-                ...recipe,
-                key: `${recipe.key}_${product[0]}`,
-                name: product[0],
-                recipe: recipe.name,
-                ingredients: recipe.variants[variantKey].ingredients,
-                price: prices.find((t) => t.itemName === product[0])?.price,
-              }))
-            )
-            .flat()
-        )
-        .flat(),
-    [filters.filteredRecipes, prices]
+  const [filterProfessions, setFilterProfessions] = useLocalStorage<string[]>(
+    "filterProfessions",
+    []
   );
+
+  const [filterCraftStations, setFilterCraftStations] = useLocalStorage<
+    string[]
+  >("filterCraftStations", []);
+
+  const [filterName, setFilterName] = useLocalStorage<string>("filter", "");
+
+  // const [upgrades, setUpgrades] = useLocalStorage<{
+  //   bu: number;
+  //   au: number;
+  //   mu: number;
+  // }>("upgrades", { bu: 0, au: 0, mu: 0 });
+  // const filters = useRecipeHeaderFilters();
+
+  const columns = useMemo(
+    () => getColumns(prices, setPrices, selectedVariants, setSelectedVariants),
+    [prices, selectedVariants, setPrices, setSelectedVariants]
+  );
+
+  // const itemsWithRecipes = useMemo(
+  //   () =>
+  //     filters.filteredRecipes
+  //       .map((recipe) =>
+  //         Object.keys(recipe.variants)
+  //           .map((variantKey) =>
+  //             recipe.variants[variantKey].products.map((product) => ({
+  //               ...recipe,
+  //               key: `${recipe.key}_${product[0]}`,
+  //               name: product[0],
+  //               recipe: recipe.name,
+  //               ingredients: recipe.variants[variantKey].ingredients,
+  //               price: prices.find((t) => t.itemName === product[0])?.price,
+  //             }))
+  //           )
+  //           .flat()
+  //       )
+  //       .flat(),
+  //   [filters.filteredRecipes, prices]
+  // );
 
   // const allIngredients = useMemo(
   //   () =>
@@ -137,16 +250,54 @@ export default () => {
   //   () => itemsWithRecipes, //.concat(itemsWithoutRecipes),
   //   [itemsWithRecipes]
   // );
+  console.log(filterProfessions);
 
-  console.log("prices", prices);
+  // console.log("prices", prices);
+  const datasource = Object.values(allItems).filter((item: Item) => {
+    const variants = item.productInRecipes
+      .map((recipe) => recipe.variants)
+      .flat();
+    const selectedVariant =
+      variants.length === 0
+        ? undefined
+        : selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
+    const skillNeeds = !selectedVariant
+      ? undefined
+      : item.productInRecipes.find((t) =>
+          t.variants.some((t) => t.key === selectedVariant)
+        )?.skillNeeds;
+    const firstSkill = skillNeeds?.[0]?.skill ?? "none";
+    const craftStation =
+      (!selectedVariant
+        ? undefined
+        : item.productInRecipes.find((t) =>
+            t.variants.some((t) => t.key === selectedVariant)
+          )?.craftStation) ?? "none";
+
+    return (
+      fiterByText(filterName, item.key) &&
+      filterByIncludes(filterProfessions, firstSkill) &&
+      filterByIncludes(filterCraftStations, craftStation)
+    );
+  });
+
   return (
     <div>
       <PageHeader
         title="All items"
-        subTitle="Here you can find all the items available in the game"
+        subTitle="Here you can find all the items and their recipes"
       />
-      <HeaderFilters {...filters} />
-      <div>
+      <HeaderFilters
+        professions={allProfessions}
+        craftStations={allCraftStations}
+        filterProfessions={filterProfessions}
+        setFilterProfessions={setFilterProfessions}
+        filterCraftStations={filterCraftStations}
+        setFilterCraftStations={setFilterCraftStations}
+        filterName={filterName}
+        setFilterName={setFilterName}
+      />
+      {/* <div>
         <ModuleSelect
           value={upgrades.bu}
           setValue={(bu: number) => setUpgrades((prev) => ({ ...prev, bu }))}
@@ -164,8 +315,8 @@ export default () => {
           setValue={(mu: number) => setUpgrades((prev) => ({ ...prev, mu }))}
           moduleName="Modern module"
         />
-      </div>
-      <Table dataSource={itemsWithRecipes} columns={columns} />
+      </div> */}
+      <Table dataSource={datasource} columns={columns} />
     </div>
   );
 };
