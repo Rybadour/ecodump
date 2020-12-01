@@ -1,18 +1,17 @@
 import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { Table, Popover, Button, PageHeader, Select } from "antd";
-import { ItemPrice, Recipe } from "../../types";
-import useRecipeHeaderFilters from "../../context/useRecipeHeaderFilters";
+import { ItemPrice } from "../../types";
 import HeaderFilters from "../../components/HeaderFilters";
-import IngredientsPopupContent from "./IngredientsPopupContent";
+
 import { filterByIncludes, fiterByText, getColumn } from "../../utils/helpers";
 import useLocalStorage from "../../context/useLocalStorage";
-import ModuleSelect from "../../components/ModuleSelect";
 import {
   allCraftStations,
   allItems,
   allProfessions,
   Item,
 } from "../../utils/typedData";
+import RecipePopup from "../../components/RecipePopup";
 
 const { Option } = Select;
 console.log("typedData", allItems);
@@ -22,6 +21,30 @@ console.log(
     .map((t) => t.productInRecipes.map((tt) => tt.key))
     .filter((t) => t.length > 1)
 );
+
+const updatePrice = (
+  setPrices: Dispatch<SetStateAction<ItemPrice[]>>,
+  itemName: string,
+  newPrice: number
+) => {
+  if (Number.isNaN(newPrice)) return;
+  setPrices((prevPrices) => {
+    const index = prevPrices.findIndex((t) => t.itemName === itemName);
+    return index >= 0
+      ? [
+          ...prevPrices.slice(0, index),
+          { ...prevPrices[index], price: newPrice },
+          ...prevPrices.slice(index + 1),
+        ]
+      : [
+          ...prevPrices,
+          {
+            itemName: itemName,
+            price: newPrice,
+          },
+        ];
+  });
+};
 
 type SelectedVariants = { [item: string]: string };
 
@@ -112,59 +135,55 @@ const getColumns = (
       return <p>{craftStation ?? "none"}</p>;
     },
   },
-  // getColumn("craftStation", "Crafting station"),
-  // {
-  //   ...getColumn("ingredients"),
-  //   render: (ingredients: string[][], item: Recipe) => (
-  //     <Popover
-  //       placement="left"
-  //       content={
-  //         <IngredientsPopupContent
-  //           ingredients={ingredients}
-  //           prices={prices}
-  //           setPrices={setPrices}
-  //         />
-  //       }
-  //       title="Ingredients"
-  //       style={{ cursor: "pointer" }}
-  //     >
-  //       <Button>{ingredients[0][0]}</Button>
-  //     </Popover>
-  //   ),
-  // },
-  // {
-  //   ...getColumn("price", "Fixed price"),
-  //   render: (price: number, item: Recipe) => {
-  //     return (
-  //       <input
-  //         value={prices.find((t) => t.itemName === item.name)?.price ?? ""}
-  //         style={{ width: 50 }}
-  //         onChange={(evt) => {
-  //           const newPrice = Number(evt.target.value);
-  //           if (Number.isNaN(newPrice)) return;
-  //           setPrices((prevPrices) => {
-  //             const index = prevPrices.findIndex(
-  //               (t) => t.itemName === item.name
-  //             );
-  //             return index >= 0
-  //               ? [
-  //                   ...prevPrices.slice(0, index),
-  //                   { ...prevPrices[index], price: newPrice },
-  //                   ...prevPrices.slice(index + 1),
-  //                 ]
-  //               : [
-  //                   ...prevPrices,
-  //                   {
-  //                     itemName: item.name,
-  //                     price: newPrice,
-  //                   },
-  //                 ];
-  //           });
-  //         }}
-  //       />
-  //     );
-  //   },
-  // },
+  {
+    ...getColumn("ingredients"),
+    render: (ingredients: string[][], item: Item) => {
+      const variants = item.productInRecipes
+        .map((recipe) => recipe.variants)
+        .flat();
+      if (variants.length === 0) {
+        return <p>NA</p>;
+      }
+      const selectedVariant =
+        selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
+      const variant = variants.find((t) => t.key === selectedVariant);
+
+      if (variant === undefined) {
+        return <p>NA</p>;
+      }
+
+      return (
+        <Popover
+          placement="left"
+          content={
+            <RecipePopup
+              recipe={variant}
+              prices={prices}
+              setPrices={setPrices}
+            />
+          }
+          title="Ingredients"
+          style={{ cursor: "pointer" }}
+        >
+          <Button>Check recipe</Button>
+        </Popover>
+      );
+    },
+  },
+  {
+    ...getColumn("price", "Fixed price"),
+    render: (price: number, item: Item) => {
+      return (
+        <input
+          value={prices.find((t) => t.itemName === item.key)?.price ?? "?"}
+          style={{ width: 50 }}
+          onChange={(evt) => {
+            updatePrice(setPrices, item.key, Number(evt.target.value));
+          }}
+        />
+      );
+    },
+  },
 ];
 
 export default () => {
@@ -250,7 +269,6 @@ export default () => {
   //   () => itemsWithRecipes, //.concat(itemsWithoutRecipes),
   //   [itemsWithRecipes]
   // );
-  console.log(filterProfessions);
 
   // console.log("prices", prices);
   const datasource = Object.values(allItems).filter((item: Item) => {
