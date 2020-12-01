@@ -49,7 +49,7 @@ const newItem = (key: string) => ({
   ingredientInRecipes: [],
   productInRecipes: [],
 });
-const formatNumber = (num: number) => +num.toFixed(2);
+export const formatNumber = (num: number) => +num.toFixed(2);
 const multipliers = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
 const getMultiplierValue = (locked: boolean, value: number, index: number) =>
   formatNumber(value * (locked ? 1 : multipliers[index]));

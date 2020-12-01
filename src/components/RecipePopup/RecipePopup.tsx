@@ -1,49 +1,80 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { ItemPrice } from "../../types";
-import { RecipeVariant } from "../../utils/typedData";
+import { formatNumber, RecipeVariant } from "../../utils/typedData";
 import { Table } from "antd";
 import { getColumn } from "../../utils/helpers";
 
-const getColumns = (setPrices: Dispatch<SetStateAction<ItemPrice[]>>) => [
+type SetItemPrice = (itemName: string, price: number) => void;
+type Ing = {
+  name: string;
+  ammountM0?: number;
+  ammountM1?: number;
+  ammountM2?: number;
+  ammountM3?: number;
+  ammountM4?: number;
+  ammountM5?: number;
+  priceM0?: number;
+  priceM1?: number;
+  priceM2?: number;
+  priceM3?: number;
+  priceM4?: number;
+  priceM5?: number;
+};
+
+const calcPrice = (ammount: number, price?: number) =>
+  !price ? undefined : formatNumber(ammount * price);
+
+const renderPrice = (ammount?: number, price?: number) => {
+  if (!ammount) {
+    return price + "$";
+  }
+  return `${ammount} ${price ? `(${price}$)` : ""}`;
+};
+
+const getIngredientColumns = (setItemPrice: SetItemPrice) => [
   getColumn("name"),
-  //   {
-  //     ...getColumn("price"),
-  //     render: (price: number | undefined, item: { name: string }) => (
-  //       <input
-  //         value={price === undefined ? "?" : price.toFixed(2)}
-  //         onChange={(evt) => {
-  //           const newPrice = Number(evt.target.value);
-  //           if (Number.isNaN(newPrice)) {
-  //             return;
-  //           }
-  //           setPrices((prevPrices) => {
-  //             const index = prevPrices.findIndex((t) => t.itemName === item.name);
-  //             if (index < 0) {
-  //               return [
-  //                 ...prevPrices,
-  //                 {
-  //                   itemName: item.name,
-  //                   price: newPrice,
-  //                 },
-  //               ];
-  //             } else {
-  //               return [
-  //                 ...prevPrices.slice(0, index),
-  //                 { ...prevPrices[index], price: newPrice },
-  //                 ...prevPrices.slice(index + 1),
-  //               ];
-  //             }
-  //           });
-  //         }}
-  //       />
-  //     ),
-  //   },
-  getColumn("ammount", "M0"),
-  getColumn("ammountM1", "M1"),
-  getColumn("ammountM2", "M2"),
-  getColumn("ammountM3", "M3"),
-  getColumn("ammountM4", "M4"),
-  getColumn("ammountM5", "M5"),
+  {
+    ...getColumn("price"),
+    render: (
+      price: number | undefined,
+      item: { tag: string; name: string }
+    ) => {
+      if (item.tag === "COST") return;
+      return (
+        <input
+          value={price === undefined ? "?" : +price.toFixed(2)}
+          style={{ width: 50 }}
+          onChange={(evt) => {
+            setItemPrice(item.name, Number(evt.target.value));
+          }}
+        />
+      );
+    },
+  },
+  {
+    ...getColumn("M0"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM0, item.priceM0),
+  },
+  {
+    ...getColumn("M1"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM1, item.priceM1),
+  },
+  {
+    ...getColumn("M2"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM2, item.priceM2),
+  },
+  {
+    ...getColumn("M3"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM3, item.priceM3),
+  },
+  {
+    ...getColumn("M4"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM4, item.priceM4),
+  },
+  {
+    ...getColumn("M5"),
+    render: (_: any, item: Ing) => renderPrice(item.ammountM5, item.priceM5),
+  },
 ];
 // const formatNumber = (num: number) => +num.toFixed(2);
 // const multipliers = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
@@ -62,16 +93,18 @@ const getColumns = (setPrices: Dispatch<SetStateAction<ItemPrice[]>>) => [
 //   }`;
 // };
 
+const getProductColumns = () => [getColumn("name"), getColumn("ammount")];
 export default ({
   recipe,
   prices,
-  setPrices,
+  setItemPrice,
 }: {
   recipe: RecipeVariant;
   prices: ItemPrice[];
-  setPrices: Dispatch<SetStateAction<ItemPrice[]>>;
+  setItemPrice: SetItemPrice;
 }) => {
-  const columns = getColumns(setPrices);
+  const columns = getIngredientColumns(setItemPrice);
+  const productColumns = getProductColumns();
   //   const mappedIngredients = ingredients.map((t) => {
   //     const name = t[1];
   //     const value = Number(t[2]);
@@ -146,11 +179,67 @@ export default ({
   //     M5: `${formatNumber(totalPrice.M5)}$`,
   //   });
 
-  const datasource = recipe.ingredients;
+  const ingredients = recipe.ingredients
+    .map((ing) => ({
+      ...ing,
+      price: prices.find((price) => price.itemName === ing.name)?.price,
+    }))
+    .map((ing) => ({
+      ...ing,
+      ammountM0: ing.ammount,
+      priceM0: calcPrice(ing.ammount, ing.price),
+      priceM1: calcPrice(ing.ammountM1, ing.price),
+      priceM2: calcPrice(ing.ammountM2, ing.price),
+      priceM3: calcPrice(ing.ammountM3, ing.price),
+      priceM4: calcPrice(ing.ammountM4, ing.price),
+      priceM5: calcPrice(ing.ammountM5, ing.price),
+    }));
+  const totalCosts = ingredients.reduce(
+    (prev, ing) => ({
+      ...prev,
+      priceM0: prev.priceM0 + (ing.priceM0 ?? 0),
+      priceM1: prev.priceM1 + (ing.priceM1 ?? 0),
+      priceM2: prev.priceM2 + (ing.priceM2 ?? 0),
+      priceM3: prev.priceM3 + (ing.priceM3 ?? 0),
+      priceM4: prev.priceM4 + (ing.priceM4 ?? 0),
+      priceM5: prev.priceM5 + (ing.priceM5 ?? 0),
+    }),
+    {
+      priceM0: 0,
+      priceM1: 0,
+      priceM2: 0,
+      priceM3: 0,
+      priceM4: 0,
+      priceM5: 0,
+    }
+  );
+  const datasourceIngredients = [
+    ...ingredients,
+    {
+      tag: "COST",
+      name: "Cost",
+      ammountM0: undefined,
+      ammountM1: undefined,
+      ammountM2: undefined,
+      ammountM3: undefined,
+      ammountM4: undefined,
+      ammountM5: undefined,
+      priceM0: formatNumber(totalCosts.priceM0),
+      priceM1: formatNumber(totalCosts.priceM1),
+      priceM2: formatNumber(totalCosts.priceM2),
+      priceM3: formatNumber(totalCosts.priceM3),
+      priceM4: formatNumber(totalCosts.priceM4),
+      priceM5: formatNumber(totalCosts.priceM5),
+    },
+  ];
+  const products = recipe.products;
 
   return (
     <div>
-      <Table dataSource={datasource} columns={columns} />
+      <h4>Ingredients</h4>
+      <Table dataSource={datasourceIngredients} columns={columns} />
+      <h4>Products</h4>
+      <Table dataSource={products} columns={productColumns} />
     </div>
   );
 };

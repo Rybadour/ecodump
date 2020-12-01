@@ -152,6 +152,9 @@ const getColumns = (
         return <p>NA</p>;
       }
 
+      const setItemPrice = (itemName: string, newPrice: number) =>
+        updatePrice(setPrices, itemName, newPrice);
+
       return (
         <Popover
           placement="left"
@@ -159,10 +162,10 @@ const getColumns = (
             <RecipePopup
               recipe={variant}
               prices={prices}
-              setPrices={setPrices}
+              setItemPrice={setItemPrice}
             />
           }
-          title="Ingredients"
+          title="Recipe"
           style={{ cursor: "pointer" }}
         >
           <Button>Check recipe</Button>
