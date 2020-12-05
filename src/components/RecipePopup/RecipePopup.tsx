@@ -1,8 +1,13 @@
-import React from "react";
-import { ItemPrice } from "../../types";
+import React, { Dispatch, SetStateAction } from "react";
+import {
+  RecipeCostPercentage,
+  ItemPrice,
+  RecipeCostProdPercentage,
+} from "../../types";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
-import { Table } from "antd";
+import { Table, InputNumber, Slider } from "antd";
 import { getColumn } from "../../utils/helpers";
+import useLocalStorage from "../../context/useLocalStorage";
 
 type SetItemPrice = (itemName: string, price: number) => void;
 type Ing = {
@@ -19,6 +24,57 @@ type Ing = {
   priceM3?: number;
   priceM4?: number;
   priceM5?: number;
+};
+
+// Fixes percentages so that the sum is 100%
+const fixPercentages = (
+  prodName: string,
+  newPercentage: number,
+  percentages: RecipeCostProdPercentage[]
+) => {
+  let sum = newPercentage;
+  return percentages.map((t, index) => {
+    let percentage = t.productName === prodName ? newPercentage : t.percentage;
+    if (t.productName !== prodName) {
+      if (sum + percentage > 100) {
+        percentage = 100 - sum;
+      }
+      sum += percentage;
+    }
+    if (index === percentages.length - 1) {
+      percentage += 100 - sum;
+    }
+    return {
+      ...t,
+      percentage,
+    };
+  });
+};
+
+const updateItemPercentage = (
+  itemName: string,
+  prodName: string,
+  newPercentage: number,
+  setCostPercentages: Dispatch<SetStateAction<RecipeCostPercentage[]>>
+) => {
+  setCostPercentages((prevItemPercentages) => {
+    const itemPercentageIndex = prevItemPercentages.findIndex(
+      (t) => t.itemName === itemName
+    );
+    const newItemPercentages = {
+      ...prevItemPercentages[itemPercentageIndex],
+      percentages: fixPercentages(
+        prodName,
+        newPercentage,
+        prevItemPercentages[itemPercentageIndex].percentages
+      ),
+    };
+    return [
+      ...prevItemPercentages.slice(0, itemPercentageIndex),
+      newItemPercentages,
+      ...prevItemPercentages.slice(itemPercentageIndex + 1),
+    ];
+  });
 };
 
 const calcPrice = (ammount: number, price?: number) =>
@@ -41,13 +97,13 @@ const getIngredientColumns = (setItemPrice: SetItemPrice) => [
     ) => {
       if (item.tag === "COST") return;
       return (
-        <input
-          value={price === undefined ? "?" : +price.toFixed(2)}
-          style={{ width: 50 }}
-          onChange={(evt) => {
-            setItemPrice(item.name, Number(evt.target.value));
-          }}
-        />
+        <>
+          <InputNumber
+            value={price}
+            width="20"
+            onChange={(newPrice) => setItemPrice(item.name, Number(newPrice))}
+          />
+        </>
       );
     },
   },
@@ -76,24 +132,54 @@ const getIngredientColumns = (setItemPrice: SetItemPrice) => [
     render: (_: any, item: Ing) => renderPrice(item.ammountM5, item.priceM5),
   },
 ];
-// const formatNumber = (num: number) => +num.toFixed(2);
-// const multipliers = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
-// const getMultiplierValue = (locked: boolean, value: number, index: number) =>
-//   formatNumber(value * (locked ? 1 : multipliers[index]));
 
-// const getColumnValue = (
-//   locked: boolean,
-//   value: number,
-//   price: number | undefined,
-//   index: number
-// ) => {
-//   const quantity = getMultiplierValue(locked, value, index);
-//   return `${quantity} ${
-//     price === undefined ? "" : `(${formatNumber(price * quantity)}$)`
-//   }`;
-// };
-
-const getProductColumns = () => [getColumn("name"), getColumn("ammount")];
+const getProductColumns = (
+  recipe: RecipeVariant,
+  setItemPrice: SetItemPrice,
+  setCostPercentages: Dispatch<SetStateAction<RecipeCostPercentage[]>>
+) => [
+  getColumn("name"),
+  getColumn("ammount"),
+  {
+    ...getColumn("costPercent", "Cost Percentage"),
+    render: (costPercent: number, item: { name: string }) => {
+      return (
+        <InputNumber
+          value={costPercent}
+          width="20"
+          onChange={(value) =>
+            updateItemPercentage(
+              recipe.name,
+              item.name,
+              Number(value),
+              setCostPercentages
+            )
+          }
+        />
+      );
+    },
+  },
+  getColumn("priceM0", "M0"),
+  getColumn("priceM1", "M1"),
+  getColumn("priceM2", "M2"),
+  getColumn("priceM3", "M3"),
+  getColumn("priceM4", "M4"),
+  getColumn("priceM5", "M5"),
+  {
+    ...getColumn("price"),
+    render: (price: number | undefined, item: { name: string }) => {
+      return (
+        <>
+          <InputNumber
+            value={price}
+            width="20"
+            onChange={(newPrice) => setItemPrice(item.name, Number(newPrice))}
+          />
+        </>
+      );
+    },
+  },
+];
 export default ({
   recipe,
   prices,
@@ -103,82 +189,17 @@ export default ({
   prices: ItemPrice[];
   setItemPrice: SetItemPrice;
 }) => {
+  const [costPercentages, setCostPercentages] = useLocalStorage<
+    RecipeCostPercentage[]
+  >("costPercentages", []);
   const columns = getIngredientColumns(setItemPrice);
-  const productColumns = getProductColumns();
-  //   const mappedIngredients = ingredients.map((t) => {
-  //     const name = t[1];
-  //     const value = Number(t[2]);
-  //     const price = prices.find((t) => t.itemName === name)?.price;
-  //     const isLocked = t[3] === "True";
-  //     return {
-  //       name,
-  //       price,
-  //       value,
-  //       isLocked,
-  //       M0: getColumnValue(isLocked, value, price, 0),
-  //       M1: getColumnValue(isLocked, value, price, 1),
-  //       M2: getColumnValue(isLocked, value, price, 2),
-  //       M3: getColumnValue(isLocked, value, price, 3),
-  //       M4: getColumnValue(isLocked, value, price, 4),
-  //       M5: getColumnValue(isLocked, value, price, 5),
-  //     };
-  //   });
-  //   const totalPrice = mappedIngredients
-  //     .filter((t) => t.price !== undefined)
-  //     // .reduce((prev: number, curr) => prev + curr.value * (curr.price ?? 0), 0);
-  //     .map((t) => ({
-  //       M0:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 0)),
-  //       M1:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 1)),
-  //       M2:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 2)),
-  //       M3:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 3)),
-  //       M4:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 4)),
-  //       M5:
-  //         (t.price ?? 0) * Math.ceil(getMultiplierValue(t.isLocked, t.value, 5)),
-  //     }))
-  //     .reduce(
-  //       (prev, curr) => ({
-  //         M0: prev.M0 + curr.M0,
-  //         M1: prev.M1 + curr.M1,
-  //         M2: prev.M2 + curr.M2,
-  //         M3: prev.M3 + curr.M3,
-  //         M4: prev.M4 + curr.M4,
-  //         M5: prev.M5 + curr.M5,
-  //       }),
-  //       { M0: 0, M1: 0, M2: 0, M3: 0, M4: 0, M5: 0 }
-  //     );
-  //   console.log(
-  //     "prev",
-  //     mappedIngredients
-  //       .filter((t) => t.price !== undefined)
-  //       // .reduce((prev: number, curr) => prev + curr.value * (curr.price ?? 0), 0);
-  //       .map((t) => ({
-  //         M0: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 0),
-  //         M1: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 1),
-  //         M2: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 2),
-  //         M3: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 3),
-  //         M4: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 4),
-  //         M5: (t.price ?? 0) * getMultiplierValue(t.isLocked, t.value, 5),
-  //       }))
-  //   );
-  //   console.log("totalPrice", totalPrice);
-  //   const datasource = mappedIngredients.concat({
-  //     name: "Total",
-  //     price: undefined,
-  //     value: 1,
-  //     isLocked: true,
-  //     M0: `${formatNumber(totalPrice.M0)}$`,
-  //     M1: `${formatNumber(totalPrice.M1)}$`,
-  //     M2: `${formatNumber(totalPrice.M2)}$`,
-  //     M3: `${formatNumber(totalPrice.M3)}$`,
-  //     M4: `${formatNumber(totalPrice.M4)}$`,
-  //     M5: `${formatNumber(totalPrice.M5)}$`,
-  //   });
+  const productColumns = getProductColumns(
+    recipe,
+    setItemPrice,
+    setCostPercentages
+  );
 
+  // Finds unit price for each item and then calculate price of recipe ingredients based on module used
   const ingredients = recipe.ingredients
     .map((ing) => ({
       ...ing,
@@ -194,7 +215,9 @@ export default ({
       priceM4: calcPrice(ing.ammountM4, ing.price),
       priceM5: calcPrice(ing.ammountM5, ing.price),
     }));
-  const totalCosts = ingredients.reduce(
+
+  // Sums the prices of each ingredient in the recipe to get the last row
+  const totalIngredientCosts = ingredients.reduce(
     (prev, ing) => ({
       ...prev,
       priceM0: prev.priceM0 + (ing.priceM0 ?? 0),
@@ -213,6 +236,7 @@ export default ({
       priceM5: 0,
     }
   );
+  // Creates the final datasource for ingredients using the ingredients and adding a new row for the totals
   const datasourceIngredients = [
     ...ingredients,
     {
@@ -224,15 +248,71 @@ export default ({
       ammountM3: undefined,
       ammountM4: undefined,
       ammountM5: undefined,
-      priceM0: formatNumber(totalCosts.priceM0),
-      priceM1: formatNumber(totalCosts.priceM1),
-      priceM2: formatNumber(totalCosts.priceM2),
-      priceM3: formatNumber(totalCosts.priceM3),
-      priceM4: formatNumber(totalCosts.priceM4),
-      priceM5: formatNumber(totalCosts.priceM5),
+      priceM0: formatNumber(totalIngredientCosts.priceM0),
+      priceM1: formatNumber(totalIngredientCosts.priceM1),
+      priceM2: formatNumber(totalIngredientCosts.priceM2),
+      priceM3: formatNumber(totalIngredientCosts.priceM3),
+      priceM4: formatNumber(totalIngredientCosts.priceM4),
+      priceM5: formatNumber(totalIngredientCosts.priceM5),
     },
   ];
-  const products = recipe.products;
+
+  // Initializes cost percentages on the first time
+  const itemCostPercentages = costPercentages.find(
+    (t) => t.itemName === recipe.key
+  );
+  if (!itemCostPercentages) {
+    const evenPercent = 100 / recipe.products.length;
+    setCostPercentages((prev) => [
+      ...prev,
+      {
+        itemName: recipe.key,
+        percentages: recipe.products.map((prod, index) => ({
+          productName: prod.name,
+          percentage:
+            index !== recipe.products.length - 1
+              ? evenPercent
+              : 100 - (recipe.products.length - 1) * evenPercent,
+        })),
+      },
+    ]);
+  }
+
+  // Adds cost percentage and predicts price of products based on percentage
+  const products = recipe.products.map((prod, index) => {
+    const costPercent =
+      itemCostPercentages?.percentages?.find((t) => t.productName === prod.name)
+        ?.percentage ?? 0;
+    return {
+      ...prod,
+      costPercent,
+      priceM0:
+        formatNumber(
+          ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      priceM1:
+        formatNumber(
+          ((totalIngredientCosts.priceM1 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      priceM2:
+        formatNumber(
+          ((totalIngredientCosts.priceM2 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      priceM3:
+        formatNumber(
+          ((totalIngredientCosts.priceM3 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      priceM4:
+        formatNumber(
+          ((totalIngredientCosts.priceM4 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      priceM5:
+        formatNumber(
+          ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100
+        ) + "$",
+      price: prices.find((price) => price.itemName === prod.name)?.price,
+    };
+  });
 
   return (
     <div>

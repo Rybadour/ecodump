@@ -21,6 +21,16 @@ export interface ItemPrice {
   price: number;
 }
 
+export interface RecipeCostProdPercentage {
+  productName: string;
+  percentage: number;
+}
+
+export interface RecipeCostPercentage {
+  itemName: string;
+  percentages: RecipeCostProdPercentage[];
+}
+
 export type RecipeVariant = {
   untranslated: string;
   ingredients: string[][];

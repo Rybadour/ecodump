@@ -17,9 +17,11 @@ const { Option } = Select;
 console.log("typedData", allItems);
 console.log(
   "here",
-  Object.values(allItems)
-    .map((t) => t.productInRecipes.map((tt) => tt.key))
-    .filter((t) => t.length > 1)
+  Object.values(allItems).filter((t) =>
+    t.productInRecipes.some((tt) =>
+      tt.variants.some((ttt) => ttt.products.length > 2)
+    )
+  )
 );
 
 const updatePrice = (
