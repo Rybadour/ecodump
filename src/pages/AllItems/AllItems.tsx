@@ -14,9 +14,18 @@ export default () => {
         title="All items"
         subTitle="Here you can find all the items and their recipes"
       />
-      <NameFilter />
-      <ProfessionFilter />
-      <CraftingStationFilter />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.2rem",
+        }}
+      >
+        <NameFilter />
+        <ProfessionFilter />
+        <CraftingStationFilter />
+      </div>
       {/* <div>
         <ModuleSelect
           value={upgrades.bu}

@@ -145,6 +145,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
       }
       title="Recipe"
       style={{ cursor: "pointer" }}
+      trigger="click"
     >
       <Button type="link">{buttonText}</Button>
     </Popover>

@@ -38,6 +38,7 @@ export default ({ itemName }: PropTypes) => {
       content={content}
       title="Recipes"
       style={{ cursor: "pointer" }}
+      trigger="click"
     >
       <Button type="link">{itemName}</Button>
     </Popover>
