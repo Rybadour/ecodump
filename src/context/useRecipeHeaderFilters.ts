@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Recipe, RecipesFile } from "../types";
-import { filterByIncludes, filterUnique, fiterByText } from "../utils/helpers";
+import { filterByIncludes, filterUnique, filterByText } from "../utils/helpers";
 import useRestDb, { DbContent } from "./useRestDb";
 
 export interface HeaderFilters {
@@ -65,7 +65,7 @@ export default (): HeaderFilters => {
   const filteredRecipes = useMemo(() => {
     return recipes.filter(
       (t) =>
-        fiterByText(filterName, t.name) &&
+        filterByText(filterName, t.name) &&
         filterByIncludes(filterProfession, t.profession) &&
         filterByIncludes(filterCraftStations, t.craftStation)
     );

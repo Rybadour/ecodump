@@ -2,7 +2,7 @@ import React from "react";
 import { Table } from "antd";
 import { allItems, Item } from "../../utils/typedData";
 import { useAppContext } from "../../AppContext";
-import { filterByIncludes, fiterByText } from "../../utils/helpers";
+import { filterByIncludes, filterByText } from "../../utils/helpers";
 import { useGetColumns } from "./useGetColumns";
 
 export default () => {
@@ -36,7 +36,7 @@ export default () => {
           )?.craftStation) ?? "none";
 
     return (
-      fiterByText(filterName, item.key) &&
+      filterByText(filterName, item.key) &&
       filterByIncludes(filterProfessions, firstSkill) &&
       filterByIncludes(filterCraftStations, craftStation)
     );

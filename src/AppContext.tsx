@@ -5,7 +5,12 @@ import React, {
   useContext,
 } from "react";
 import useLocalStorage from "./context/useLocalStorage";
-import { ItemPrice, SelectedVariants } from "./types";
+import {
+  ItemPrice,
+  RecipeCostPercentage,
+  RecipeCostProdPercentage,
+  SelectedVariants,
+} from "./types";
 const AppContext = React.createContext<{
   prices: ItemPrice[];
   updatePrice: (itemName: string, newPrice: number) => void;
@@ -17,6 +22,13 @@ const AppContext = React.createContext<{
   setFilterCraftStations: Dispatch<SetStateAction<string[]>>;
   filterName: string;
   setFilterName: Dispatch<SetStateAction<string>>;
+  itemCostPercentages: RecipeCostPercentage[];
+  setItemCostPercentages: Dispatch<SetStateAction<RecipeCostPercentage[]>>;
+  updateItemCostPercentage: (
+    itemName: string,
+    prodName: string,
+    newPercentage: number
+  ) => void;
 }>({
   prices: [],
   updatePrice: () => undefined,
@@ -28,6 +40,9 @@ const AppContext = React.createContext<{
   setFilterCraftStations: () => undefined,
   filterName: "",
   setFilterName: () => undefined,
+  itemCostPercentages: [],
+  setItemCostPercentages: () => undefined,
+  updateItemCostPercentage: () => undefined,
 });
 
 const updatePrice = (
@@ -54,6 +69,31 @@ const updatePrice = (
   });
 };
 
+// Fixes percentages so that the sum is 100%
+const fixPercentages = (
+  prodName: string,
+  newPercentage: number,
+  percentages: RecipeCostProdPercentage[]
+) => {
+  let sum = newPercentage;
+  return percentages.map((t, index) => {
+    let percentage = t.productName === prodName ? newPercentage : t.percentage;
+    if (t.productName !== prodName) {
+      if (sum + percentage > 100) {
+        percentage = 100 - sum;
+      }
+      sum += percentage;
+    }
+    if (index === percentages.length - 1) {
+      percentage += 100 - sum;
+    }
+    return {
+      ...t,
+      percentage,
+    };
+  });
+};
+
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [prices, setPrices] = useLocalStorage<ItemPrice[]>("prices", []);
   const [
@@ -77,6 +117,35 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       updatePrice(setPrices, itemName, newPrice),
     [setPrices]
   );
+
+  const [itemCostPercentages, setItemCostPercentages] = useLocalStorage<
+    RecipeCostPercentage[]
+  >("costPercentages", []);
+
+  const updateItemCostPercentage = useCallback(
+    (itemName: string, prodName: string, newPercentage: number) => {
+      setItemCostPercentages((prevItemPercentages) => {
+        const itemPercentageIndex = prevItemPercentages.findIndex(
+          (t) => t.itemName === itemName
+        );
+        const newItemPercentages = {
+          ...prevItemPercentages[itemPercentageIndex],
+          percentages: fixPercentages(
+            prodName,
+            newPercentage,
+            prevItemPercentages[itemPercentageIndex].percentages
+          ),
+        };
+        return [
+          ...prevItemPercentages.slice(0, itemPercentageIndex),
+          newItemPercentages,
+          ...prevItemPercentages.slice(itemPercentageIndex + 1),
+        ];
+      });
+    },
+    [setItemCostPercentages]
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -90,6 +159,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setFilterCraftStations,
         filterName,
         setFilterName,
+        itemCostPercentages,
+        setItemCostPercentages,
+        updateItemCostPercentage,
       }}
     >
       {children}

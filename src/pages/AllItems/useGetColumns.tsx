@@ -13,7 +13,6 @@ export const useGetColumns = () => {
     setSelectedVariants,
     prices,
     updatePrice,
-    setFilterName,
   } = useAppContext();
   return [
     getColumn("key", "Name"),
@@ -114,15 +113,7 @@ export const useGetColumns = () => {
           return <p>NA</p>;
         }
 
-        return (
-          <RecipePopup
-            recipe={variant}
-            prices={prices}
-            setItemPrice={updatePrice}
-            searchItem={(itemName: string) => setFilterName(itemName)}
-            buttonText="Check recipe"
-          />
-        );
+        return <RecipePopup recipe={variant} buttonText="Check recipe" />;
       },
     },
     {
