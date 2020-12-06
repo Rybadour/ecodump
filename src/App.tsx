@@ -5,6 +5,7 @@ import AllItems from "./pages/AllItems";
 import { Menu } from "antd";
 import { HomeOutlined, FileOutlined, TableOutlined } from "@ant-design/icons";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { AppProvider } from "./AppContext";
 
 import "./App.css";
 
@@ -17,8 +18,8 @@ const routes = {
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <Router>
         <Menu mode="horizontal">
           <Menu.Item key="home" icon={<HomeOutlined />}>
             <Link to={routes.Home}>Home</Link>
@@ -31,18 +32,20 @@ function App() {
           </Menu.Item>
         </Menu>
         <Switch>
-          <Route path={routes.JsonViewer}>
-            <JsonViewer />
-          </Route>
-          <Route path={routes.Items}>
-            <AllItems />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <AppProvider>
+            <Route path={routes.JsonViewer}>
+              <JsonViewer />
+            </Route>
+            <Route path={routes.Items}>
+              <AllItems />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </AppProvider>
         </Switch>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 

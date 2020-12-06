@@ -31,6 +31,10 @@ export interface RecipeCostPercentage {
   percentages: RecipeCostProdPercentage[];
 }
 
+export interface SelectedVariants {
+  [item: string]: string;
+}
+
 export type RecipeVariant = {
   untranslated: string;
   ingredients: string[][];

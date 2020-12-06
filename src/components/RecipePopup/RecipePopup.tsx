@@ -5,7 +5,7 @@ import {
   RecipeCostProdPercentage,
 } from "../../types";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
-import { Table, InputNumber, Button } from "antd";
+import { Table, InputNumber, Button, Popover } from "antd";
 import { getColumn } from "../../utils/helpers";
 import useLocalStorage from "../../context/useLocalStorage";
 
@@ -255,11 +255,13 @@ export default ({
   prices,
   setItemPrice,
   searchItem,
+  buttonText,
 }: {
   recipe: RecipeVariant;
   prices: ItemPrice[];
   setItemPrice: SetItemPrice;
   searchItem: (itemName: string) => void;
+  buttonText: string;
 }) => {
   const [costPercentages, setCostPercentages] = useLocalStorage<
     RecipeCostPercentage[]
@@ -381,11 +383,20 @@ export default ({
   });
 
   return (
-    <div>
-      <h4>Ingredients</h4>
-      <Table dataSource={datasourceIngredients} columns={columns} />
-      <h4>Products</h4>
-      <Table dataSource={products} columns={productColumns} />
-    </div>
+    <Popover
+      placement="bottom"
+      content={
+        <div>
+          <h4>Ingredients</h4>
+          <Table dataSource={datasourceIngredients} columns={columns} />
+          <h4>Products</h4>
+          <Table dataSource={products} columns={productColumns} />
+        </div>
+      }
+      title="Recipe"
+      style={{ cursor: "pointer" }}
+    >
+      <Button type="link">{buttonText}</Button>
+    </Popover>
   );
 };
