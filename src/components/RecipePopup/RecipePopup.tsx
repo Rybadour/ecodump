@@ -5,7 +5,7 @@ import {
   RecipeCostProdPercentage,
 } from "../../types";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
-import { Table, InputNumber, Slider } from "antd";
+import { Table, InputNumber, Button } from "antd";
 import { getColumn } from "../../utils/helpers";
 import useLocalStorage from "../../context/useLocalStorage";
 
@@ -87,8 +87,18 @@ const renderPrice = (ammount?: number, price?: number) => {
   return `${ammount} ${price ? `(${price}$)` : ""}`;
 };
 
-const getIngredientColumns = (setItemPrice: SetItemPrice) => [
-  getColumn("name"),
+const getIngredientColumns = (
+  setItemPrice: SetItemPrice,
+  searchItem: (itemName: string) => void
+) => [
+  {
+    ...getColumn("name"),
+    render: (name: string) => (
+      <Button title="Search item" onClick={() => searchItem(name)}>
+        {name}
+      </Button>
+    ),
+  },
   {
     ...getColumn("price"),
     render: (
@@ -159,12 +169,72 @@ const getProductColumns = (
       );
     },
   },
-  getColumn("priceM0", "M0"),
-  getColumn("priceM1", "M1"),
-  getColumn("priceM2", "M2"),
-  getColumn("priceM3", "M3"),
-  getColumn("priceM4", "M4"),
-  getColumn("priceM5", "M5"),
+  {
+    ...getColumn("priceM0", "M0"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price}
+      </Button>
+    ),
+  },
+  {
+    ...getColumn("priceM1", "M1"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price} $
+      </Button>
+    ),
+  },
+  {
+    ...getColumn("priceM2", "M2"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price} $
+      </Button>
+    ),
+  },
+  {
+    ...getColumn("priceM3", "M3"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price} $
+      </Button>
+    ),
+  },
+  {
+    ...getColumn("priceM4", "M4"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price} $
+      </Button>
+    ),
+  },
+  {
+    ...getColumn("priceM5", "M5"),
+    render: (price: number, item: { name: string }) => (
+      <Button
+        onClick={() => setItemPrice(item.name, price)}
+        title="Set this price"
+      >
+        {price} $
+      </Button>
+    ),
+  },
   {
     ...getColumn("price"),
     render: (price: number | undefined, item: { name: string }) => {
@@ -184,15 +254,17 @@ export default ({
   recipe,
   prices,
   setItemPrice,
+  searchItem,
 }: {
   recipe: RecipeVariant;
   prices: ItemPrice[];
   setItemPrice: SetItemPrice;
+  searchItem: (itemName: string) => void;
 }) => {
   const [costPercentages, setCostPercentages] = useLocalStorage<
     RecipeCostPercentage[]
   >("costPercentages", []);
-  const columns = getIngredientColumns(setItemPrice);
+  const columns = getIngredientColumns(setItemPrice, searchItem);
   const productColumns = getProductColumns(
     recipe,
     setItemPrice,
@@ -286,30 +358,24 @@ export default ({
     return {
       ...prod,
       costPercent,
-      priceM0:
-        formatNumber(
-          ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100
-        ) + "$",
-      priceM1:
-        formatNumber(
-          ((totalIngredientCosts.priceM1 / prod.ammount) * costPercent) / 100
-        ) + "$",
-      priceM2:
-        formatNumber(
-          ((totalIngredientCosts.priceM2 / prod.ammount) * costPercent) / 100
-        ) + "$",
-      priceM3:
-        formatNumber(
-          ((totalIngredientCosts.priceM3 / prod.ammount) * costPercent) / 100
-        ) + "$",
-      priceM4:
-        formatNumber(
-          ((totalIngredientCosts.priceM4 / prod.ammount) * costPercent) / 100
-        ) + "$",
-      priceM5:
-        formatNumber(
-          ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100
-        ) + "$",
+      priceM0: formatNumber(
+        ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100
+      ),
+      priceM1: formatNumber(
+        ((totalIngredientCosts.priceM1 / prod.ammount) * costPercent) / 100
+      ),
+      priceM2: formatNumber(
+        ((totalIngredientCosts.priceM2 / prod.ammount) * costPercent) / 100
+      ),
+      priceM3: formatNumber(
+        ((totalIngredientCosts.priceM3 / prod.ammount) * costPercent) / 100
+      ),
+      priceM4: formatNumber(
+        ((totalIngredientCosts.priceM4 / prod.ammount) * costPercent) / 100
+      ),
+      priceM5: formatNumber(
+        ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100
+      ),
       price: prices.find((price) => price.itemName === prod.name)?.price,
     };
   });

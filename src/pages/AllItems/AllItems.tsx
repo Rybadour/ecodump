@@ -54,7 +54,8 @@ const getColumns = (
   prices: ItemPrice[],
   setPrices: Dispatch<SetStateAction<ItemPrice[]>>,
   selectedVariants: SelectedVariants,
-  setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>
+  setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>,
+  setfilterName: Dispatch<SetStateAction<string>>
 ) => [
   getColumn("key", "Name"),
   {
@@ -159,12 +160,13 @@ const getColumns = (
 
       return (
         <Popover
-          placement="left"
+          placement="bottom"
           content={
             <RecipePopup
               recipe={variant}
               prices={prices}
               setItemPrice={setItemPrice}
+              searchItem={(itemName: string) => setfilterName(itemName)}
             />
           }
           title="Recipe"
@@ -217,8 +219,15 @@ export default () => {
   // const filters = useRecipeHeaderFilters();
 
   const columns = useMemo(
-    () => getColumns(prices, setPrices, selectedVariants, setSelectedVariants),
-    [prices, selectedVariants, setPrices, setSelectedVariants]
+    () =>
+      getColumns(
+        prices,
+        setPrices,
+        selectedVariants,
+        setSelectedVariants,
+        setFilterName
+      ),
+    [prices, selectedVariants, setFilterName, setPrices, setSelectedVariants]
   );
 
   // const itemsWithRecipes = useMemo(
