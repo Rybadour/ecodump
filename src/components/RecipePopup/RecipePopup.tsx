@@ -8,7 +8,7 @@ import RecipeCraftAmmount from "./RecipeCraftAmmount";
 
 // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
 const calcAmmount = (ammount: number, craftAmmout: number) => {
-  return Math.ceil((ammount + Number.EPSILON) * craftAmmout) / craftAmmout;
+  return (ammount * craftAmmout) / craftAmmout;
 };
 const calcPrice = (ammount: number, price?: number) =>
   !price ? 0 : formatNumber(ammount * price);
