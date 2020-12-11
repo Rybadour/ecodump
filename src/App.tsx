@@ -39,7 +39,7 @@ function App() {
             <Route path={routes.Items}>
               <AllItems />
             </Route>
-            <Route path="/">
+            <Route exact path="/">
               <Home />
             </Route>
           </AppProvider>

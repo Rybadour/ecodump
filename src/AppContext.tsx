@@ -9,6 +9,7 @@ import {
   ItemPrice,
   RecipeCostPercentage,
   RecipeCostProdPercentage,
+  RecipeCraftAmmount,
   SelectedVariants,
 } from "./types";
 const AppContext = React.createContext<{
@@ -29,6 +30,8 @@ const AppContext = React.createContext<{
     prodName: string,
     newPercentage: number
   ) => void;
+  getRecipeCraftAmmount: (recipeName: string) => number;
+  updateRecipeCraftAmmount: (recipeName: string, newAmmount: number) => void;
 }>({
   prices: [],
   updatePrice: () => undefined,
@@ -43,6 +46,8 @@ const AppContext = React.createContext<{
   itemCostPercentages: [],
   setItemCostPercentages: () => undefined,
   updateItemCostPercentage: () => undefined,
+  getRecipeCraftAmmount: () => 0,
+  updateRecipeCraftAmmount: () => undefined,
 });
 
 const updatePrice = (
@@ -122,6 +127,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     RecipeCostPercentage[]
   >("costPercentages", []);
 
+  const [
+    recipeCraftAmmounts,
+    setRecipeCraftAmmounts,
+  ] = useLocalStorage<RecipeCraftAmmount>("RecipeCraftAmmount", {});
+
   const updateItemCostPercentage = useCallback(
     (itemName: string, prodName: string, newPercentage: number) => {
       setItemCostPercentages((prevItemPercentages) => {
@@ -146,6 +156,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setItemCostPercentages]
   );
 
+  const getRecipeCraftAmmount = useCallback(
+    (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 1,
+    [recipeCraftAmmounts]
+  );
+
+  const updateRecipeCraftAmmount = useCallback(
+    (recipeName: string, newAmmount: number) => {
+      setRecipeCraftAmmounts((prev) => ({ ...prev, [recipeName]: newAmmount }));
+    },
+    [setRecipeCraftAmmounts]
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -162,6 +184,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         itemCostPercentages,
         setItemCostPercentages,
         updateItemCostPercentage,
+        getRecipeCraftAmmount,
+        updateRecipeCraftAmmount,
       }}
     >
       {children}

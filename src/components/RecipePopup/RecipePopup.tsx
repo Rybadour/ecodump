@@ -4,9 +4,14 @@ import { Table, Button, Popover } from "antd";
 import useIngredientColumns from "./useIngredientColumns";
 import useProductColumns from "./useProductColumns";
 import { useAppContext } from "../../AppContext";
+import RecipeCraftAmmount from "./RecipeCraftAmmount";
 
+// https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
+const calcAmmount = (ammount: number, craftAmmout: number) => {
+  return Math.ceil((ammount + Number.EPSILON) * craftAmmout) / craftAmmout;
+};
 const calcPrice = (ammount: number, price?: number) =>
-  !price ? undefined : formatNumber(ammount * price);
+  !price ? 0 : formatNumber(ammount * price);
 
 type PropTypes = {
   recipe: RecipeVariant;
@@ -18,9 +23,11 @@ export default ({ recipe, buttonText }: PropTypes) => {
     prices,
     itemCostPercentages,
     setItemCostPercentages,
+    getRecipeCraftAmmount,
   } = useAppContext();
   const columns = useIngredientColumns();
   const productColumns = useProductColumns(recipe);
+  const craftAmmount = getRecipeCraftAmmount(recipe.key);
 
   // Finds unit price for each item and then calculate price of recipe ingredients based on module used
   const ingredients = recipe.ingredients
@@ -30,14 +37,23 @@ export default ({ recipe, buttonText }: PropTypes) => {
     }))
     .map((ing) => ({
       ...ing,
-      ammountM0: ing.ammount,
-      priceM0: calcPrice(ing.ammount, ing.price),
+      ammountM0: calcAmmount(Number(ing.ammount), craftAmmount),
+      ammountM1: calcAmmount(ing.ammountM1, craftAmmount),
+      ammountM2: calcAmmount(ing.ammountM2, craftAmmount),
+      ammountM3: calcAmmount(ing.ammountM3, craftAmmount),
+      ammountM4: calcAmmount(ing.ammountM4, craftAmmount),
+      ammountM5: calcAmmount(ing.ammountM5, craftAmmount),
+    }))
+    .map((ing) => ({
+      ...ing,
+      priceM0: calcPrice(ing.ammountM0, ing.price),
       priceM1: calcPrice(ing.ammountM1, ing.price),
       priceM2: calcPrice(ing.ammountM2, ing.price),
       priceM3: calcPrice(ing.ammountM3, ing.price),
       priceM4: calcPrice(ing.ammountM4, ing.price),
       priceM5: calcPrice(ing.ammountM5, ing.price),
     }));
+  console.log(ingredients);
 
   // Sums the prices of each ingredient in the recipe to get the last row
   const totalIngredientCosts = ingredients.reduce(
@@ -138,6 +154,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
       content={
         <div>
           <h4>Ingredients</h4>
+          <RecipeCraftAmmount recipeName={recipe.key} />
           <Table dataSource={datasourceIngredients} columns={columns} />
           <h4>Products</h4>
           <Table dataSource={products} columns={productColumns} />
