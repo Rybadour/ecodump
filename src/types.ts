@@ -16,11 +16,6 @@ export interface RecipesFile {
   };
 }
 
-export interface ItemPrice {
-  itemName: string;
-  price: number;
-}
-
 export interface RecipeCostProdPercentage {
   productName: string;
   percentage: number;
@@ -69,4 +64,20 @@ export type Item = {
   variants: string[];
   ingredients: string[][];
   products: string[][];
+};
+
+export interface ItemPrice {
+  itemName: string;
+  price: number;
+}
+
+export type Currency = {
+  name: string;
+  symbol: string;
+  itemPrices: ItemPrice[];
+};
+
+export type CurrencyList = {
+  selectedCurrency: string;
+  currencies: Currency[];
 };

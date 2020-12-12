@@ -53,7 +53,6 @@ export default ({ recipe, buttonText }: PropTypes) => {
       priceM4: calcPrice(ing.ammountM4, ing.price),
       priceM5: calcPrice(ing.ammountM5, ing.price),
     }));
-  console.log(ingredients);
 
   // Sums the prices of each ingredient in the recipe to get the last row
   const totalIngredientCosts = ingredients.reduce(

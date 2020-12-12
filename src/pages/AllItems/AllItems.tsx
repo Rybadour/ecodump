@@ -5,28 +5,25 @@ import NameFilter from "../../components/NameFilter";
 import ProfessionFilter from "../../components/ProfessionFilter";
 import CraftingStationFilter from "../../components/CraftingStationFilter";
 
-export default () => {
-  console.log("Rerender");
-
-  return (
-    <div>
-      <PageHeader
-        title="All items"
-        subTitle="Here you can find all the items and their recipes"
-      />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "0.2rem",
-        }}
-      >
-        <NameFilter />
-        <ProfessionFilter />
-        <CraftingStationFilter />
-      </div>
-      {/* <div>
+export default () => (
+  <>
+    <PageHeader
+      title="All items"
+      subTitle="Here you can find all the items and their recipes"
+    />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "0.2rem",
+      }}
+    >
+      <NameFilter />
+      <ProfessionFilter />
+      <CraftingStationFilter />
+    </div>
+    {/* <div>
         <ModuleSelect
           value={upgrades.bu}
           setValue={(bu: number) => setUpgrades((prev) => ({ ...prev, bu }))}
@@ -45,7 +42,6 @@ export default () => {
           moduleName="Modern module"
         />
       </div> */}
-      <AllItemsTable />
-    </div>
-  );
-};
+    <AllItemsTable />
+  </>
+);

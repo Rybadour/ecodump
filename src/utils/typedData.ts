@@ -39,11 +39,6 @@ export type Item = {
 export type Items = { [key: string]: Item };
 export type Recipes = { [key: string]: Recipe };
 
-console.log("rec", data);
-console.log(
-  "here",
-  Object.values(data.recipes).filter((t) => !t.variants)
-);
 const newItem = (key: string) => ({
   key,
   ingredientInRecipes: [],

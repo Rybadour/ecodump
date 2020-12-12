@@ -3,9 +3,11 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
+  useMemo,
 } from "react";
 import useLocalStorage from "./context/useLocalStorage";
 import {
+  CurrencyList,
   ItemPrice,
   RecipeCostPercentage,
   RecipeCostProdPercentage,
@@ -13,6 +15,8 @@ import {
   SelectedVariants,
 } from "./types";
 const AppContext = React.createContext<{
+  currencyList: CurrencyList;
+  setCurrencyList: Dispatch<SetStateAction<CurrencyList>>;
   prices: ItemPrice[];
   updatePrice: (itemName: string, newPrice: number) => void;
   selectedVariants: SelectedVariants;
@@ -33,6 +37,8 @@ const AppContext = React.createContext<{
   getRecipeCraftAmmount: (recipeName: string) => number;
   updateRecipeCraftAmmount: (recipeName: string, newAmmount: number) => void;
 }>({
+  currencyList: { selectedCurrency: "", currencies: [] },
+  setCurrencyList: () => undefined,
   prices: [],
   updatePrice: () => undefined,
   selectedVariants: {},
@@ -51,26 +57,43 @@ const AppContext = React.createContext<{
 });
 
 const updatePrice = (
-  setPrices: Dispatch<SetStateAction<ItemPrice[]>>,
+  setCurrencies: Dispatch<SetStateAction<CurrencyList>>,
   itemName: string,
   newPrice: number
 ) => {
   if (Number.isNaN(newPrice)) return;
-  setPrices((prevPrices) => {
+  setCurrencies((prevCurrencies) => {
+    const prevSelectedCurrencyIndex = prevCurrencies.currencies.findIndex(
+      (t) => t.name === prevCurrencies.selectedCurrency
+    );
+    const prevPrices =
+      prevCurrencies.currencies[prevSelectedCurrencyIndex]?.itemPrices ?? [];
     const index = prevPrices.findIndex((t) => t.itemName === itemName);
-    return index >= 0
-      ? [
-          ...prevPrices.slice(0, index),
-          { ...prevPrices[index], price: newPrice },
-          ...prevPrices.slice(index + 1),
-        ]
-      : [
-          ...prevPrices,
-          {
-            itemName: itemName,
-            price: newPrice,
-          },
-        ];
+    const newPrices =
+      index >= 0
+        ? [
+            ...prevPrices.slice(0, index),
+            { ...prevPrices[index], price: newPrice },
+            ...prevPrices.slice(index + 1),
+          ]
+        : [
+            ...prevPrices,
+            {
+              itemName: itemName,
+              price: newPrice,
+            },
+          ];
+    return {
+      ...prevCurrencies,
+      currencies: [
+        ...prevCurrencies.currencies.slice(0, prevSelectedCurrencyIndex),
+        {
+          ...prevCurrencies.currencies[prevSelectedCurrencyIndex],
+          itemPrices: newPrices,
+        },
+        ...prevCurrencies.currencies.slice(prevSelectedCurrencyIndex + 1),
+      ],
+    };
   });
 };
 
@@ -100,7 +123,17 @@ const fixPercentages = (
 };
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [prices, setPrices] = useLocalStorage<ItemPrice[]>("prices", []);
+  // TODO: Deprecate prices after a while (this is to avoid users loosing current prices)
+  const [deprecatedPrices] = useLocalStorage<ItemPrice[]>("prices", []);
+  const [currencyList, setCurrencyList] = useLocalStorage<CurrencyList>(
+    "currencyList",
+    {
+      selectedCurrency: "default",
+      currencies: [
+        { name: "default", symbol: "$", itemPrices: deprecatedPrices },
+      ],
+    }
+  );
   const [
     selectedVariants,
     setSelectedVariants,
@@ -119,8 +152,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updatePriceMemo = useCallback(
     (itemName: string, newPrice: number) =>
-      updatePrice(setPrices, itemName, newPrice),
-    [setPrices]
+      updatePrice(setCurrencyList, itemName, newPrice),
+    [setCurrencyList]
   );
 
   const [itemCostPercentages, setItemCostPercentages] = useLocalStorage<
@@ -168,9 +201,19 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setRecipeCraftAmmounts]
   );
 
+  const prices = useMemo(() => {
+    return (
+      currencyList.currencies.find(
+        (t) => t.name === currencyList.selectedCurrency
+      )?.itemPrices ?? []
+    );
+  }, [currencyList.currencies, currencyList.selectedCurrency]);
+
   return (
     <AppContext.Provider
       value={{
+        currencyList,
+        setCurrencyList,
         prices,
         updatePrice: updatePriceMemo,
         selectedVariants,
