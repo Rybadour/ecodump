@@ -18,7 +18,11 @@ const AppContext = React.createContext<{
   currencyList: CurrencyList;
   setCurrencyList: Dispatch<SetStateAction<CurrencyList>>;
   prices: ItemPrice[];
-  updatePrice: (itemName: string, newPrice: number) => void;
+  updatePrice: (
+    itemName: string,
+    newPrice: number | undefined,
+    currencyName?: string
+  ) => void;
   selectedVariants: SelectedVariants;
   setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>;
   filterProfessions: string[];
@@ -56,40 +60,68 @@ const AppContext = React.createContext<{
   updateRecipeCraftAmmount: () => undefined,
 });
 
+const getNewPriceArray = (
+  prevPrices: ItemPrice[],
+  itemPriceIndex: number,
+  itemName: string,
+  newPrice: number | undefined
+) => {
+  console.log("here", newPrice, itemPriceIndex);
+  // Delete itemPrice if newPrice is undefined
+  if (newPrice === undefined && itemPriceIndex >= 0) {
+    return [
+      ...prevPrices.slice(0, itemPriceIndex),
+      ...prevPrices.slice(itemPriceIndex + 1),
+    ];
+  }
+
+  // Update itemPrice if it exists in array
+  if (newPrice !== undefined && itemPriceIndex >= 0) {
+    return [
+      ...prevPrices.slice(0, itemPriceIndex),
+      { ...prevPrices[itemPriceIndex], price: newPrice },
+      ...prevPrices.slice(itemPriceIndex + 1),
+    ];
+  }
+
+  // Add new itemPrice if it doesn't exist in array yet
+  if (newPrice !== undefined && itemPriceIndex < 0) {
+    return [
+      ...prevPrices,
+      {
+        itemName: itemName,
+        price: newPrice,
+      },
+    ];
+  }
+
+  return prevPrices;
+};
+
 const updatePrice = (
   setCurrencies: Dispatch<SetStateAction<CurrencyList>>,
   itemName: string,
-  newPrice: number
+  newPrice: number | undefined,
+  currencyName?: string
 ) => {
-  if (Number.isNaN(newPrice)) return;
+  console.log("set price for", itemName);
+  if (newPrice !== undefined && Number.isNaN(newPrice)) return;
   setCurrencies((prevCurrencies) => {
     const prevSelectedCurrencyIndex = prevCurrencies.currencies.findIndex(
-      (t) => t.name === prevCurrencies.selectedCurrency
+      (t) => t.name === currencyName ?? prevCurrencies.selectedCurrency
     );
     const prevPrices =
       prevCurrencies.currencies[prevSelectedCurrencyIndex]?.itemPrices ?? [];
+    console.log("prev", prevCurrencies, prevPrices);
     const index = prevPrices.findIndex((t) => t.itemName === itemName);
-    const newPrices =
-      index >= 0
-        ? [
-            ...prevPrices.slice(0, index),
-            { ...prevPrices[index], price: newPrice },
-            ...prevPrices.slice(index + 1),
-          ]
-        : [
-            ...prevPrices,
-            {
-              itemName: itemName,
-              price: newPrice,
-            },
-          ];
+
     return {
       ...prevCurrencies,
       currencies: [
         ...prevCurrencies.currencies.slice(0, prevSelectedCurrencyIndex),
         {
           ...prevCurrencies.currencies[prevSelectedCurrencyIndex],
-          itemPrices: newPrices,
+          itemPrices: getNewPriceArray(prevPrices, index, itemName, newPrice),
         },
         ...prevCurrencies.currencies.slice(prevSelectedCurrencyIndex + 1),
       ],
@@ -151,8 +183,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [filterName, setFilterName] = useLocalStorage<string>("filter", "");
 
   const updatePriceMemo = useCallback(
-    (itemName: string, newPrice: number) =>
-      updatePrice(setCurrencyList, itemName, newPrice),
+    (itemName: string, newPrice: number | undefined, currencyName?: string) =>
+      updatePrice(setCurrencyList, itemName, newPrice, currencyName),
     [setCurrencyList]
   );
 

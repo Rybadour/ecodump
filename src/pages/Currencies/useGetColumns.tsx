@@ -1,15 +1,16 @@
 import React from "react";
-import { Button, Popover, Select, Table } from "antd";
+import { Button, Popconfirm, Popover, Select, Table, Tooltip } from "antd";
+import { SelectOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Currency, ItemPrice } from "../../types";
 import { getColumn } from "../../utils/helpers";
 import { useAppContext } from "../../AppContext";
+import { useGetPriceColumns } from "./useGetPriceColumns";
 
 export const { Option } = Select;
 
-const popoverColumns = [getColumn("itemName", "item"), getColumn("price")];
-
 export const useGetColumns = () => {
   const { currencyList, setCurrencyList } = useAppContext();
+  const getPopoverColumns = useGetPriceColumns();
   return [
     getColumn("name"),
     getColumn("symbol"),
@@ -19,7 +20,12 @@ export const useGetColumns = () => {
         return (
           <Popover
             placement="bottom"
-            content={<Table dataSource={itemPrices} columns={popoverColumns} />}
+            content={
+              <Table
+                dataSource={itemPrices}
+                columns={getPopoverColumns(currency)}
+              />
+            }
             title={`Prices for ${currency.name}`}
             style={{ cursor: "pointer" }}
             trigger="click"
@@ -32,22 +38,8 @@ export const useGetColumns = () => {
     },
     {
       ...getColumn("Selected"),
-      render: (_: unknown, currency: Currency) => {
-        return currency.name === currencyList.selectedCurrency ? (
-          "Selected"
-        ) : (
-          <Button
-            onClick={() =>
-              setCurrencyList((prev) => ({
-                ...prev,
-                selectedCurrency: currency.name,
-              }))
-            }
-          >
-            Select
-          </Button>
-        );
-      },
+      render: (_: unknown, currency: Currency) =>
+        currency.name === currencyList.selectedCurrency && "Selected",
     },
     {
       ...getColumn("Delete"),
@@ -55,24 +47,44 @@ export const useGetColumns = () => {
         return currency.name === currencyList.selectedCurrency ? (
           <></>
         ) : (
-          <Button
-            onClick={() =>
-              setCurrencyList((prev) => {
-                const index = prev.currencies.findIndex(
-                  (t) => t.name === currency.name
-                );
-                return {
-                  ...prev,
-                  currencies: [
-                    ...prev.currencies.slice(0, index),
-                    ...prev.currencies.slice(index + 1),
-                  ],
-                };
-              })
-            }
-          >
-            Delete
-          </Button>
+          <>
+            {currency.name !== currencyList.selectedCurrency && (
+              <Tooltip title="Select currency">
+                <Button
+                  icon={<SelectOutlined />}
+                  onClick={() =>
+                    setCurrencyList((prev) => ({
+                      ...prev,
+                      selectedCurrency: currency.name,
+                    }))
+                  }
+                />
+              </Tooltip>
+            )}
+            <Popconfirm
+              title={`Are you sure to delete currency with ${currency.itemPrices.length} prices?`}
+              onConfirm={() =>
+                setCurrencyList((prev) => {
+                  const index = prev.currencies.findIndex(
+                    (t) => t.name === currency.name
+                  );
+                  return {
+                    ...prev,
+                    currencies: [
+                      ...prev.currencies.slice(0, index),
+                      ...prev.currencies.slice(index + 1),
+                    ],
+                  };
+                })
+              }
+              okText="Yes"
+              cancelText="No"
+            >
+              <Tooltip title="Delete">
+                <Button icon={<DeleteOutlined />} />
+              </Tooltip>
+            </Popconfirm>
+          </>
         );
       },
     },
