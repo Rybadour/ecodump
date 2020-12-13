@@ -66,7 +66,6 @@ const getNewPriceArray = (
   itemName: string,
   newPrice: number | undefined
 ) => {
-  console.log("here", newPrice, itemPriceIndex);
   // Delete itemPrice if newPrice is undefined
   if (newPrice === undefined && itemPriceIndex >= 0) {
     return [
@@ -104,15 +103,13 @@ const updatePrice = (
   newPrice: number | undefined,
   currencyName?: string
 ) => {
-  console.log("set price for", itemName);
   if (newPrice !== undefined && Number.isNaN(newPrice)) return;
   setCurrencies((prevCurrencies) => {
     const prevSelectedCurrencyIndex = prevCurrencies.currencies.findIndex(
-      (t) => t.name === currencyName ?? prevCurrencies.selectedCurrency
+      (t) => t.name === (currencyName ?? prevCurrencies.selectedCurrency)
     );
     const prevPrices =
       prevCurrencies.currencies[prevSelectedCurrencyIndex]?.itemPrices ?? [];
-    console.log("prev", prevCurrencies, prevPrices);
     const index = prevPrices.findIndex((t) => t.itemName === itemName);
 
     return {
