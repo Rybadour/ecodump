@@ -4,6 +4,8 @@ import { useAppContext } from "../../AppContext";
 import RecipePopup from "../../components/RecipePopup";
 import { getColumn } from "../../utils/helpers";
 import { Item } from "../../utils/typedData";
+import { InputNumber, Popconfirm, Tooltip, Button } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const { Option } = Select;
 
@@ -116,13 +118,23 @@ export const useGetColumns = () => {
       ...getColumn("price", "Fixed price"),
       render: (price: number, item: Item) => {
         return (
-          <input
-            value={prices.find((t) => t.itemName === item.key)?.price ?? "?"}
-            style={{ width: 50 }}
-            onChange={(evt) => {
-              updatePrice(item.key, Number(evt.target.value));
-            }}
-          />
+          <>
+            <InputNumber
+              value={prices.find((t) => t.itemName === item.key)?.price}
+              width="20"
+              onChange={(newPrice) => updatePrice(item.key, Number(newPrice))}
+            />
+            <Tooltip title="Reset price">
+              <Popconfirm
+                title="Are you sure to delete price?"
+                onConfirm={() => updatePrice(item.key, undefined)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button type="primary" icon={<DeleteOutlined />} />
+              </Popconfirm>
+            </Tooltip>
+          </>
         );
       },
     },
