@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button, Modal, message, Input, Form } from "antd";
+import { Button, Modal, message, Input, Form, Select } from "antd";
 import { useAppContext } from "../../AppContext";
+const { Option } = Select;
 
 const layout = {
   labelCol: { span: 8 },
@@ -9,7 +10,7 @@ const layout = {
 
 export default () => {
   const [form] = Form.useForm();
-  const { setCurrencyList } = useAppContext();
+  const { setCurrencyList, currencyList } = useAppContext();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleOk = () => {
     form.validateFields().then((values) => {
@@ -21,7 +22,9 @@ export default () => {
           {
             name: values.name,
             symbol: values.symbol,
-            itemPrices: [],
+            itemPrices:
+              currencyList.currencies.find((t) => t.name === values.currency)
+                ?.itemPrices ?? [],
           },
         ],
       }));
@@ -75,6 +78,13 @@ export default () => {
             ]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item label="Duplicate prices from" name="currency">
+            <Select>
+              {currencyList.currencies.map((currency) => (
+                <Option value={currency.name}>{currency.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
