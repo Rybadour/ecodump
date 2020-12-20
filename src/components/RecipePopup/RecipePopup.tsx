@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
 import { Table, Button, Popover } from "antd";
 import useIngredientColumns from "./useIngredientColumns";
 import useProductColumns from "./useProductColumns";
 import { useAppContext } from "../../AppContext";
 import RecipeCraftAmmount from "./RecipeCraftAmmount";
+import { CloseOutlined } from "@ant-design/icons";
 
 // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
 const calcAmmount = (ammount: number, craftAmmout: number) => {
@@ -19,6 +20,7 @@ type PropTypes = {
 };
 
 export default ({ recipe, buttonText }: PropTypes) => {
+  const [visible, setVisible] = useState(false);
   const {
     prices,
     itemCostPercentages,
@@ -149,6 +151,8 @@ export default ({ recipe, buttonText }: PropTypes) => {
 
   return (
     <Popover
+      onVisibleChange={(vis) => setVisible(vis)}
+      visible={visible}
       placement="bottom"
       content={
         <div>
@@ -159,7 +163,16 @@ export default ({ recipe, buttonText }: PropTypes) => {
           <Table dataSource={products} columns={productColumns} />
         </div>
       }
-      title="Recipe"
+      title={
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h3>Recipe</h3>
+          <Button
+            onClick={() => setVisible(false)}
+            type="link"
+            icon={<CloseOutlined />}
+          />
+        </div>
+      }
       style={{ cursor: "pointer" }}
       trigger="click"
     >
