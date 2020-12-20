@@ -77,22 +77,25 @@ const newRecipe = (key: string, value: any): Recipe => ({
     skill: t[0],
     level: Number(t[1]),
   })),
-  variants: Object.entries(value.variants).map(([key, t]: [string, any]) => ({
-    key,
-    name: t.untranslated,
-    ingredients: t.ingredients.map((ingredient: any) =>
-      newRecipeIngredients(
-        ingredient[0],
-        ingredient[1],
-        ingredient[2],
-        ingredient[3] === "True"
-      )
-    ),
-    products: t.products.map((product: any) => ({
-      name: product[0],
-      ammount: Number(product[1]),
-    })),
-  })),
+  variants: Object.entries(value.variants).map(
+    ([key, t]: [string, any], index) => ({
+      // Fix to some key's being empty
+      key: key.length > 0 ? key : `${t.products[0][0]}_${index}`,
+      name: t.untranslated,
+      ingredients: t.ingredients.map((ingredient: any) =>
+        newRecipeIngredients(
+          ingredient[0],
+          ingredient[1],
+          ingredient[2],
+          ingredient[3] === "True"
+        )
+      ),
+      products: t.products.map((product: any) => ({
+        name: product[0],
+        ammount: Number(product[1]),
+      })),
+    })
+  ),
 });
 
 export const allItems = Object.keys(data.items).reduce(
