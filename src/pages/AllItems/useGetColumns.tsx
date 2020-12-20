@@ -24,10 +24,10 @@ export const useGetColumns = () => {
           .flat();
 
         if (variants.length === 0) {
-          return <p>none</p>;
+          return "NA";
         }
         if (variants.length === 1) {
-          return <p>{variants[0].key}</p>;
+          return `${variants[0].key}`;
         }
         return (
           <Select
@@ -60,7 +60,7 @@ export const useGetColumns = () => {
           .flat();
 
         if (variants.length === 0) {
-          return <p>NA</p>;
+          return "NA";
         }
         const selectedVariant =
           selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
@@ -68,14 +68,10 @@ export const useGetColumns = () => {
           t.variants.some((t) => t.key === selectedVariant)
         )?.skillNeeds;
         if (skillNeeds?.length === 0) {
-          return <p>none</p>;
+          return "None";
         }
 
-        return (
-          <p>
-            {skillNeeds?.[0].skill} - {skillNeeds?.[0].level}
-          </p>
-        );
+        return `${skillNeeds?.[0].skill} - ${skillNeeds?.[0].level}`;
       },
     },
     {
@@ -86,14 +82,14 @@ export const useGetColumns = () => {
           .flat();
 
         if (variants.length === 0) {
-          return <p>NA</p>;
+          return "NA";
         }
         const selectedVariant =
           selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
         const craftStation = item.productInRecipes.find((t) =>
           t.variants.some((t) => t.key === selectedVariant)
         )?.craftStation;
-        return <p>{craftStation ?? "none"}</p>;
+        return `${craftStation ?? "None"}`;
       },
     },
     {
@@ -103,14 +99,14 @@ export const useGetColumns = () => {
           .map((recipe) => recipe.variants)
           .flat();
         if (variants.length === 0) {
-          return <p>NA</p>;
+          return "NA";
         }
         const selectedVariant =
           selectedVariants[item.key] ?? item.productInRecipes[0].defaultVariant;
         const variant = variants.find((t) => t.key === selectedVariant);
 
         if (variant === undefined) {
-          return <p>NA</p>;
+          return "NA";
         }
 
         return <RecipePopup recipe={variant} buttonText="Check recipe" />;

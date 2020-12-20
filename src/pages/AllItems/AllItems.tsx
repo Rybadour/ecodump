@@ -4,6 +4,7 @@ import AllItemsTable from "./AllItemsTable";
 import NameFilter from "../../components/NameFilter";
 import ProfessionFilter from "../../components/ProfessionFilter";
 import CraftingStationFilter from "../../components/CraftingStationFilter";
+import RecipeFilter from "../../components/RecipeFilter";
 
 export default () => (
   <>
@@ -20,6 +21,7 @@ export default () => (
       }}
     >
       <NameFilter />
+      <RecipeFilter />
       <ProfessionFilter />
       <CraftingStationFilter />
     </div>

@@ -6,7 +6,11 @@ import { useAppContext } from "../../AppContext";
 const { Option } = Select;
 
 export default () => {
-  const { filterCraftStations, setFilterCraftStations } = useAppContext();
+  const {
+    filterWithRecipe,
+    filterCraftStations,
+    setFilterCraftStations,
+  } = useAppContext();
   return (
     <Select
       value={filterCraftStations}
@@ -15,6 +19,7 @@ export default () => {
       allowClear
       placeholder="Filter by crafting station"
       style={{ width: "80%" }}
+      disabled={!filterWithRecipe}
     >
       {allCraftStations.map((craftStation: string) => (
         <Option key={craftStation} value={craftStation}>

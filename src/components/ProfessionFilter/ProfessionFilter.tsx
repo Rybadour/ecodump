@@ -6,7 +6,11 @@ import { allProfessions } from "../../utils/typedData";
 const { Option } = Select;
 
 export default () => {
-  const { filterProfessions, setFilterProfessions } = useAppContext();
+  const {
+    filterWithRecipe,
+    filterProfessions,
+    setFilterProfessions,
+  } = useAppContext();
   return (
     <Select
       value={filterProfessions}
@@ -15,6 +19,7 @@ export default () => {
       allowClear
       placeholder="Filter by profession"
       style={{ width: "80%" }}
+      disabled={!filterWithRecipe}
     >
       {allProfessions.map((profession: string) => (
         <Option key={profession} value={profession}>

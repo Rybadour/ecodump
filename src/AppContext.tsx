@@ -31,6 +31,8 @@ const AppContext = React.createContext<{
   setFilterCraftStations: Dispatch<SetStateAction<string[]>>;
   filterName: string;
   setFilterName: Dispatch<SetStateAction<string>>;
+  filterWithRecipe: boolean;
+  setFilterWithRecipe: Dispatch<SetStateAction<boolean>>;
   itemCostPercentages: RecipeCostPercentage[];
   setItemCostPercentages: Dispatch<SetStateAction<RecipeCostPercentage[]>>;
   updateItemCostPercentage: (
@@ -53,6 +55,8 @@ const AppContext = React.createContext<{
   setFilterCraftStations: () => undefined,
   filterName: "",
   setFilterName: () => undefined,
+  filterWithRecipe: true,
+  setFilterWithRecipe: () => undefined,
   itemCostPercentages: [],
   setItemCostPercentages: () => undefined,
   updateItemCostPercentage: () => undefined,
@@ -179,6 +183,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [filterName, setFilterName] = useLocalStorage<string>("filter", "");
 
+  const [filterWithRecipe, setFilterWithRecipe] = useLocalStorage<boolean>(
+    "filterRecipe",
+    true
+  );
+
   const updatePriceMemo = useCallback(
     (itemName: string, newPrice: number | undefined, currencyName?: string) =>
       updatePrice(setCurrencyList, itemName, newPrice, currencyName),
@@ -253,6 +262,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setFilterCraftStations,
         filterName,
         setFilterName,
+        filterWithRecipe,
+        setFilterWithRecipe,
         itemCostPercentages,
         setItemCostPercentages,
         updateItemCostPercentage,
