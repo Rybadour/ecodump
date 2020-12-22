@@ -71,10 +71,16 @@ export interface ItemPrice {
   price: number;
 }
 
+export interface GamePrice extends OffersV1 {
+  store: string;
+  storeOwner: string;
+}
+
 export type Currency = {
   name: string;
   symbol: string;
   itemPrices: ItemPrice[];
+  gamePrices: GamePrice[];
 };
 
 export type CurrencyList = {

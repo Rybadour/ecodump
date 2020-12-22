@@ -6,7 +6,9 @@ import React, {
   useMemo,
 } from "react";
 import useLocalStorage from "./context/useLocalStorage";
+import { getStores, getStoresLastUpdate } from "./sdk/restDbSdk";
 import {
+  Currency,
   CurrencyList,
   ItemPrice,
   RecipeCostPercentage,
@@ -156,14 +158,23 @@ const fixPercentages = (
 };
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  // TODO: Deprecate prices after a while (this is to avoid users loosing current prices)
-  const [deprecatedPrices] = useLocalStorage<ItemPrice[]>("prices", []);
+  const [storesDb, setStoresDb] = useLocalStorage<StoresHistV1>("storesDb", {
+    Version: 1,
+    Stores: [],
+    ExportedAtYear: 0,
+    ExportedAtMonth: 0,
+    ExportedAtDay: 0,
+    ExportedAtHour: 0,
+    ExportedAtMin: 0,
+    ExportedAt: "",
+  });
+
   const [currencyList, setCurrencyList] = useLocalStorage<CurrencyList>(
     "currencyList",
     {
       selectedCurrency: "default",
       currencies: [
-        { name: "default", symbol: "$", itemPrices: deprecatedPrices },
+        { name: "default", symbol: "$", itemPrices: [], gamePrices: [] },
       ],
     }
   );
@@ -246,6 +257,69 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       )?.itemPrices ?? []
     );
   }, [currencyList.currencies, currencyList.selectedCurrency]);
+
+  // Fetches last update and triggers state update if it changed
+  getStoresLastUpdate().then((lastUpdateResponse) => {
+    console.log("TODO: Figure out a way of only do this once every 2 minutes");
+    if (
+      lastUpdateResponse?.data?.success &&
+      lastUpdateResponse.data.data !== storesDb.ExportedAt
+    ) {
+      getStores().then((storesResponse) => {
+        if (storesResponse.data.success) {
+          // Updates stores database
+          setStoresDb(storesResponse.data.data);
+
+          // Merge with currencyList
+          const gameCurrencies = storesResponse.data.data.Stores.filter(
+            (t) => t.CurrencyName.indexOf("Credit") <= 0
+          )
+            .map((store) => ({
+              currency: store.CurrencyName,
+              items: store.AllOffers.map((offer) => ({
+                ...offer,
+                store: store.Name,
+                storeOwner: store.Owner,
+              })),
+            }))
+            .reduce(
+              (agg, t) => ({
+                ...agg,
+                [t.currency]: [...(agg[t.currency] ?? []), ...t.items],
+              }),
+              {} as { [key: string]: Array<unknown> }
+            );
+
+          const newCurrencies = [
+            // Update gamePrices on existing currencies
+            ...currencyList.currencies.map((currency) => ({
+              ...currency,
+              gamePrices: gameCurrencies[currency.name],
+            })),
+            // Creates new currencies from gamePrices
+            ...Object.keys(gameCurrencies)
+              .filter((currencyName) =>
+                currencyList.currencies.every(
+                  (currency) => currency.name !== currencyName
+                )
+              )
+              .map((currencyName) => ({
+                name: currencyName,
+                symbol: currencyName.substr(0, 2),
+                itemPrices: [],
+                gamePrices: gameCurrencies[currencyName],
+              })),
+          ] as Currency[];
+
+          setCurrencyList((prev) => ({
+            ...prev,
+            currencies: newCurrencies,
+          }));
+        }
+      });
+    }
+  });
+  console.log("currency list", currencyList);
 
   return (
     <AppContext.Provider

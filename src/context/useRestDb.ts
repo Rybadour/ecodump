@@ -47,8 +47,9 @@ export default () => {
 
   // Preemptevely fetches all available databases
   useEffect(() => {
-    console.log("dbContents", dbs);
-    Object.entries(dbs).forEach(([dbname]) => fetchDb(dbname));
+    if (dbs) {
+      Object.entries(dbs).forEach(([dbname]) => fetchDb(dbname));
+    }
   }, [dbs]);
 
   return {

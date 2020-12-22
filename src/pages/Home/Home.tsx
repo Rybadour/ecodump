@@ -25,6 +25,6 @@ export default () => (
       This is very much a work in progress and more sections should be added
       later.
     </p>
-    <p>So stay tunned. And i hope you enjoy it</p>
+    <p>So stay tuned. And i hope you enjoy it</p>
   </div>
 );

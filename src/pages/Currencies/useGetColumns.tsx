@@ -5,37 +5,74 @@ import {
   DeleteOutlined,
   ClearOutlined,
 } from "@ant-design/icons";
-import { Currency, ItemPrice } from "../../types";
+import { Currency, GamePrice, ItemPrice } from "../../types";
 import { getColumn } from "../../utils/helpers";
 import { useAppContext } from "../../AppContext";
 import { useGetPriceColumns } from "./useGetPriceColumns";
 
 export const { Option } = Select;
 
+const getGamePrices = (colName: string, isBuy: boolean) => ({
+  ...getColumn("gamePrices", colName),
+  render: (gamePrices: GamePrice[], currency: Currency) => {
+    const prices = (gamePrices ?? [])
+      .filter((t) => t.Buying === isBuy)
+      .map((t) => ({
+        ...t,
+        key: t.ItemName,
+      }))
+      .sort((a, b) => a.ItemName.localeCompare(b.ItemName));
+    return (
+      <Popover
+        placement="bottom"
+        content={
+          <Table
+            dataSource={prices}
+            columns={[
+              getColumn("ItemName", "Item"),
+              getColumn("store"),
+              getColumn("storeOwner", "Store owner"),
+              getColumn("Price"),
+              getColumn("Quantity"),
+            ]}
+          />
+        }
+        title={`Prices for ${currency.name}`}
+        style={{ cursor: "pointer" }}
+        trigger="click"
+      >
+        <Button type="link">{prices?.length ?? 0}</Button> game prices
+      </Popover>
+    );
+  },
+});
+
 export const useGetColumns = () => {
   const { currencyList, setCurrencyList } = useAppContext();
-  const getPopoverColumns = useGetPriceColumns();
+  const getPricePopoverColumns = useGetPriceColumns();
   return [
     getColumn("name"),
     getColumn("symbol"),
+    getGamePrices("Game buy orders", true),
+    getGamePrices("Game sell orders", false),
     {
-      ...getColumn("itemPrices", "Prices"),
+      ...getColumn("itemPrices", "My Prices"),
       render: (itemPrices: ItemPrice[], currency: Currency) => {
         return (
           <Popover
             placement="bottom"
             content={
               <Table
-                dataSource={itemPrices}
-                columns={getPopoverColumns(currency)}
+                dataSource={itemPrices.map((t) => ({ ...t, key: t.itemName }))}
+                columns={getPricePopoverColumns(currency)}
               />
             }
             title={`Prices for ${currency.name}`}
             style={{ cursor: "pointer" }}
             trigger="click"
           >
-            There are <Button type="link">{itemPrices.length}</Button> prices
-            set
+            There are <Button type="link">{itemPrices?.length ?? 0}</Button>{" "}
+            prices set
           </Popover>
         );
       },
@@ -65,7 +102,7 @@ export const useGetColumns = () => {
             )}
             {
               <Popconfirm
-                title={`Are you sure to reset prices for currency ${currency.name} with ${currency.itemPrices.length} prices?`}
+                title={`Are you sure to reset your prices for currency ${currency.name} with ${currency.itemPrices.length} prices?`}
                 onConfirm={() =>
                   setCurrencyList((prev) => {
                     const index = prev.currencies.findIndex(
@@ -94,7 +131,9 @@ export const useGetColumns = () => {
             }
             {currency.name !== currencyList.selectedCurrency && (
               <Popconfirm
-                title={`Are you sure to delete currency with ${currency.itemPrices.length} prices?`}
+                title={`Are you sure to delete currency with ${
+                  currency.itemPrices?.length ?? 0
+                } prices?`}
                 onConfirm={() =>
                   setCurrencyList((prev) => {
                     const index = prev.currencies.findIndex(

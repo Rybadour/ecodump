@@ -95,7 +95,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
       priceM4: formatNumber(totalIngredientCosts.priceM4),
       priceM5: formatNumber(totalIngredientCosts.priceM5),
     },
-  ];
+  ].map((t) => ({ ...t, key: t.name }));
 
   // Initializes cost percentages on the first time
   const currentItemCostPercentages = itemCostPercentages.find(
@@ -126,6 +126,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
       )?.percentage ?? 0;
     return {
       ...prod,
+      key: prod.name,
       costPercent,
       priceM0: formatNumber(
         ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100

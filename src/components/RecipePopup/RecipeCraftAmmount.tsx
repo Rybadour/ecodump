@@ -11,7 +11,7 @@ export default ({ recipeName }: PropTypes) => {
 
   return (
     <div>
-      <span>Craft ammount:</span> &nbsp;
+      <span>Craft amount:</span> &nbsp;
       <Radio.Group
         value={getRecipeCraftAmmount(recipeName).toFixed(0)}
         onChange={(e) =>

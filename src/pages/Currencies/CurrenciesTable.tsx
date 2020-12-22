@@ -7,5 +7,10 @@ export default () => {
   const { currencyList } = useAppContext();
   const columns = useGetColumns();
 
-  return <Table dataSource={currencyList.currencies} columns={columns} />;
+  return (
+    <Table
+      dataSource={currencyList.currencies.map((t) => ({ ...t, key: t.name }))}
+      columns={columns}
+    />
+  );
 };

@@ -25,6 +25,7 @@ export default () => {
             itemPrices:
               currencyList.currencies.find((t) => t.name === values.currency)
                 ?.itemPrices ?? [],
+            gamePrices: [],
           },
         ],
       }));
@@ -82,7 +83,9 @@ export default () => {
           <Form.Item label="Duplicate prices from" name="currency">
             <Select>
               {currencyList.currencies.map((currency) => (
-                <Option value={currency.name}>{currency.name}</Option>
+                <Option key={currency.name} value={currency.name}>
+                  {currency.name}
+                </Option>
               ))}
             </Select>
           </Form.Item>
