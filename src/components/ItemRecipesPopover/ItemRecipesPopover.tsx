@@ -1,11 +1,13 @@
 import { Button, Popover } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { allItems, Item } from "../../utils/typedData";
 import RecipePopup from "../RecipePopup";
+import { CloseOutlined } from "@ant-design/icons";
 type PropTypes = {
   itemName: string;
 };
 export default ({ itemName }: PropTypes) => {
+  const [visible, setVisible] = useState(false);
   const variants = Object.values(allItems)
     .find((item: Item) => item.key === itemName)
     ?.productInRecipes?.map((recipe) => recipe.variants)
@@ -34,9 +36,20 @@ export default ({ itemName }: PropTypes) => {
   }
   return (
     <Popover
+      onVisibleChange={(vis) => setVisible(vis)}
+      visible={visible}
       placement="bottom"
       content={content}
-      title="Recipes"
+      title={
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h3>Recipes</h3>
+          <Button
+            onClick={() => setVisible(false)}
+            type="link"
+            icon={<CloseOutlined />}
+          />
+        </div>
+      }
       style={{ cursor: "pointer" }}
       trigger="click"
     >

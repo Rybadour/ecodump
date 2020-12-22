@@ -166,7 +166,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
       }
       title={
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h3>Recipe</h3>
+          <h3>Recipe {recipe.name}</h3>
           <Button
             onClick={() => setVisible(false)}
             type="link"

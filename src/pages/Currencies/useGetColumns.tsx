@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Popconfirm, Popover, Select, Table, Tooltip } from "antd";
+import { Button, Popconfirm, Select, Tooltip } from "antd";
 import {
   SelectOutlined,
   DeleteOutlined,
@@ -8,73 +8,41 @@ import {
 import { Currency, GamePrice, ItemPrice } from "../../types";
 import { getColumn } from "../../utils/helpers";
 import { useAppContext } from "../../AppContext";
-import { useGetPriceColumns } from "./useGetPriceColumns";
+import GamePricesPopup from "./GamePricesPopup";
+import ItemPricesPopup from "./ItemPricesPopup";
 
 export const { Option } = Select;
 
-const getGamePrices = (colName: string, isBuy: boolean) => ({
-  ...getColumn("gamePrices", colName),
-  render: (gamePrices: GamePrice[], currency: Currency) => {
-    const prices = (gamePrices ?? [])
-      .filter((t) => t.Buying === isBuy)
-      .map((t) => ({
-        ...t,
-        key: t.ItemName,
-      }))
-      .sort((a, b) => a.ItemName.localeCompare(b.ItemName));
-    return (
-      <Popover
-        placement="bottom"
-        content={
-          <Table
-            dataSource={prices}
-            columns={[
-              getColumn("ItemName", "Item"),
-              getColumn("store"),
-              getColumn("storeOwner", "Store owner"),
-              getColumn("Price"),
-              getColumn("Quantity"),
-            ]}
-          />
-        }
-        title={`Prices for ${currency.name}`}
-        style={{ cursor: "pointer" }}
-        trigger="click"
-      >
-        <Button type="link">{prices?.length ?? 0}</Button> game prices
-      </Popover>
-    );
-  },
-});
-
 export const useGetColumns = () => {
   const { currencyList, setCurrencyList } = useAppContext();
-  const getPricePopoverColumns = useGetPriceColumns();
   return [
     getColumn("name"),
     getColumn("symbol"),
-    getGamePrices("Game buy orders", true),
-    getGamePrices("Game sell orders", false),
+    {
+      ...getColumn("gamePrices", "Game buy orders"),
+      render: (gamePrices: GamePrice[], currency: Currency) => (
+        <GamePricesPopup
+          isBuy
+          popupTitle="Buy orders on currency"
+          gamePrices={gamePrices}
+          currency={currency}
+        />
+      ),
+    },
+    {
+      ...getColumn("gamePrices", "Game sell orders"),
+      render: (gamePrices: GamePrice[], currency: Currency) => (
+        <GamePricesPopup
+          popupTitle="Sell orders on currency"
+          gamePrices={gamePrices}
+          currency={currency}
+        />
+      ),
+    },
     {
       ...getColumn("itemPrices", "My Prices"),
       render: (itemPrices: ItemPrice[], currency: Currency) => {
-        return (
-          <Popover
-            placement="bottom"
-            content={
-              <Table
-                dataSource={itemPrices.map((t) => ({ ...t, key: t.itemName }))}
-                columns={getPricePopoverColumns(currency)}
-              />
-            }
-            title={`Prices for ${currency.name}`}
-            style={{ cursor: "pointer" }}
-            trigger="click"
-          >
-            There are <Button type="link">{itemPrices?.length ?? 0}</Button>{" "}
-            prices set
-          </Popover>
-        );
+        return <ItemPricesPopup itemPrices={itemPrices} currency={currency} />;
       },
     },
     {
