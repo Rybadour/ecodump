@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import JSONTree from "react-json-tree";
 import { getJsonDownloadHref } from "../../utils/downloadFile";
 import useRestDb from "../../context/useRestDb";
-import { PageHeader, Button, Space, List } from "antd";
+import { PageHeader, Button, Space, List, Tooltip } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import "./JsonViewer.css";
 
@@ -44,14 +44,18 @@ export default () => {
             renderItem={(key) => (
               <List.Item>
                 <Space>
-                  <Button
-                    icon={<DownloadOutlined />}
-                    type="default"
-                    {...getHref(key, jsonFiles)}
-                  />
-                  <Button type="primary" onClick={() => setFilename(key)}>
-                    {key}
-                  </Button>
+                  <Tooltip title="Download file as json">
+                    <Button
+                      icon={<DownloadOutlined />}
+                      type="default"
+                      {...getHref(key, jsonFiles)}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Explore the json file using a json tree. Use the arrows to expand/collapse the nodes.">
+                    <Button type="primary" onClick={() => setFilename(key)}>
+                      {key}
+                    </Button>
+                  </Tooltip>
                 </Space>
               </List.Item>
             )}

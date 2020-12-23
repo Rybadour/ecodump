@@ -1,4 +1,4 @@
-import { Button, Popover } from "antd";
+import { Button, Popover, Tooltip } from "antd";
 import React, { useState } from "react";
 import { allItems, Item } from "../../utils/typedData";
 import RecipePopup from "../RecipePopup";
@@ -14,16 +14,16 @@ export default ({ itemName }: PropTypes) => {
     .flat();
   const content = (
     <>
-      {variants?.map((recipeVariant) =>
+      {variants?.map((recipeVariant, index) =>
         recipeVariant ? (
-          <div>
+          <div key={recipeVariant.key}>
             <RecipePopup
               recipe={recipeVariant}
               buttonText={recipeVariant.key}
             />
           </div>
         ) : (
-          <>?</>
+          <React.Fragment key={index}>?</React.Fragment>
         )
       )}
     </>
@@ -53,7 +53,9 @@ export default ({ itemName }: PropTypes) => {
       style={{ cursor: "pointer" }}
       trigger="click"
     >
-      <Button type="link">{itemName}</Button>
+      <Tooltip title="Show recipes for this item">
+        <Button type="link">{itemName}</Button>
+      </Tooltip>
     </Popover>
   );
 };

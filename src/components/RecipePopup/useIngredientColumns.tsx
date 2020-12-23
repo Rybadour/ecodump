@@ -1,8 +1,10 @@
-import { InputNumber } from "antd";
+import { InputNumber, Tooltip } from "antd";
 import React from "react";
 import { useAppContext } from "../../AppContext";
+import { GamePrice } from "../../types";
 import { getColumn } from "../../utils/helpers";
 import ItemRecipesPopover from "../ItemRecipesPopover";
+import ItemGamePricesPopup from "./ItemGamePricesPopup";
 
 type Ing = {
   name: string;
@@ -19,15 +21,40 @@ type Ing = {
   priceM4?: number;
   priceM5?: number;
 };
-const renderPrice = (ammount?: number, price?: number) => {
+const renderPrice = (
+  moduleLevel: number,
+  itemName: string,
+  currencySymbol: string,
+  ammount?: number,
+  price?: number
+) => {
+  const module =
+    moduleLevel === 0 ? "no module" : `a module level ${moduleLevel}`;
   if (!ammount) {
-    return price + "$";
+    // This is for the cost row
+    return (
+      <Tooltip
+        title={`Sum of all the item costs for this recipe using ${module}`}
+      >
+        {price} {currencySymbol}
+      </Tooltip>
+    );
   }
-  return `${ammount} ${price ? `(${price}$)` : ""}`;
+  return (
+    <Tooltip
+      title={`Using ${module} you will need ${ammount} ${itemName}. ${
+        !price
+          ? ""
+          : `At current price that will cost you ${price} ${currencySymbol}`
+      }`}
+    >
+      {ammount} {price ? `(${price}${currencySymbol})` : ""}
+    </Tooltip>
+  );
 };
 
 export default () => {
-  const { updatePrice } = useAppContext();
+  const { updatePrice, currencySymbol } = useAppContext();
   return [
     {
       ...getColumn("name"),
@@ -39,6 +66,13 @@ export default () => {
         ),
     },
     {
+      ...getColumn("gamePrices", "Game prices"),
+      render: (gamePrices: GamePrice[], item: { tag: string }) => {
+        if (item.tag === "COST") return;
+        return <ItemGamePricesPopup gamePrices={gamePrices} />;
+      },
+    },
+    {
       ...getColumn("price"),
       render: (
         price: number | undefined,
@@ -46,39 +80,45 @@ export default () => {
       ) => {
         if (item.tag === "COST") return;
         return (
-          <>
+          <Tooltip title="Update your fixed price for this item">
             <InputNumber
               value={price}
               width="20"
               onChange={(newPrice) => updatePrice(item.name, Number(newPrice))}
             />
-          </>
+          </Tooltip>
         );
       },
     },
     {
       ...getColumn("M0"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM0, item.priceM0),
+      render: (_: any, item: Ing) =>
+        renderPrice(0, item.name, currencySymbol, item.ammountM0, item.priceM0),
     },
     {
       ...getColumn("M1"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM1, item.priceM1),
+      render: (_: any, item: Ing) =>
+        renderPrice(1, item.name, currencySymbol, item.ammountM1, item.priceM1),
     },
     {
       ...getColumn("M2"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM2, item.priceM2),
+      render: (_: any, item: Ing) =>
+        renderPrice(2, item.name, currencySymbol, item.ammountM2, item.priceM2),
     },
     {
       ...getColumn("M3"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM3, item.priceM3),
+      render: (_: any, item: Ing) =>
+        renderPrice(3, item.name, currencySymbol, item.ammountM3, item.priceM3),
     },
     {
       ...getColumn("M4"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM4, item.priceM4),
+      render: (_: any, item: Ing) =>
+        renderPrice(4, item.name, currencySymbol, item.ammountM4, item.priceM4),
     },
     {
       ...getColumn("M5"),
-      render: (_: any, item: Ing) => renderPrice(item.ammountM5, item.priceM5),
+      render: (_: any, item: Ing) =>
+        renderPrice(5, item.name, currencySymbol, item.ammountM5, item.priceM5),
     },
   ];
 };

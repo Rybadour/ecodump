@@ -25,9 +25,9 @@ export const useGetPriceColumns = () => {
       ...getColumn("Actions"),
       render: (_: unknown, itemPrice: ItemPrice) => {
         return (
-          <Tooltip title="Delete">
+          <Tooltip title="Remove your fixed price for this item">
             <Popconfirm
-              title="Are you sure to delete price?"
+              title="Are you sure to delete your fixed price?"
               onConfirm={() =>
                 updatePrice(itemPrice.itemName, undefined, currency.name)
               }

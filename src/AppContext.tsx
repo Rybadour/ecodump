@@ -10,6 +10,7 @@ import { getStores, getStoresLastUpdate } from "./sdk/restDbSdk";
 import {
   Currency,
   CurrencyList,
+  GamePrice,
   ItemPrice,
   RecipeCostPercentage,
   RecipeCostProdPercentage,
@@ -19,7 +20,9 @@ import {
 const AppContext = React.createContext<{
   currencyList: CurrencyList;
   setCurrencyList: Dispatch<SetStateAction<CurrencyList>>;
+  currencySymbol: string;
   prices: ItemPrice[];
+  gamePrices: { [key: string]: GamePrice[] };
   updatePrice: (
     itemName: string,
     newPrice: number | undefined,
@@ -47,8 +50,10 @@ const AppContext = React.createContext<{
 }>({
   currencyList: { selectedCurrency: "", currencies: [] },
   setCurrencyList: () => undefined,
+  currencySymbol: "",
   prices: [],
   updatePrice: () => undefined,
+  gamePrices: {},
   selectedVariants: {},
   setSelectedVariants: () => undefined,
   filterProfessions: [],
@@ -258,6 +263,28 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     );
   }, [currencyList.currencies, currencyList.selectedCurrency]);
 
+  const gamePrices = useMemo(() => {
+    return (
+      currencyList.currencies.find(
+        (t) => t.name === currencyList.selectedCurrency
+      )?.gamePrices ?? []
+    ).reduce(
+      (agg, next) => ({
+        ...agg,
+        [next.ItemName]: [...(agg[next.ItemName] ?? []), next],
+      }),
+      {} as { [key: string]: GamePrice[] }
+    );
+  }, [currencyList.currencies, currencyList.selectedCurrency]);
+
+  const currencySymbol = useMemo(
+    () =>
+      currencyList.currencies.find(
+        (t) => t.name === currencyList.selectedCurrency
+      )?.symbol ?? "$",
+    [currencyList]
+  );
+
   // Fetches last update and triggers state update if it changed
   getStoresLastUpdate().then((lastUpdateResponse) => {
     console.log("TODO: Figure out a way of only do this once every 2 minutes");
@@ -319,15 +346,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   });
-  console.log("currency list", currencyList);
 
   return (
     <AppContext.Provider
       value={{
         currencyList,
         setCurrencyList,
+        currencySymbol,
         prices,
         updatePrice: updatePriceMemo,
+        gamePrices,
         selectedVariants,
         setSelectedVariants,
         filterProfessions,

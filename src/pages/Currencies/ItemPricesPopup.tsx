@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Popover, Table } from "antd";
+import { Button, Popover, Table, Tooltip } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Currency, ItemPrice } from "../../types";
 import { useGetPriceColumns } from "./useGetPriceColumns";
@@ -37,7 +37,9 @@ export default ({ itemPrices, currency }: PropTypes) => {
         style={{ cursor: "pointer" }}
         trigger="click"
       >
-        <Button type="link">{itemPrices?.length ?? 0}</Button>
+        <Tooltip title="Lists all the fixed prices you have for this currency">
+          <Button type="link">{itemPrices?.length ?? 0}</Button>
+        </Tooltip>
       </Popover>
       prices set
     </>

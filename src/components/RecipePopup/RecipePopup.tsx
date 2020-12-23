@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
-import { Table, Button, Popover } from "antd";
+import { Table, Button, Popover, Tooltip } from "antd";
 import useIngredientColumns from "./useIngredientColumns";
 import useProductColumns from "./useProductColumns";
 import { useAppContext } from "../../AppContext";
 import RecipeCraftAmmount from "./RecipeCraftAmmount";
 import { CloseOutlined } from "@ant-design/icons";
 
-// https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
 const calcAmmount = (ammount: number, craftAmmout: number) => {
   return (ammount * craftAmmout) / craftAmmout;
 };
@@ -23,11 +22,12 @@ export default ({ recipe, buttonText }: PropTypes) => {
   const [visible, setVisible] = useState(false);
   const {
     prices,
+    gamePrices,
     itemCostPercentages,
     setItemCostPercentages,
     getRecipeCraftAmmount,
   } = useAppContext();
-  const columns = useIngredientColumns();
+  const ingredientColumns = useIngredientColumns();
   const productColumns = useProductColumns(recipe);
   const craftAmmount = getRecipeCraftAmmount(recipe.key);
 
@@ -36,6 +36,7 @@ export default ({ recipe, buttonText }: PropTypes) => {
     .map((ing) => ({
       ...ing,
       price: prices.find((price) => price.itemName === ing.name)?.price,
+      gamePrices: gamePrices[ing.name] ?? [],
     }))
     .map((ing) => ({
       ...ing,
@@ -159,7 +160,10 @@ export default ({ recipe, buttonText }: PropTypes) => {
         <div>
           <h4>Ingredients</h4>
           <RecipeCraftAmmount recipeName={recipe.key} />
-          <Table dataSource={datasourceIngredients} columns={columns} />
+          <Table
+            dataSource={datasourceIngredients}
+            columns={ingredientColumns}
+          />
           <h4>Products</h4>
           <Table dataSource={products} columns={productColumns} />
         </div>
@@ -177,7 +181,11 @@ export default ({ recipe, buttonText }: PropTypes) => {
       style={{ cursor: "pointer" }}
       trigger="click"
     >
-      <Button type="link">{buttonText}</Button>
+      <Tooltip
+        title={`Click to calculate the item price using the recipe ${recipe.key} in a popover`}
+      >
+        <Button type="link">{buttonText}</Button>
+      </Tooltip>
     </Popover>
   );
 };
