@@ -8,7 +8,12 @@ import RecipeCraftAmmount from "./RecipeCraftAmmount";
 import { CloseOutlined } from "@ant-design/icons";
 
 const calcAmmount = (ammount: number, craftAmmout: number) => {
-  return (ammount * craftAmmout) / craftAmmout;
+  console.log(
+    ammount,
+    craftAmmout,
+    Math.round(ammount * craftAmmout) / craftAmmout
+  );
+  return Math.ceil(ammount * craftAmmout) / craftAmmout;
 };
 const calcPrice = (ammount: number, price?: number) =>
   !price ? 0 : formatNumber(ammount * price);
