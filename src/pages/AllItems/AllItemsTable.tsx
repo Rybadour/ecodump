@@ -5,6 +5,28 @@ import { useAppContext } from "../../AppContext";
 import { filterByIncludes, filterByText } from "../../utils/helpers";
 import { useGetColumns } from "./useGetColumns";
 
+const getProfessionAndCraftStations = (item: Item) => {
+  const variants = item.productInRecipes
+    .map((recipe) => recipe.variants)
+    .flat();
+
+  if (variants.length === 0) {
+    return "NA";
+  }
+  const professionsAndCraftStations = item.productInRecipes.map(
+    ({ skillNeeds, craftStation }) =>
+      `${
+        skillNeeds?.length === 0
+          ? "No profession"
+          : `${skillNeeds?.[0].skill} lvl${skillNeeds?.[0].level}`
+      } @ ${craftStation ?? "No craft station"}`
+  );
+
+  return professionsAndCraftStations.length === 0
+    ? "No recipes"
+    : professionsAndCraftStations.join(", ");
+};
+
 export default () => {
   const {
     selectedVariants,
@@ -15,9 +37,18 @@ export default () => {
   } = useAppContext();
   const columns = useGetColumns();
 
+  const items = useMemo(
+    () =>
+      Object.values(allItems).map((item) => ({
+        ...item,
+        profAndCraftStations: getProfessionAndCraftStations(item),
+      })),
+    []
+  );
+
   const datasource = useMemo(
     () =>
-      Object.values(allItems).filter((item: Item) => {
+      items.filter((item: Item) => {
         const variants = item.productInRecipes
           .map((recipe) => recipe.variants)
           .flat();
@@ -46,6 +77,7 @@ export default () => {
           : filterByText(filterName, item.key) && variants.length === 0;
       }),
     [
+      items,
       filterCraftStations,
       filterName,
       filterProfessions,
