@@ -6,6 +6,7 @@ import { getColumn } from "../../utils/helpers";
 import { Item } from "../../utils/typedData";
 import { InputNumber, Popconfirm, Tooltip, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import ItemGamePricesPopup from "../../components/RecipePopup/ItemGamePricesPopup";
 
 export const { Option } = Select;
 
@@ -112,6 +113,12 @@ export const useGetColumns = () => {
         }
 
         return <RecipePopup recipe={variant} buttonText="Check recipe" />;
+      },
+    },
+    {
+      ...getColumn("gamePrices", "Game prices"),
+      render: (_: unknown, item: Item) => {
+        return <ItemGamePricesPopup itemKey={item.key} />;
       },
     },
     {

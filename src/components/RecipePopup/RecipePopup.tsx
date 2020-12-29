@@ -22,7 +22,6 @@ export default ({ recipe, buttonText }: PropTypes) => {
   const [visible, setVisible] = useState(false);
   const {
     prices,
-    gamePrices,
     itemCostPercentages,
     setItemCostPercentages,
     getRecipeCraftAmmount,
@@ -36,7 +35,6 @@ export default ({ recipe, buttonText }: PropTypes) => {
     .map((ing) => ({
       ...ing,
       price: prices.find((price) => price.itemName === ing.name)?.price,
-      gamePrices: gamePrices[ing.name] ?? [],
     }))
     .map((ing) => ({
       ...ing,

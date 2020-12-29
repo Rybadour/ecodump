@@ -1,7 +1,6 @@
 import { InputNumber, Tooltip } from "antd";
 import React from "react";
 import { useAppContext } from "../../AppContext";
-import { GamePrice } from "../../types";
 import { getColumn } from "../../utils/helpers";
 import ItemRecipesPopover from "../ItemRecipesPopover";
 import ItemGamePricesPopup from "./ItemGamePricesPopup";
@@ -67,9 +66,9 @@ export default () => {
     },
     {
       ...getColumn("gamePrices", "Game prices"),
-      render: (gamePrices: GamePrice[], item: { tag: string }) => {
+      render: (_: unknown, item: { tag: string; name: string }) => {
         if (item.tag === "COST") return;
-        return <ItemGamePricesPopup gamePrices={gamePrices} />;
+        return <ItemGamePricesPopup itemKey={item.name} />;
       },
     },
     {
