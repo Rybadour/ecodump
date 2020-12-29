@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -19,6 +19,7 @@
     "react-json-tree": "^0.13.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "standard-version": "^9.0.0",
     "typescript": "~3.7.2"
   },
   "scripts": {
@@ -26,6 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "release": "standard-version",
     "deploy": "yarn build && firebase deploy"
   },
   "eslintConfig": {
