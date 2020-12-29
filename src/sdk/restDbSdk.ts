@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseUrl = "http://92.32.88.81:3030";
-const baseUrl = "http://localhost:3030";
+const baseUrl = "http://92.32.88.81:3030";
+// const baseUrl = "http://localhost:3030";
 const endpoints = {
   list: () => `${baseUrl}/operations/list`,
   readDB: (dbname: string, path: string = "/") =>
