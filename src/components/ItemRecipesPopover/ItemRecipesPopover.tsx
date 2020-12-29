@@ -8,24 +8,32 @@ type PropTypes = {
 };
 export default ({ itemName }: PropTypes) => {
   const [visible, setVisible] = useState(false);
-  const variants = Object.values(allItems)
-    .find((item: Item) => item.key === itemName)
-    ?.productInRecipes?.map((recipe) => recipe.variants)
-    .flat();
+  const variants =
+    (
+      Object.values(allItems)
+        .find((item: Item) => item.key === itemName)
+        ?.productInRecipes?.map((recipe) =>
+          recipe.variants.map((variant) => ({
+            ...variant,
+            craftStation: recipe.craftStation,
+            skillNeeds: recipe.skillNeeds,
+          }))
+        ) ?? []
+    ).flat() ?? [];
+
   const content = (
     <>
-      {variants?.map((recipeVariant, index) =>
-        recipeVariant ? (
-          <div key={recipeVariant.key}>
-            <RecipePopup
-              recipe={recipeVariant}
-              buttonText={recipeVariant.key}
-            />
-          </div>
-        ) : (
-          <React.Fragment key={index}>?</React.Fragment>
-        )
-      )}
+      {variants.map((recipeVariant, index) => (
+        <div key={recipeVariant.key}>
+          <RecipePopup recipe={recipeVariant} buttonText={recipeVariant.key} />(
+          {`${
+            recipeVariant.skillNeeds?.length === 0
+              ? "None"
+              : `required ${recipeVariant.skillNeeds?.[0].skill} lvl ${recipeVariant.skillNeeds?.[0].level}`
+          } @ ${recipeVariant.craftStation ?? "None"}`}
+          )
+        </div>
+      ))}
     </>
   );
   if (!variants || variants.length === 0) {
