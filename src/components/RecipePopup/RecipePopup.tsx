@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatNumber, RecipeVariant } from "../../utils/typedData";
-import { Table, Button, Popover, Tooltip } from "antd";
+import { Table, Button, Popover, Tooltip, Divider } from "antd";
 import useIngredientColumns from "./useIngredientColumns";
 import useProductColumns from "./useProductColumns";
 import { useAppContext } from "../../AppContext";
@@ -14,11 +14,12 @@ const calcPrice = (ammount: number, price?: number) =>
   !price ? 0 : formatNumber(ammount * price);
 
 type PropTypes = {
+  description: string;
   recipe: RecipeVariant;
   buttonText: string;
 };
 
-export default ({ recipe, buttonText }: PropTypes) => {
+export default ({ recipe, buttonText, description }: PropTypes) => {
   const [visible, setVisible] = useState(false);
   const {
     prices,
@@ -156,13 +157,15 @@ export default ({ recipe, buttonText }: PropTypes) => {
       placement="bottom"
       content={
         <div>
-          <h4>Ingredients</h4>
+          {description}
+          <Divider />
+          <h3>Ingredients</h3>
           <RecipeCraftAmmount recipeName={recipe.key} />
           <Table
             dataSource={datasourceIngredients}
             columns={ingredientColumns}
           />
-          <h4>Products</h4>
+          <h3>Products</h3>
           <Table dataSource={products} columns={productColumns} />
         </div>
       }

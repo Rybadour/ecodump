@@ -23,17 +23,23 @@ export default ({ itemName }: PropTypes) => {
 
   const content = (
     <>
-      {variants.map((recipeVariant, index) => (
-        <div key={recipeVariant.key}>
-          <RecipePopup recipe={recipeVariant} buttonText={recipeVariant.key} />(
-          {`${
-            recipeVariant.skillNeeds?.length === 0
-              ? "None"
-              : `required ${recipeVariant.skillNeeds?.[0].skill} lvl ${recipeVariant.skillNeeds?.[0].level}`
-          } @ ${recipeVariant.craftStation ?? "None"}`}
-          )
-        </div>
-      ))}
+      {variants.map((recipeVariant, index) => {
+        const requirements = `${
+          recipeVariant.skillNeeds?.length === 0
+            ? "None"
+            : `Required ${recipeVariant.skillNeeds?.[0].skill} lvl ${recipeVariant.skillNeeds?.[0].level}`
+        } @ ${recipeVariant.craftStation ?? "None"}`;
+        return (
+          <div key={recipeVariant.key}>
+            <RecipePopup
+              description={requirements}
+              recipe={recipeVariant}
+              buttonText={recipeVariant.key}
+            />
+            {!(variants && variants.length === 1) && `(${requirements})`}
+          </div>
+        );
+      })}
     </>
   );
   if (!variants || variants.length === 0) {
