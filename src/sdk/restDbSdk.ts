@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const baseUrl = "http://92.32.88.81:3030";
-// const baseUrl = "http://localhost:3030";
 const endpoints = {
-  list: () => `${baseUrl}/operations/list`,
+  list: () => `${process.env.REACT_APP_DB}/operations/list`,
   readDB: (dbname: string, path: string = "/") =>
-    `${baseUrl}/${dbname}?path=${path}`,
+    `${process.env.REACT_APP_DB}/${dbname}?path=${path}`,
 };
 
 export const listDBs = () =>
