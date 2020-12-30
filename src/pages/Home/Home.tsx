@@ -32,6 +32,17 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Changelog</h2>
+        <h3>0.1.2 (2020-12-30)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>add skill and table requirements on item recipe popover</li>
+          <li>add table/profession requirement in recipes popover</li>
+          <li>replace recipes dropdown in item list</li>
+        </ul>
+        <h4>Bug Fixes</h4>
+        <ul>
+          <li>craft amount is now working as expected</li>
+        </ul>
         <h3>0.1.1 (2020-12-29)</h3>
         <h4>Features</h4>
         <ul>

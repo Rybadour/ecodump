@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/PedroFonseca/ecodump/compare/v0.1.1...v0.1.2) (2020-12-30)
+
+
+### Features
+
+* add skill and table requirements on item recipe popover ([e7c4444](https://github.com/PedroFonseca/ecodump/commit/e7c44444b991c7c1c133b3202522775fadc6bd0d))
+* add table/profession requirement in recipes popover ([d7f9f35](https://github.com/PedroFonseca/ecodump/commit/d7f9f35c67e4c5ce37d2301dbb0e0913a6dc2317))
+* replace recipes dropdown in item list ([d39587b](https://github.com/PedroFonseca/ecodump/commit/d39587bc891ecde8bd2c264a7bc57b9ef9f1fc15))
+
+
+### Bug Fixes
+
+* craft amount is now working as expected ([a336599](https://github.com/PedroFonseca/ecodump/commit/a336599128bb63b71f1d82cd377fa7b8c1e6e8d5))
+
 ### 0.1.1 (2020-12-29)
 
 
