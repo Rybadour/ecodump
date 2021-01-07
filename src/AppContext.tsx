@@ -47,6 +47,7 @@ const AppContext = React.createContext<{
   ) => void;
   getRecipeCraftAmmount: (recipeName: string) => number;
   updateRecipeCraftAmmount: (recipeName: string, newAmmount: number) => void;
+  storesDb: StoresHistV1;
 }>({
   currencyList: { selectedCurrency: "", currencies: [] },
   setCurrencyList: () => undefined,
@@ -69,6 +70,16 @@ const AppContext = React.createContext<{
   updateItemCostPercentage: () => undefined,
   getRecipeCraftAmmount: () => 0,
   updateRecipeCraftAmmount: () => undefined,
+  storesDb: {
+    Version: 1,
+    Stores: [],
+    ExportedAtYear: 0,
+    ExportedAtMonth: 0,
+    ExportedAtDay: 0,
+    ExportedAtHour: 0,
+    ExportedAtMin: 0,
+    ExportedAt: "",
+  },
 });
 
 const getNewPriceArray = (
@@ -371,6 +382,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         updateItemCostPercentage,
         getRecipeCraftAmmount,
         updateRecipeCraftAmmount,
+        storesDb,
       }}
     >
       {children}

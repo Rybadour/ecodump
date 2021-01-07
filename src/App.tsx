@@ -3,12 +3,14 @@ import Home from "./pages/Home";
 import JsonViewer from "./pages/JsonViewer";
 import AllItems from "./pages/AllItems";
 import Currencies from "./pages/Currencies";
+import Stores from "./pages/Stores";
 import { Menu } from "antd";
 import {
   HomeOutlined,
   FileOutlined,
   TableOutlined,
   EuroCircleOutlined,
+  BankOutlined,
 } from "@ant-design/icons";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { AppProvider } from "./AppContext";
@@ -20,6 +22,7 @@ const routes = {
   Recipes: "/recipes",
   Items: "/items",
   Currencies: "/currencies",
+  Stores: "/stores",
   Home: "/",
 };
 
@@ -40,6 +43,9 @@ function App() {
           <Menu.Item key="Currencies" icon={<EuroCircleOutlined />}>
             <Link to={routes.Currencies}>Currencies</Link>
           </Menu.Item>
+          <Menu.Item key="Stores" icon={<BankOutlined />}>
+            <Link to={routes.Stores}>Stores</Link>
+          </Menu.Item>
         </Menu>
         <Switch>
           <AppProvider>
@@ -51,6 +57,9 @@ function App() {
             </Route>
             <Route path={routes.Currencies}>
               <Currencies />
+            </Route>
+            <Route path={routes.Stores}>
+              <Stores />
             </Route>
             <Route exact path="/">
               <Home />
