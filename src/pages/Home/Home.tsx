@@ -31,7 +31,15 @@ export default () => {
       <br />
       <br />
       <div className="changelog">
-        <h2>Changelog</h2>
+        <h2>Latest changes</h2>
+        <h3>0.1.3 (2021-01-21)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>add dropdown to easily select default currency</li>
+          <li>add sort and filter on stores table</li>
+          <li>added store list page</li>
+          <li>updated exported data</li>
+        </ul>
         <h3>0.1.2 (2020-12-30)</h3>
         <h4>Features</h4>
         <ul>
@@ -42,22 +50,6 @@ export default () => {
         <h4>Bug Fixes</h4>
         <ul>
           <li>craft amount is now working as expected</li>
-        </ul>
-        <h3>0.1.1 (2020-12-29)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>add game prices column on all items table</li>
-          <li>added game prices on all items tab and added tooltips</li>
-          <li>added recipe filter. Improved filter performance.</li>
-          <li>duplicate currency prices</li>
-          <li>improvements on popovers</li>
-          <li>show game prices in currency view</li>
-        </ul>
-        <h4>Bug Fixes</h4>
-        <ul>
-          <li>added close button on recipe popover</li>
-          <li>updated fixed price column on all items page</li>
-          <li>workaround for variants without key</li>
         </ul>
       </div>
     </div>
