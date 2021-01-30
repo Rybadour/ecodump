@@ -51,7 +51,7 @@ export const useGetColumns = () => {
         currency.name === currencyList.selectedCurrency && "Selected",
     },
     {
-      ...getColumn("Delete"),
+      ...getColumn("Actions"),
       render: (_: unknown, currency: Currency) => {
         return (
           <>

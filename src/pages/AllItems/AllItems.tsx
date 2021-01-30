@@ -1,5 +1,5 @@
 import React from "react";
-import { PageHeader } from "antd";
+import PageHeader from "../../components/PageHeader";
 import AllItemsTable from "./AllItemsTable";
 import NameFilter from "../../components/NameFilter";
 import ProfessionFilter from "../../components/ProfessionFilter";

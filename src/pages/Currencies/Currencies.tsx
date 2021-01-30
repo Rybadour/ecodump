@@ -1,5 +1,5 @@
 import React from "react";
-import { PageHeader } from "antd";
+import PageHeader from "../../components/PageHeader";
 import CurrenciesTable from "./CurrenciesTable";
 import AddCurrencyModal from "./AddCurrencyModal";
 
