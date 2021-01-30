@@ -1,12 +1,26 @@
 import { Table } from "antd";
-import React from "react";
+import React, { useMemo } from "react";
 import { useAppContext } from "../../AppContext";
+import { filterUnique } from "../../utils/helpers";
 import { useGetColumns } from "./useGetColumns";
 
 export default () => {
   const { storesDb } = useAppContext();
   console.log("storesDb", storesDb);
-  const columns = useGetColumns();
+  const currencyNames = useMemo(
+    () => [
+      ...storesDb.Stores.map((t) => t.CurrencyName)
+        .filter(filterUnique)
+        .filter((t) => t.indexOf("Credit") <= 0),
+      "Credit",
+    ],
+    [storesDb.Stores]
+  );
+  const ownerNames = useMemo(
+    () => storesDb.Stores.map((t) => t.Owner).filter(filterUnique),
+    [storesDb.Stores]
+  );
+  const columns = useGetColumns(currencyNames, ownerNames);
   return (
     <>
       <p>
