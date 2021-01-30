@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/PedroFonseca/ecodump/compare/v0.1.2...v0.1.3) (2021-01-30)
+
+
+### Features
+
+* add dropdown to easily select default currency ([bb0e65d](https://github.com/PedroFonseca/ecodump/commit/bb0e65dee351c18dd2ff9b0130b5729fe0f8ba33))
+* add sort and filter on stores table ([9d20c57](https://github.com/PedroFonseca/ecodump/commit/9d20c570e4073aba08172526f66b19987f33d49c))
+* added store list page ([4377c47](https://github.com/PedroFonseca/ecodump/commit/4377c4700045b21bf426ffd97a82c82423130ef7))
+* updated exported data ([7c7514a](https://github.com/PedroFonseca/ecodump/commit/7c7514a3c8b719ee770fd997ea4db4adc7a1df44))
+
 ### [0.1.2](https://github.com/PedroFonseca/ecodump/compare/v0.1.1...v0.1.2) (2020-12-30)
 
 
