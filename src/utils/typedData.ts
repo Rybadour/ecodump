@@ -1,4 +1,4 @@
-import data from "../utils/recipes";
+import craftingRecipes from "../gameData/craftingRecipes";
 import { filterUnique } from "./helpers";
 export type Recipe = {
   key: string;
@@ -98,12 +98,12 @@ const newRecipe = (key: string, value: any): Recipe => ({
   ),
 });
 
-export const allItems = Object.keys(data.items).reduce(
+export const allItems = Object.keys(craftingRecipes.items).reduce(
   (prev, key) => ({ ...prev, [key]: newItem(key) }),
   {}
 ) as Items;
 
-export const allRecipes = Object.entries(data.recipes).reduce(
+export const allRecipes = Object.entries(craftingRecipes.recipes).reduce(
   (prev, [key, value]: [string, any]) => ({
     ...prev,
     [key]: newRecipe(key, value),
