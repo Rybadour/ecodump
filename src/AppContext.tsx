@@ -3,12 +3,12 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
-  useMemo,
 } from "react";
+import useGetCurrencies from "./context/useGetCurrencies";
+import useGetFilters from "./context/useGetFilters";
+import useGetStores from "./context/useGetStores";
 import useLocalStorage from "./context/useLocalStorage";
-import { getStores, getStoresLastUpdate } from "./sdk/restDbSdk";
 import {
-  Currency,
   CurrencyList,
   GamePrice,
   ItemPrice,
@@ -17,11 +17,28 @@ import {
   RecipeCraftAmmount,
   SelectedVariants,
 } from "./types";
+const emptyStoresDb = {
+  Version: 1,
+  Stores: [],
+  ExportedAtYear: 0,
+  ExportedAtMonth: 0,
+  ExportedAtDay: 0,
+  ExportedAtHour: 0,
+  ExportedAtMin: 0,
+  ExportedAt: "",
+};
 const AppContext = React.createContext<{
   currencyList: CurrencyList;
-  setCurrencyList: Dispatch<SetStateAction<CurrencyList>>;
+  setSelectedCurrency: (currencyName: string) => void;
+  addNewCurrency: (
+    currencyName: string,
+    symbol: string,
+    currencyToCopy: string
+  ) => void;
+  deleteCurrency: (currencyName: string) => void;
+  resetCurrency: (currencyName: string) => void;
   currencySymbol: string;
-  prices: ItemPrice[];
+  personalPrices: ItemPrice[];
   gamePrices: { [key: string]: GamePrice[] };
   updatePrice: (
     itemName: string,
@@ -50,9 +67,12 @@ const AppContext = React.createContext<{
   storesDb: StoresHistV1;
 }>({
   currencyList: { selectedCurrency: "", currencies: [] },
-  setCurrencyList: () => undefined,
+  setSelectedCurrency: () => undefined,
+  addNewCurrency: () => undefined,
+  deleteCurrency: () => undefined,
+  resetCurrency: () => undefined,
   currencySymbol: "",
-  prices: [],
+  personalPrices: [],
   updatePrice: () => undefined,
   gamePrices: {},
   selectedVariants: {},
@@ -70,83 +90,8 @@ const AppContext = React.createContext<{
   updateItemCostPercentage: () => undefined,
   getRecipeCraftAmmount: () => 0,
   updateRecipeCraftAmmount: () => undefined,
-  storesDb: {
-    Version: 1,
-    Stores: [],
-    ExportedAtYear: 0,
-    ExportedAtMonth: 0,
-    ExportedAtDay: 0,
-    ExportedAtHour: 0,
-    ExportedAtMin: 0,
-    ExportedAt: "",
-  },
+  storesDb: emptyStoresDb,
 });
-
-const getNewPriceArray = (
-  prevPrices: ItemPrice[],
-  itemPriceIndex: number,
-  itemName: string,
-  newPrice: number | undefined
-) => {
-  // Delete itemPrice if newPrice is undefined
-  if (newPrice === undefined && itemPriceIndex >= 0) {
-    return [
-      ...prevPrices.slice(0, itemPriceIndex),
-      ...prevPrices.slice(itemPriceIndex + 1),
-    ];
-  }
-
-  // Update itemPrice if it exists in array
-  if (newPrice !== undefined && itemPriceIndex >= 0) {
-    return [
-      ...prevPrices.slice(0, itemPriceIndex),
-      { ...prevPrices[itemPriceIndex], price: newPrice },
-      ...prevPrices.slice(itemPriceIndex + 1),
-    ];
-  }
-
-  // Add new itemPrice if it doesn't exist in array yet
-  if (newPrice !== undefined && itemPriceIndex < 0) {
-    return [
-      ...prevPrices,
-      {
-        itemName: itemName,
-        price: newPrice,
-      },
-    ];
-  }
-
-  return prevPrices;
-};
-
-const updatePrice = (
-  setCurrencies: Dispatch<SetStateAction<CurrencyList>>,
-  itemName: string,
-  newPrice: number | undefined,
-  currencyName?: string
-) => {
-  if (newPrice !== undefined && Number.isNaN(newPrice)) return;
-  setCurrencies((prevCurrencies) => {
-    const prevSelectedCurrencyIndex = prevCurrencies.currencies.findIndex(
-      (t) => t.name === (currencyName ?? prevCurrencies.selectedCurrency)
-    );
-    const prevPrices =
-      prevCurrencies.currencies[prevSelectedCurrencyIndex]?.itemPrices ?? [];
-    const index = prevPrices.findIndex((t) => t.itemName === itemName);
-
-    return {
-      ...prevCurrencies,
-      currencies: [
-        ...prevCurrencies.currencies.slice(0, prevSelectedCurrencyIndex),
-        {
-          ...prevCurrencies.currencies[prevSelectedCurrencyIndex],
-          itemPrices: getNewPriceArray(prevPrices, index, itemName, newPrice),
-        },
-        ...prevCurrencies.currencies.slice(prevSelectedCurrencyIndex + 1),
-      ],
-    };
-  });
-};
 
 // Fixes percentages so that the sum is 100%
 const fixPercentages = (
@@ -174,52 +119,24 @@ const fixPercentages = (
 };
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [storesDb, setStoresDb] = useLocalStorage<StoresHistV1>("storesDb", {
-    Version: 1,
-    Stores: [],
-    ExportedAtYear: 0,
-    ExportedAtMonth: 0,
-    ExportedAtDay: 0,
-    ExportedAtHour: 0,
-    ExportedAtMin: 0,
-    ExportedAt: "",
-  });
+  const { storesDbResponse } = useGetStores();
+  const {
+    currencyList,
+    setSelectedCurrency,
+    addNewCurrency,
+    deleteCurrency,
+    resetCurrency,
+    updatePrice,
+    currencySymbol,
+    personalPrices,
+    gamePrices,
+  } = useGetCurrencies();
+  const filters = useGetFilters();
 
-  const [currencyList, setCurrencyList] = useLocalStorage<CurrencyList>(
-    "currencyList",
-    {
-      selectedCurrency: "default",
-      currencies: [
-        { name: "default", symbol: "$", itemPrices: [], gamePrices: [] },
-      ],
-    }
-  );
   const [
     selectedVariants,
     setSelectedVariants,
   ] = useLocalStorage<SelectedVariants>("selectedVariant", {});
-
-  const [filterProfessions, setFilterProfessions] = useLocalStorage<string[]>(
-    "filterProfessions",
-    []
-  );
-
-  const [filterCraftStations, setFilterCraftStations] = useLocalStorage<
-    string[]
-  >("filterCraftStations", []);
-
-  const [filterName, setFilterName] = useLocalStorage<string>("filter", "");
-
-  const [filterWithRecipe, setFilterWithRecipe] = useLocalStorage<boolean>(
-    "filterRecipe",
-    true
-  );
-
-  const updatePriceMemo = useCallback(
-    (itemName: string, newPrice: number | undefined, currencyName?: string) =>
-      updatePrice(setCurrencyList, itemName, newPrice, currencyName),
-    [setCurrencyList]
-  );
 
   const [itemCostPercentages, setItemCostPercentages] = useLocalStorage<
     RecipeCostPercentage[]
@@ -266,123 +183,31 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setRecipeCraftAmmounts]
   );
 
-  const prices = useMemo(() => {
-    return (
-      currencyList.currencies.find(
-        (t) => t.name === currencyList.selectedCurrency
-      )?.itemPrices ?? []
-    );
-  }, [currencyList.currencies, currencyList.selectedCurrency]);
-
-  const gamePrices = useMemo(() => {
-    return (
-      currencyList.currencies.find(
-        (t) => t.name === currencyList.selectedCurrency
-      )?.gamePrices ?? []
-    ).reduce(
-      (agg, next) => ({
-        ...agg,
-        [next.ItemName]: [...(agg[next.ItemName] ?? []), next],
-      }),
-      {} as { [key: string]: GamePrice[] }
-    );
-  }, [currencyList.currencies, currencyList.selectedCurrency]);
-
-  const currencySymbol = useMemo(
-    () =>
-      currencyList.currencies.find(
-        (t) => t.name === currencyList.selectedCurrency
-      )?.symbol ?? "$",
-    [currencyList]
-  );
-
-  // Fetches last update and triggers state update if it changed
-  getStoresLastUpdate().then((lastUpdateResponse) => {
-    console.log("TODO: Figure out a way of only do this once every 2 minutes");
-    if (
-      lastUpdateResponse?.data?.success &&
-      lastUpdateResponse.data.data !== storesDb.ExportedAt
-    ) {
-      getStores().then((storesResponse) => {
-        if (storesResponse.data.success) {
-          // Updates stores database
-          setStoresDb(storesResponse.data.data);
-
-          // Merge with currencyList
-          const gameCurrencies = storesResponse.data.data.Stores.filter(
-            (t) => t.CurrencyName.indexOf("Credit") <= 0
-          )
-            .map((store) => ({
-              currency: store.CurrencyName,
-              items: store.AllOffers.map((offer) => ({
-                ...offer,
-                store: store.Name,
-                storeOwner: store.Owner,
-              })),
-            }))
-            .reduce(
-              (agg, t) => ({
-                ...agg,
-                [t.currency]: [...(agg[t.currency] ?? []), ...t.items],
-              }),
-              {} as { [key: string]: Array<unknown> }
-            );
-
-          const newCurrencies = [
-            // Update gamePrices on existing currencies
-            ...currencyList.currencies.map((currency) => ({
-              ...currency,
-              gamePrices: gameCurrencies[currency.name],
-            })),
-            // Creates new currencies from gamePrices
-            ...Object.keys(gameCurrencies)
-              .filter((currencyName) =>
-                currencyList.currencies.every(
-                  (currency) => currency.name !== currencyName
-                )
-              )
-              .map((currencyName) => ({
-                name: currencyName,
-                symbol: currencyName.substr(0, 2),
-                itemPrices: [],
-                gamePrices: gameCurrencies[currencyName],
-              })),
-          ] as Currency[];
-
-          setCurrencyList((prev) => ({
-            ...prev,
-            currencies: newCurrencies,
-          }));
-        }
-      });
-    }
-  });
+  console.log("rerender");
 
   return (
     <AppContext.Provider
       value={{
+        storesDb: storesDbResponse?.data?.data?.data ?? emptyStoresDb,
+        ...filters,
+
         currencyList,
-        setCurrencyList,
+        setSelectedCurrency,
+        addNewCurrency,
+        deleteCurrency,
+        resetCurrency,
+        updatePrice,
         currencySymbol,
-        prices,
-        updatePrice: updatePriceMemo,
+        personalPrices,
         gamePrices,
+
         selectedVariants,
         setSelectedVariants,
-        filterProfessions,
-        setFilterProfessions,
-        filterCraftStations,
-        setFilterCraftStations,
-        filterName,
-        setFilterName,
-        filterWithRecipe,
-        setFilterWithRecipe,
         itemCostPercentages,
         setItemCostPercentages,
         updateItemCostPercentage,
         getRecipeCraftAmmount,
         updateRecipeCraftAmmount,
-        storesDb,
       }}
     >
       {children}

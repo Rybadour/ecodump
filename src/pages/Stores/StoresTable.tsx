@@ -6,7 +6,7 @@ import { useGetColumns } from "./useGetColumns";
 
 export default () => {
   const { storesDb } = useAppContext();
-  console.log("storesDb", storesDb);
+  // Unique currency names for the filter
   const currencyNames = useMemo(
     () => [
       ...storesDb.Stores.map((t) => t.CurrencyName)
@@ -16,16 +16,23 @@ export default () => {
     ],
     [storesDb.Stores]
   );
+  // Unique owner names for the filter
   const ownerNames = useMemo(
-    () => storesDb.Stores.map((t) => t.Owner).filter(filterUnique),
+    () =>
+      storesDb.Stores.map((t) => t.Owner)
+        .filter(filterUnique)
+        .filter((t) => !!t),
     [storesDb.Stores]
   );
+
   const columns = useGetColumns(currencyNames, ownerNames);
   return (
     <>
-      <p>
-        Last exported on <b>{storesDb.ExportedAt}</b> GMT
-      </p>
+      {storesDb && storesDb.ExportedAt && (
+        <p>
+          Last exported on <b>{storesDb.ExportedAt}</b> GMT
+        </p>
+      )}
       <br />
       <Table
         dataSource={storesDb.Stores.sort((a, b) =>

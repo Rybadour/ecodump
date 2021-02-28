@@ -10,7 +10,7 @@ type PropTypes = {
 };
 
 export default ({ title, subTitle }: PropTypes) => {
-  const { currencyList, setCurrencyList } = useAppContext();
+  const { currencyList, setSelectedCurrency } = useAppContext();
 
   return (
     <PageHeader
@@ -26,15 +26,10 @@ export default ({ title, subTitle }: PropTypes) => {
           >
             <Tooltip title="Selected currency is used to calculate prices on all items tab">
               <Select
-                defaultValue={currencyList.selectedCurrency}
+                value={currencyList.selectedCurrency}
                 placeholder="Selected currency"
                 style={{ width: 120 }}
-                onChange={(currency) =>
-                  setCurrencyList((prev) => ({
-                    ...prev,
-                    selectedCurrency: currency,
-                  }))
-                }
+                onChange={setSelectedCurrency}
               >
                 {currencyList.currencies.map((currency) => (
                   <Option key={currency.name} value={currency.name}>

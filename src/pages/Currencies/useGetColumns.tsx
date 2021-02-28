@@ -14,7 +14,12 @@ import ItemPricesPopup from "./ItemPricesPopup";
 export const { Option } = Select;
 
 export const useGetColumns = () => {
-  const { currencyList, setCurrencyList } = useAppContext();
+  const {
+    currencyList,
+    setSelectedCurrency,
+    deleteCurrency,
+    resetCurrency,
+  } = useAppContext();
   return [
     getColumn("name"),
     getColumn("symbol"),
@@ -59,36 +64,14 @@ export const useGetColumns = () => {
               <Tooltip title="Select currency">
                 <Button
                   icon={<SelectOutlined />}
-                  onClick={() =>
-                    setCurrencyList((prev) => ({
-                      ...prev,
-                      selectedCurrency: currency.name,
-                    }))
-                  }
+                  onClick={() => setSelectedCurrency(currency.name)}
                 />
               </Tooltip>
             )}
             {
               <Popconfirm
                 title={`Are you sure to reset your prices for currency ${currency.name} with ${currency.itemPrices.length} prices?`}
-                onConfirm={() =>
-                  setCurrencyList((prev) => {
-                    const index = prev.currencies.findIndex(
-                      (t) => t.name === currency.name
-                    );
-                    return {
-                      ...prev,
-                      currencies: [
-                        ...prev.currencies.slice(0, index),
-                        {
-                          ...prev.currencies[index],
-                          itemPrices: [],
-                        },
-                        ...prev.currencies.slice(index + 1),
-                      ],
-                    };
-                  })
-                }
+                onConfirm={() => resetCurrency(currency.name)}
                 okText="Yes"
                 cancelText="No"
               >
@@ -102,20 +85,7 @@ export const useGetColumns = () => {
                 title={`Are you sure to delete currency with ${
                   currency.itemPrices?.length ?? 0
                 } prices?`}
-                onConfirm={() =>
-                  setCurrencyList((prev) => {
-                    const index = prev.currencies.findIndex(
-                      (t) => t.name === currency.name
-                    );
-                    return {
-                      ...prev,
-                      currencies: [
-                        ...prev.currencies.slice(0, index),
-                        ...prev.currencies.slice(index + 1),
-                      ],
-                    };
-                  })
-                }
+                onConfirm={() => deleteCurrency(currency.name)}
                 okText="Yes"
                 cancelText="No"
               >

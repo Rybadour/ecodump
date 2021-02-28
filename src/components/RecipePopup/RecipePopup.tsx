@@ -22,7 +22,7 @@ type PropTypes = {
 export default ({ recipe, buttonText, description }: PropTypes) => {
   const [visible, setVisible] = useState(false);
   const {
-    prices,
+    personalPrices,
     itemCostPercentages,
     setItemCostPercentages,
     getRecipeCraftAmmount,
@@ -35,7 +35,7 @@ export default ({ recipe, buttonText, description }: PropTypes) => {
   const ingredients = recipe.ingredients
     .map((ing) => ({
       ...ing,
-      price: prices.find((price) => price.itemName === ing.name)?.price,
+      price: personalPrices.find((price) => price.itemName === ing.name)?.price,
     }))
     .map((ing) => ({
       ...ing,
@@ -146,7 +146,8 @@ export default ({ recipe, buttonText, description }: PropTypes) => {
       priceM5: formatNumber(
         ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100
       ),
-      price: prices.find((price) => price.itemName === prod.name)?.price,
+      price: personalPrices.find((price) => price.itemName === prod.name)
+        ?.price,
     };
   });
 

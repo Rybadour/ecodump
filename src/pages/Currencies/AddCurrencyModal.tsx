@@ -10,25 +10,13 @@ const layout = {
 
 export default () => {
   const [form] = Form.useForm();
-  const { setCurrencyList, currencyList } = useAppContext();
+  const { currencyList, addNewCurrency } = useAppContext();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleOk = () => {
     form.validateFields().then((values) => {
+      console.log(values, values.currency);
       form.resetFields();
-      setCurrencyList((prev) => ({
-        ...prev,
-        currencies: [
-          ...prev.currencies,
-          {
-            name: values.name,
-            symbol: values.symbol,
-            itemPrices:
-              currencyList.currencies.find((t) => t.name === values.currency)
-                ?.itemPrices ?? [],
-            gamePrices: [],
-          },
-        ],
-      }));
+      addNewCurrency(values.name, values.symbol, values.currency);
 
       setIsModalVisible(false);
       message.success({

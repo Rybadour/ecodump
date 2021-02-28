@@ -7,15 +7,18 @@ const filterMap = (t: string) => ({
   value: t,
 });
 
+const compareProtected = (a: string, b: string) =>
+  !a ? 1 : !b ? -1 : a.localeCompare(b || "");
+
 export const useGetColumns = (currencyNames: string[], owners: string[]) => {
   return [
     {
       ...getColumn("Name"),
-      sorter: (a: StoresV1, b: StoresV1) => a.Name.localeCompare(b.Name),
+      sorter: (a: StoresV1, b: StoresV1) => compareProtected(a.Name, b.Name),
     },
     {
       ...getColumn("Owner"),
-      sorter: (a: StoresV1, b: StoresV1) => a.Owner.localeCompare(b.Owner),
+      sorter: (a: StoresV1, b: StoresV1) => compareProtected(a.Owner, b.Owner),
       filters: owners.map(filterMap),
       onFilter: (value: string | number | boolean, record: StoresV1) =>
         record.Owner.includes(value as string),

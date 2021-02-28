@@ -11,7 +11,7 @@ import ItemRecipesPopover from "../../components/ItemRecipesPopover";
 export const { Option } = Select;
 
 export const useGetColumns = () => {
-  const { prices, updatePrice } = useAppContext();
+  const { personalPrices, updatePrice } = useAppContext();
   return [
     {
       ...getColumn("key", "Name"),
@@ -30,7 +30,7 @@ export const useGetColumns = () => {
         return (
           <>
             <InputNumber
-              value={prices.find((t) => t.itemName === item.key)?.price}
+              value={personalPrices.find((t) => t.itemName === item.key)?.price}
               width="20"
               onChange={(newPrice) => updatePrice(item.key, Number(newPrice))}
             />
