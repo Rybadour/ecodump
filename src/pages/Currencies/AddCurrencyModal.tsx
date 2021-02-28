@@ -14,7 +14,6 @@ export default () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleOk = () => {
     form.validateFields().then((values) => {
-      console.log(values, values.currency);
       form.resetFields();
       addNewCurrency(values.name, values.symbol, values.currency);
 

@@ -28,8 +28,6 @@ export default () => {
 
   const storesDb = storesDbResponse?.data?.data?.data;
   const fetchedGameCurrencies = useMemo(() => {
-    console.log("consolidating game currencies");
-
     return storesDb?.Stores.map((store) => ({
       currency: store.CurrencyName,
       isCredit: store.CurrencyName.indexOf("Credit") >= 0,

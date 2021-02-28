@@ -22,7 +22,7 @@ export interface RecipeCostProdPercentage {
 }
 
 export interface RecipeCostPercentage {
-  itemName: string;
+  recipeKey: string;
   percentages: RecipeCostProdPercentage[];
 }
 

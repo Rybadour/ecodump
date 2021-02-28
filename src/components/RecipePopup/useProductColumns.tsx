@@ -5,7 +5,7 @@ import { getColumn } from "../../utils/helpers";
 import { RecipeVariant } from "../../utils/typedData";
 
 export default (recipe: RecipeVariant) => {
-  const { updatePrice, updateItemCostPercentage } = useAppContext();
+  const { updatePrice, updateRecipeCostPercentage } = useAppContext();
 
   return [
     getColumn("name"),
@@ -19,7 +19,7 @@ export default (recipe: RecipeVariant) => {
               value={costPercent}
               width="20"
               onChange={(value) =>
-                updateItemCostPercentage(recipe.name, item.name, Number(value))
+                updateRecipeCostPercentage(recipe, item.name, Number(value))
               }
             />
           </Tooltip>

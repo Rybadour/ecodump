@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { allItems, Item } from "../../utils/typedData";
 import RecipePopup from "../RecipePopup";
 import { CloseOutlined } from "@ant-design/icons";
+import PopupWrapper from "../PopupWrapper";
 type PropTypes = {
   itemName: string;
 };
@@ -31,11 +32,14 @@ export default ({ itemName }: PropTypes) => {
         } @ ${recipeVariant.craftStation ?? "None"}`;
         return (
           <div key={recipeVariant.key}>
-            <RecipePopup
-              description={requirements}
-              recipe={recipeVariant}
+            <PopupWrapper
+              popupTitle={`Recipe ${recipeVariant.name}`}
               buttonText={recipeVariant.key}
-            />
+              buttonTooltip={`Click to calculate the item price using the recipe ${recipeVariant.key} in a popover`}
+            >
+              <RecipePopup description={requirements} recipe={recipeVariant} />
+            </PopupWrapper>
+
             {!(variants && variants.length === 1) && `(${requirements})`}
           </div>
         );

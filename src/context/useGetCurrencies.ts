@@ -6,6 +6,7 @@ import useLocalStorage from "./useLocalStorage";
 const getNewPriceArray = (
   prevPrices: ItemPrice[],
   itemPriceIndex: number,
+  itemName: string,
   newPrice: number | undefined
 ) => {
   // Delete itemPrice if newPrice is undefined
@@ -25,7 +26,18 @@ const getNewPriceArray = (
     ];
   }
 
-  // If item is not found, return prev array (just a failsafe since the item should always be found)
+  // Add new itemPrice if it doesn't exist in array yet
+  if (newPrice !== undefined && itemPriceIndex < 0) {
+    return [
+      ...prevPrices,
+      {
+        itemName: itemName,
+        price: newPrice,
+      },
+    ];
+  }
+
+  // just a failsafe, all cases that matter are covered
   return prevPrices;
 };
 
@@ -45,6 +57,7 @@ const updatePrice = (
     // Currency prices to update
     const prevPrices =
       prevCurrencies.currencies[prevSelectedCurrencyIndex]?.itemPrices ?? [];
+
     // Item to update
     const index = prevPrices.findIndex((t) => t.itemName === itemName);
 
@@ -55,7 +68,7 @@ const updatePrice = (
         ...prevCurrencies.currencies.slice(0, prevSelectedCurrencyIndex),
         {
           ...prevCurrencies.currencies[prevSelectedCurrencyIndex],
-          itemPrices: getNewPriceArray(prevPrices, index, newPrice),
+          itemPrices: getNewPriceArray(prevPrices, index, itemName, newPrice),
         },
         ...prevCurrencies.currencies.slice(prevSelectedCurrencyIndex + 1),
       ],
