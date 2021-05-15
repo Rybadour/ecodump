@@ -87,3 +87,5 @@ export type CurrencyList = {
   selectedCurrency: string;
   currencies: Currency[];
 };
+
+export type GamePriceCurrencies = { [key: string]: Array<GamePrice> };

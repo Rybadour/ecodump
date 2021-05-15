@@ -3,6 +3,7 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
 } from "react";
 import useGetCurrencies from "./context/useGetCurrencies";
 import useGetFilters from "./context/useGetFilters";
@@ -101,7 +102,7 @@ const AppContext = React.createContext<{
 });
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const { storesDbResponse } = useGetStores();
+  const { storesDb, fetchedGameCurrencies } = useGetStores();
   const {
     currencyList,
     setSelectedCurrency,
@@ -112,23 +113,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     currencySymbol,
     personalPrices,
     gamePrices,
+    updateWithGameCurrencies,
   } = useGetCurrencies();
   const filters = useGetFilters();
 
-  const {
-    getRecipeCostPercentage,
-    updateRecipeCostPercentage,
-  } = useRecipeCostPercentage();
+  const { getRecipeCostPercentage, updateRecipeCostPercentage } =
+    useRecipeCostPercentage();
 
-  const [
-    selectedVariants,
-    setSelectedVariants,
-  ] = useLocalStorage<SelectedVariants>("selectedVariant", {});
+  const [selectedVariants, setSelectedVariants] =
+    useLocalStorage<SelectedVariants>("selectedVariant", {});
 
-  const [
-    recipeCraftAmmounts,
-    setRecipeCraftAmmounts,
-  ] = useLocalStorage<RecipeCraftAmmount>("RecipeCraftAmmount", {});
+  const [recipeCraftAmmounts, setRecipeCraftAmmounts] =
+    useLocalStorage<RecipeCraftAmmount>("RecipeCraftAmmount", {});
 
   const getRecipeCraftAmmount = useCallback(
     (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 100,
@@ -142,10 +138,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setRecipeCraftAmmounts]
   );
 
+  // Update currency list with fetchedGameCurrencies
+  useEffect(() => {
+    fetchedGameCurrencies != null &&
+      updateWithGameCurrencies(fetchedGameCurrencies);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchedGameCurrencies]);
+
   return (
     <AppContext.Provider
       value={{
-        storesDb: storesDbResponse?.data?.data?.data ?? emptyStoresDb,
+        storesDb: storesDb ?? emptyStoresDb,
         ...filters,
 
         currencyList,

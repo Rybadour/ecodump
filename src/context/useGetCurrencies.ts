@@ -1,5 +1,11 @@
 import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
-import { CurrencyList, GamePrice, ItemPrice } from "../types";
+import {
+  Currency,
+  CurrencyList,
+  GamePrice,
+  GamePriceCurrencies,
+  ItemPrice,
+} from "../types";
 import { currencyListKey } from "../utils/queryKeys";
 import useLocalStorage from "./useLocalStorage";
 
@@ -189,6 +195,34 @@ export default () => {
     [setCurrencyList]
   );
 
+  const updateWithGameCurrencies = (gameCurrencies: GamePriceCurrencies) => {
+    const newCurrencies = [
+      // Update gamePrices on existing currencies
+      ...currencyList.currencies.map((currency) => ({
+        ...currency,
+        gamePrices: gameCurrencies[currency.name],
+      })),
+      // Creates new currencies from gamePrices
+      ...Object.keys(gameCurrencies)
+        .filter((currencyName) =>
+          currencyList.currencies.every(
+            (currency) => currency.name !== currencyName
+          )
+        )
+        .map((currencyName) => ({
+          name: currencyName,
+          symbol: currencyName.substr(0, 2),
+          itemPrices: [],
+          gamePrices: gameCurrencies[currencyName],
+        })),
+    ] as Currency[];
+
+    setCurrencyList((prev) => ({
+      ...prev,
+      currencies: newCurrencies,
+    }));
+  };
+
   return {
     currencyList,
     updatePrice: updatePriceCallback,
@@ -199,5 +233,6 @@ export default () => {
     addNewCurrency,
     deleteCurrency,
     resetCurrency,
+    updateWithGameCurrencies,
   };
 };
