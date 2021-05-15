@@ -32,24 +32,10 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
-        <h3>0.1.3 (2021-01-21)</h3>
-        <h4>Features</h4>
+        <h3>0.1.4 (2021-05-15)</h3>
+        <h4>Tasks</h4>
         <ul>
-          <li>add dropdown to easily select default currency</li>
-          <li>add sort and filter on stores table</li>
-          <li>added store list page</li>
-          <li>updated exported data</li>
-        </ul>
-        <h3>0.1.2 (2020-12-30)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>add skill and table requirements on item recipe popover</li>
-          <li>add table/profession requirement in recipes popover</li>
-          <li>replace recipes dropdown in item list</li>
-        </ul>
-        <h4>Bug Fixes</h4>
-        <ul>
-          <li>craft amount is now working as expected</li>
+          <li>Performance improvement</li>
         </ul>
       </div>
     </div>
