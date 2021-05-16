@@ -17,6 +17,11 @@ export default () => {
     string[]
   >("filterCraftStations", []);
 
+  const [filterCredits, setFilterCredits] = useLocalStorage<boolean>(
+    "filterCredits",
+    true
+  );
+
   return {
     filterName,
     setFilterName,
@@ -29,5 +34,8 @@ export default () => {
 
     filterCraftStations,
     setFilterCraftStations,
+
+    filterCredits,
+    setFilterCredits,
   };
 };

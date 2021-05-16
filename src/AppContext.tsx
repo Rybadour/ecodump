@@ -40,6 +40,8 @@ const AppContext = React.createContext<{
   setFilterName: Dispatch<SetStateAction<string>>;
   filterWithRecipe: boolean;
   setFilterWithRecipe: Dispatch<SetStateAction<boolean>>;
+  filterCredits: boolean;
+  setFilterCredits: Dispatch<SetStateAction<boolean>>;
 
   currencyList: CurrencyList;
   setSelectedCurrency: (currencyName: string) => void;
@@ -81,6 +83,8 @@ const AppContext = React.createContext<{
   setFilterName: () => undefined,
   filterWithRecipe: true,
   setFilterWithRecipe: () => undefined,
+  filterCredits: true,
+  setFilterCredits: () => undefined,
 
   currencyList: { selectedCurrency: "", currencies: [] },
   setSelectedCurrency: () => undefined,
@@ -145,13 +149,22 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedGameCurrencies]);
 
+  const filteredCurrencyList = {
+    ...currencyList,
+    currencies: !filters.filterCredits
+      ? currencyList.currencies
+      : currencyList.currencies.filter(
+          (currency) => currency.name.indexOf("Credit") < 0
+        ),
+  };
+
   return (
     <AppContext.Provider
       value={{
         storesDb: storesDb ?? emptyStoresDb,
         ...filters,
 
-        currencyList,
+        currencyList: filteredCurrencyList,
         setSelectedCurrency,
         addNewCurrency,
         deleteCurrency,

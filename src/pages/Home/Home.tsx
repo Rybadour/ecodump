@@ -32,6 +32,15 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.0.0 (2021-05-16)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Add personal credit filter</li>
+        </ul>
+        <h4>Tasks</h4>
+        <ul>
+          <li>Minor fix: remove tags from currency name</li>
+        </ul>
         <h3>0.1.4 (2021-05-15)</h3>
         <h4>Tasks</h4>
         <ul>
