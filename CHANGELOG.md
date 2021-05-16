@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/PedroFonseca/ecodump/compare/v0.1.4...v1.0.0) (2021-05-16)
+
+
+### Features
+
+* Add personal credit filter ([65c6533](https://github.com/PedroFonseca/ecodump/commit/65c6533ff938f6e3423662609d7697aadfcabf1c))
+
+
+### Bug Fixes
+
+* remove tags from currency name ([d8327b0](https://github.com/PedroFonseca/ecodump/commit/d8327b0b2c97d7569ec9524848416503139180bb))
+
 ### [0.1.4](https://github.com/PedroFonseca/ecodump/compare/v0.1.3...v0.1.4) (2021-05-15)
 
 ### [0.1.3](https://github.com/PedroFonseca/ecodump/compare/v0.1.2...v0.1.3) (2021-01-30)
