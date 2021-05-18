@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/PedroFonseca/ecodump/compare/v1.0.0...v1.1.0) (2021-05-18)
+
+
+### Features
+
+* added recipe margin on recipe popup ([ccd3572](https://github.com/PedroFonseca/ecodump/commit/ccd3572aa5473daae425fbad3e49c2269c1478db))
+
 ## [1.0.0](https://github.com/PedroFonseca/ecodump/compare/v0.1.4...v1.0.0) (2021-05-16)
 
 
