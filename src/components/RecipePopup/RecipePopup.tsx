@@ -5,6 +5,8 @@ import useIngredientColumns from "./useIngredientColumns";
 import useProductColumns from "./useProductColumns";
 import { useAppContext } from "../../AppContext";
 import RecipeCraftAmmount from "./RecipeCraftAmmount";
+import RecipeMargin from './RecipeMargin';
+import { convertToMultiplier } from "../../utils/helpers";
 
 const calcAmmount = (ammount: number, craftAmmout: number) => {
   return Math.ceil(ammount * craftAmmout) / craftAmmout;
@@ -22,10 +24,12 @@ export default ({ recipe, description }: PropTypes) => {
     personalPrices,
     getRecipeCostPercentage,
     getRecipeCraftAmmount,
+    getRecipeMargin,
   } = useAppContext();
   const ingredientColumns = useIngredientColumns();
   const productColumns = useProductColumns(recipe);
   const craftAmmount = getRecipeCraftAmmount(recipe.key);
+  const marginMultiplier = convertToMultiplier(getRecipeMargin(recipe.key));
 
   // Finds unit price for each item and then calculate price of recipe ingredients based on module used
   const ingredients = useMemo(
@@ -134,38 +138,28 @@ export default ({ recipe, description }: PropTypes) => {
           key: prod.name,
           costPercent,
           priceM0: formatNumber(
-            ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM0 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           priceM1: formatNumber(
-            ((totalIngredientCosts.priceM1 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM1 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           priceM2: formatNumber(
-            ((totalIngredientCosts.priceM2 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM2 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           priceM3: formatNumber(
-            ((totalIngredientCosts.priceM3 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM3 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           priceM4: formatNumber(
-            ((totalIngredientCosts.priceM4 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM4 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           priceM5: formatNumber(
-            ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100
+            ((totalIngredientCosts.priceM5 / prod.ammount) * costPercent) / 100 * marginMultiplier
           ),
           price: personalPrices.find((price) => price.itemName === prod.name)
             ?.price,
         };
       }),
-    [
-      personalPrices,
-      recipe.products,
-      recipeCostPercentage,
-      totalIngredientCosts.priceM0,
-      totalIngredientCosts.priceM1,
-      totalIngredientCosts.priceM2,
-      totalIngredientCosts.priceM3,
-      totalIngredientCosts.priceM4,
-      totalIngredientCosts.priceM5,
-    ]
+    [marginMultiplier, personalPrices, recipe.products, recipeCostPercentage, totalIngredientCosts.priceM0, totalIngredientCosts.priceM1, totalIngredientCosts.priceM2, totalIngredientCosts.priceM3, totalIngredientCosts.priceM4, totalIngredientCosts.priceM5]
   );
 
   return (
@@ -176,6 +170,7 @@ export default ({ recipe, description }: PropTypes) => {
       <RecipeCraftAmmount recipeName={recipe.key} />
       <Table dataSource={datasourceIngredients} columns={ingredientColumns} />
       <h3>Products</h3>
+      <RecipeMargin recipeName={recipe.key}/>
       <Table dataSource={products} columns={productColumns} />
     </div>
   );

@@ -20,3 +20,5 @@ export const getColumn = (name: string, title?: string) => ({
 const removeTagsRegex = /(<([^>]+)>)/gi;
 export const removeXmlTags = (name: string) =>
   name.replace(removeTagsRegex, "");
+
+export const convertToMultiplier= (margin: number) => (margin / 100) + 1;

@@ -10,7 +10,7 @@ export default ({ recipeName }: PropTypes) => {
   const { getRecipeCraftAmmount, updateRecipeCraftAmmount } = useAppContext();
 
   return (
-    <div>
+    <div style={{paddingBottom: "8px"}}>
       <span>Craft amount:</span> &nbsp;
       <Radio.Group
         value={getRecipeCraftAmmount(recipeName).toFixed(0)}

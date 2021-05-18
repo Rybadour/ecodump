@@ -32,6 +32,11 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.1.0 (2021-05-18)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Added recipe margin on recipe popup</li>
+        </ul>
         <h3>1.0.0 (2021-05-16)</h3>
         <h4>Features</h4>
         <ul>
@@ -39,7 +44,7 @@ export default () => {
         </ul>
         <h4>Tasks</h4>
         <ul>
-          <li>Minor fix: remove tags from currency name</li>
+          <li>Minor fix: remove xml tags from currency name</li>
         </ul>
         <h3>0.1.4 (2021-05-15)</h3>
         <h4>Tasks</h4>

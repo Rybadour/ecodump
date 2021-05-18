@@ -67,7 +67,7 @@ export default () => {
           (!selectedVariant
             ? undefined
             : item.productInRecipes.find((t) =>
-                t.variants.some((t) => t.key === selectedVariant)
+                t.variants.some((tt) => tt.key === selectedVariant)
               )?.craftStation) ?? "none";
 
         return filterWithRecipe

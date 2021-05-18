@@ -34,6 +34,10 @@ export interface RecipeCraftAmmount {
   [recipeName: string]: number;
 }
 
+export interface RecipeMargin {
+  [recipeName: string]: number;
+}
+
 export type RecipeVariant = {
   untranslated: string;
   ingredients: string[][];

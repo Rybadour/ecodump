@@ -16,6 +16,7 @@ import {
   ItemPrice,
   RecipeCostPercentage,
   RecipeCraftAmmount,
+  RecipeMargin,
   SelectedVariants,
 } from "./types";
 import { RecipeVariant } from "./utils/typedData";
@@ -65,6 +66,8 @@ const AppContext = React.createContext<{
   setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>;
   getRecipeCraftAmmount: (recipeName: string) => number;
   updateRecipeCraftAmmount: (recipeName: string, newAmmount: number) => void;
+  getRecipeMargin: (recipeName: string) => number;
+  updateRecipeMargin: (recipeName: string, newMargin: number) => void;
 
   getRecipeCostPercentage: (recipe: RecipeVariant) => RecipeCostPercentage;
   updateRecipeCostPercentage: (
@@ -100,6 +103,8 @@ const AppContext = React.createContext<{
   setSelectedVariants: () => undefined,
   getRecipeCraftAmmount: () => 0,
   updateRecipeCraftAmmount: () => undefined,
+  getRecipeMargin: () => 0,
+  updateRecipeMargin: () => undefined,
 
   getRecipeCostPercentage: () => ({ recipeKey: "", percentages: [] }),
   updateRecipeCostPercentage: () => undefined,
@@ -131,7 +136,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     useLocalStorage<RecipeCraftAmmount>("RecipeCraftAmmount", {});
 
   const getRecipeCraftAmmount = useCallback(
-    (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 100,
+    (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 1,
     [recipeCraftAmmounts]
   );
 
@@ -140,6 +145,21 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       setRecipeCraftAmmounts((prev) => ({ ...prev, [recipeName]: newAmmount }));
     },
     [setRecipeCraftAmmounts]
+  );
+
+  const [recipeMargins, setRecipeMargins] =
+    useLocalStorage<RecipeMargin>("RecipeMargins", {});
+
+  const getRecipeMargin = useCallback(
+    (recipeName: string) => recipeMargins[recipeName] ?? 1,
+    [recipeMargins]
+  );
+
+  const updateRecipeMargin = useCallback(
+    (recipeName: string, newMargin: number) => {
+      setRecipeMargins((prev) => ({ ...prev, [recipeName]: newMargin }));
+    },
+    [setRecipeMargins]
   );
 
   // Update currency list with fetchedGameCurrencies
@@ -178,6 +198,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setSelectedVariants,
         getRecipeCraftAmmount,
         updateRecipeCraftAmmount,
+        getRecipeMargin,
+        updateRecipeMargin,
 
         getRecipeCostPercentage,
         updateRecipeCostPercentage,
