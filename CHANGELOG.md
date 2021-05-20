@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/PedroFonseca/ecodump/compare/v1.1.0...v1.2.0) (2021-05-20)
+
+
+### Features
+
+* added support for tags ([c424a60](https://github.com/PedroFonseca/ecodump/commit/c424a60f7df33eb53c3695ebd68a0a8185a1161c))
+
 ## [1.1.0](https://github.com/PedroFonseca/ecodump/compare/v1.0.0...v1.1.0) (2021-05-18)
 
 
