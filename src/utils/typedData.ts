@@ -1,4 +1,5 @@
 import craftingRecipes from "../gameData/craftingRecipes";
+import itemData from "../gameData/itemData";
 import { filterUnique } from "./helpers";
 export type Recipe = {
   key: string;
@@ -140,3 +141,5 @@ export const allCraftStations = Object.values(allRecipes)
   .filter((t) => t.length > 0)
   .filter(filterUnique)
   .sort();
+
+export const allTags = itemData?.tags as Record<string, string[]>;

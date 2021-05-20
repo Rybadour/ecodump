@@ -5,7 +5,7 @@ import { getColumn } from "../../utils/helpers";
 import { Item } from "../../utils/typedData";
 import { InputNumber, Popconfirm, Tooltip, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import ItemGamePricesPopup from "../../components/RecipePopup/ItemGamePricesPopup";
+import ItemGamePricesPopup from "../../components/ItemGamePricesPopup";
 import ItemRecipesPopover from "../../components/ItemRecipesPopover";
 
 export const { Option } = Select;

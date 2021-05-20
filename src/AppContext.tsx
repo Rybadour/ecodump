@@ -151,7 +151,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     useLocalStorage<RecipeMargin>("RecipeMargins", {});
 
   const getRecipeMargin = useCallback(
-    (recipeName: string) => recipeMargins[recipeName] ?? 1,
+    (recipeName: string) => recipeMargins[recipeName] ?? 0,
     [recipeMargins]
   );
 

@@ -32,6 +32,11 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.2.0 (2021-05-20)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Added support for tag's on recipe popup</li>
+        </ul>
         <h3>1.1.0 (2021-05-18)</h3>
         <h4>Features</h4>
         <ul>

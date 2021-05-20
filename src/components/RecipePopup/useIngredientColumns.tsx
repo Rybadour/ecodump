@@ -3,7 +3,9 @@ import React from "react";
 import { useAppContext } from "../../AppContext";
 import { getColumn } from "../../utils/helpers";
 import ItemRecipesPopover from "../ItemRecipesPopover";
-import ItemGamePricesPopup from "./ItemGamePricesPopup";
+import TagItemsPopover from "../TagItemsPopover";
+import ItemGamePricesPopup from "../ItemGamePricesPopup";
+import TagGamePricesPopover from "../TagGamePricesPopover";
 
 type Ing = {
   name: string;
@@ -57,18 +59,22 @@ export default () => {
   return [
     {
       ...getColumn("name"),
-      render: (name: string, item: { tag: string }) =>
-        item.tag === "COST" ? (
-          <>{name}</>
-        ) : (
-          <ItemRecipesPopover itemName={name} />
-        ),
+      render: (name: string, item: { tag: string }) => {
+        switch (item.tag) {
+          case "TAG": return <TagItemsPopover tag={name} />
+          case "ITEM": return <ItemRecipesPopover itemName={name} />;
+          default: return <>{name}</>;
+        }
+      }
     },
     {
       ...getColumn("gamePrices", "Game prices"),
       render: (_: unknown, item: { tag: string; name: string }) => {
-        if (item.tag === "COST") return;
-        return <ItemGamePricesPopup itemKey={item.name} />;
+        switch (item.tag) {
+          case "TAG": return <TagGamePricesPopover tag={item.name} />
+          case "ITEM": return <ItemGamePricesPopup itemKey={item.name} />;
+          default: return null;
+        }
       },
     },
     {

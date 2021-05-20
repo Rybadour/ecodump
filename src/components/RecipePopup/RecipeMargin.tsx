@@ -14,7 +14,7 @@ export default ({ recipeName }: PropTypes) => {
       <span>Recipe margin: </span>&nbsp;
         <InputNumber
         min={0}
-        max={25}
+        max={50}
         value={getRecipeMargin(recipeName)}
         onChange={(value) => updateRecipeMargin(recipeName, Number(value))}
         style={{width: '60px'}}
@@ -24,7 +24,7 @@ export default ({ recipeName }: PropTypes) => {
       </Tooltip>
       <Slider
           min={0}
-          max={25}
+          max={50}
           value={getRecipeMargin(recipeName)}
           onChange={(value: number) => updateRecipeMargin(recipeName, value)}
           style={{width: '400px', marginLeft: '20px'}}

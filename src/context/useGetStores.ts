@@ -27,10 +27,21 @@ export default () => {
     }
   );
 
-  const storesDb = storesDbResponse?.data?.data?.data;
+  const storesDb = useMemo(()=> {
+    const storeData = storesDbResponse?.data?.data?.data;
+    if (!storeData) return undefined;
+    return {
+      ...storeData,
+      Stores: storeData.Stores.map(store => ({
+        ...store,
+        Name: removeXmlTags(store.Name),
+        CurrencyName: removeXmlTags(store.CurrencyName),
+      }))}
+  }, [storesDbResponse]);
+
   const fetchedGameCurrencies = useMemo(() => {
     return storesDb?.Stores.map((store) => ({
-      currency: removeXmlTags(store.CurrencyName),
+      currency: store.CurrencyName,
       items: store.AllOffers.map((offer) => ({
         ...offer,
         store: store.Name,
