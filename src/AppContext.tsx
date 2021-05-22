@@ -147,8 +147,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setRecipeCraftAmmounts]
   );
 
-  const [recipeMargins, setRecipeMargins] =
-    useLocalStorage<RecipeMargin>("RecipeMargins", {});
+  const [recipeMargins, setRecipeMargins] = useLocalStorage<RecipeMargin>(
+    "RecipeMargins",
+    {}
+  );
 
   const getRecipeMargin = useCallback(
     (recipeName: string) => recipeMargins[recipeName] ?? 0,
