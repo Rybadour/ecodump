@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/PedroFonseca/ecodump/compare/v1.2.0...v1.2.1) (2021-05-22)
+
+
+### Bug Fixes
+
+* fixed hook performance issue ([4176edc](https://github.com/PedroFonseca/ecodump/commit/4176edcb5d39e8152c68205343c5a9dccec797e4))
+
 ## [1.2.0](https://github.com/PedroFonseca/ecodump/compare/v1.1.0...v1.2.0) (2021-05-20)
 
 
