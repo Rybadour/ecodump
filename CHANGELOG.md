@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/PedroFonseca/ecodump/compare/v1.2.1...v1.3.0) (2021-06-15)
+
+
+### Features
+
+* Started using the recipes exported from db ([820ddfa](https://github.com/PedroFonseca/ecodump/commit/820ddfa1b6f1e384a833c02907471fbe3272e5ce))
+
 ### [1.2.1](https://github.com/PedroFonseca/ecodump/compare/v1.2.0...v1.2.1) (2021-05-22)
 
 
