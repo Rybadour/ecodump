@@ -4,9 +4,7 @@ import { useQuery } from "react-query";
 import { storesKey, storesLastUpdateKey } from "../utils/queryKeys";
 import { GamePriceCurrencies } from "../types";
 import { removeXmlTags } from "../utils/helpers";
-
-const min2 = 1000 * 60 * 2;
-const min30 = 1000 * 60 * 30;
+import { min2, min30 } from "../utils/constants";
 
 export default () => {
   const storesLastUpdateResponse = useQuery(

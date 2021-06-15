@@ -4,7 +4,7 @@ import { allTags, formatNumber } from "../../utils/typedData";
 import { CloseOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { getColumn } from "../../utils/helpers";
 import { useAppContext } from "../../AppContext";
-import ItemGamePricesPopover from '../ItemGamePricesPopup/ItemGamePricesPopover';
+import ItemGamePricesPopover from "../ItemGamePricesPopup/ItemGamePricesPopover";
 
 type PropTypes = {
   tag: string;
@@ -20,50 +20,74 @@ export default ({ tag }: PropTypes) => {
 
   const pricesOfItemsInTag = itemsInTag.map((itemKey: string) => {
     const itemGamePrices = gamePrices[itemKey] ?? [];
-    const meanValueCalc = itemGamePrices.filter((t) => !t.Buying)
-    .reduce(
-      (agg1, next1) => ({
-        sum: agg1.sum + next1.Price * next1.Quantity,
-        count: agg1.count + next1.Quantity,
-      }),
-      { sum: 0, count: 0 } as { sum: number; count: number }
-    );
+    const meanValueCalc = itemGamePrices
+      .filter((t) => !t.Buying)
+      .reduce(
+        (agg1, next1) => ({
+          sum: agg1.sum + next1.Price * next1.Quantity,
+          count: agg1.count + next1.Quantity,
+        }),
+        { sum: 0, count: 0 } as { sum: number; count: number }
+      );
     return {
       name: itemKey,
       itemGamePrices,
-      meanPrice: meanValueCalc.count > 0
-        ? formatNumber(meanValueCalc.sum / meanValueCalc.count)
-        : undefined,
+      meanPrice:
+        meanValueCalc.count > 0
+          ? formatNumber(meanValueCalc.sum / meanValueCalc.count)
+          : undefined,
     };
   });
-  const minMeanPrice = Math.min.apply(null, pricesOfItemsInTag.map(t => t.meanPrice).filter(t => t !== undefined) as number[]);
-    
+
+  if (
+    !pricesOfItemsInTag ||
+    pricesOfItemsInTag?.length === 0 ||
+    pricesOfItemsInTag.reduce(
+      (prev, t) => prev + t.itemGamePrices.length,
+      0
+    ) === 0
+  ) {
+    return <>NA</>;
+  }
+
+  const minMeanPrice = Math.min.apply(
+    null,
+    pricesOfItemsInTag
+      .map((t) => t.meanPrice)
+      .filter((t) => t !== undefined) as number[]
+  );
+
   const columns = [
-    getColumn('name'),
+    getColumn("name"),
     {
-      ...getColumn('meanPrice'),
+      ...getColumn("meanPrice"),
       render: (meanPrice: number | undefined) => {
-        if (meanPrice){
+        if (meanPrice) {
           return (
-            <Tooltip title={`Fix this calculated value as your price for tag ${tag}`}>
+            <Tooltip
+              title={`Fix this calculated value as your price for tag ${tag}`}
+            >
               <Button
                 type="primary"
                 onClick={() => updatePrice(tag, meanPrice)}
-                >
+              >
                 {meanPrice}
               </Button>
-            </Tooltip>);
+            </Tooltip>
+          );
         }
         return <>?</>;
-      }
+      },
     },
     {
-      ...getColumn('name', 'game prices'),
-      render: (itemKey: string) => <ItemGamePricesPopover itemKey={itemKey} tagName={tag} />
-    }
+      ...getColumn("name", "game prices"),
+      render: (itemKey: string) => (
+        <ItemGamePricesPopover itemKey={itemKey} tagName={tag} />
+      ),
+    },
   ];
 
-  const content = <Table dataSource={pricesOfItemsInTag} columns={columns} />
+  const content = <Table dataSource={pricesOfItemsInTag} columns={columns} />;
 
   if (itemsInTag && itemsInTag.length === 1) {
     return content;
@@ -71,43 +95,42 @@ export default ({ tag }: PropTypes) => {
   return (
     <>
       {minMeanPrice !== undefined && minMeanPrice >= 0 ? (
-        <Tooltip title={`Fix this calculated value as your price for tag ${tag}`}>
-          <Button
-            type="primary"
-            onClick={() => updatePrice(tag, minMeanPrice)}
-          >
+        <Tooltip
+          title={`Fix this calculated value as your price for tag ${tag}`}
+        >
+          <Button type="primary" onClick={() => updatePrice(tag, minMeanPrice)}>
             {minMeanPrice}
           </Button>
         </Tooltip>
       ) : (
         "?"
       )}
-    <Popover
-      onVisibleChange={(vis) => setVisible(vis)}
-      visible={visible}
-      placement="bottom"
-      content={content}
-      title={
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h3>Prices for items in tag {tag}</h3>
-          <Button
-            onClick={() => setVisible(false)}
-            type="link"
-            icon={<CloseOutlined />}
-          />
-        </div>
-      }
-      style={{ cursor: "pointer" }}
-      trigger="click"
-    >
-      <Tooltip
+      <Popover
+        onVisibleChange={(vis) => setVisible(vis)}
+        visible={visible}
+        placement="bottom"
+        content={content}
+        title={
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h3>Prices for items in tag {tag}</h3>
+            <Button
+              onClick={() => setVisible(false)}
+              type="link"
+              icon={<CloseOutlined />}
+            />
+          </div>
+        }
+        style={{ cursor: "pointer" }}
+        trigger="click"
+      >
+        <Tooltip
           title={`This is the smallest of the calculated mean prices for items in tag ${tag} (only sell orders are taken into account). Click to drill down into all available items in this tag. `}
         >
           <Button type="link">
             <QuestionCircleOutlined />
           </Button>
         </Tooltip>
-    </Popover>
+      </Popover>
     </>
   );
 };

@@ -32,6 +32,20 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.3.0 (2021-06-15)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Read recipes exported from game (instead of static files)</li>
+        </ul>
+        <h4>Fix</h4>
+        <ul>
+          <li>Fixed recipe name showing up as item name</li>
+        </ul>
+        <h3>1.2.1 (2021-05-22)</h3>
+        <h4>Fix</h4>
+        <ul>
+          <li>Fixed performance issue</li>
+        </ul>
         <h3>1.2.0 (2021-05-20)</h3>
         <h4>Features</h4>
         <ul>

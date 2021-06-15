@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Tooltip } from "antd";
 import { useAppContext } from "../../AppContext";
 import { formatNumber } from "../../utils/typedData";
-import ItemGamePricesPopover from './ItemGamePricesPopover';
+import ItemGamePricesPopover from "./ItemGamePricesPopover";
 
 type PropTypes = {
   itemKey: string;

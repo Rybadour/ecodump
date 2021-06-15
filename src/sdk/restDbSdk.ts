@@ -17,3 +17,6 @@ export const getStoresLastUpdate = () =>
 
 export const getStores = () =>
   axios.get<DbResponse<StoresHistV1>>(endpoints.readDB("stores"));
+
+export const getRecipes = () =>
+  axios.get<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));

@@ -8,6 +8,7 @@ import React, {
 import useGetCurrencies from "./context/useGetCurrencies";
 import useGetFilters from "./context/useGetFilters";
 import useGetStores from "./context/useGetStores";
+import useGetRecipes from "./context/useGetRecipes";
 import useLocalStorage from "./context/useLocalStorage";
 import useRecipeCostPercentage from "./context/useRecipeCostPercentage";
 import {
@@ -19,7 +20,7 @@ import {
   RecipeMargin,
   SelectedVariants,
 } from "./types";
-import { RecipeVariant } from "./utils/typedData";
+import { Items, RecipeVariant } from "./utils/typedData";
 const emptyStoresDb = {
   Version: 1,
   Stores: [],
@@ -75,6 +76,9 @@ const AppContext = React.createContext<{
     prodName: string,
     newPercentage: number
   ) => void;
+  allItems: Items;
+  allCraftStations: string[];
+  allProfessions: string[];
 }>({
   storesDb: emptyStoresDb,
 
@@ -108,9 +112,14 @@ const AppContext = React.createContext<{
 
   getRecipeCostPercentage: () => ({ recipeKey: "", percentages: [] }),
   updateRecipeCostPercentage: () => undefined,
+
+  allItems: {} as Items,
+  allCraftStations: [] as string[],
+  allProfessions: [] as string[],
 });
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const { allItems, allCraftStations, allProfessions } = useGetRecipes();
   const { storesDb, fetchedGameCurrencies } = useGetStores();
   const {
     currencyList,
@@ -205,6 +214,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         getRecipeCostPercentage,
         updateRecipeCostPercentage,
+
+        allItems,
+        allCraftStations,
+        allProfessions,
       }}
     >
       {children}

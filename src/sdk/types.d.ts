@@ -36,3 +36,35 @@ declare interface StoresHistV1 {
   ExportedAtMin: number;
   ExportedAt: string;
 }
+
+declare interface RecipeV1 {
+  Key: string;
+  Untranslated: string;
+  BaseCraftTime: number;
+  BaseLaborCost: number;
+  BaseXPGain: number;
+  CraftStation: string[];
+  DefaultVariant: string;
+  NumberOfVariants: number;
+  SkillNeeds: {
+    Skill: string;
+    Level: number;
+  }[];
+  Variants: {
+    Key: string;
+    Name: string;
+    Ingredients: RecipeV1Ingredient[];
+    Products: {
+      Name: string;
+      Ammount: number;
+    }[];
+  }[];
+}
+
+declare interface RecipeV1Ingredient {
+  IsSpecificItem: boolean;
+  Tag: string;
+  Name: string;
+  Ammount: number;
+  IsStatic: boolean;
+}

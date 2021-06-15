@@ -1,5 +1,6 @@
 import craftingRecipes from "../gameData/craftingRecipes";
 import itemData from "../gameData/itemData";
+import { ItemTypes } from "./constants";
 import { filterUnique } from "./helpers";
 export type Recipe = {
   key: string;
@@ -17,10 +18,10 @@ export type RecipeVariant = {
   key: string;
   name: string;
   ingredients: {
-    tag: string;
+    tag: ItemTypes;
     name: string;
     ammount: number;
-    locked: boolean;
+    isStatic: boolean;
     ammountM1: number;
     ammountM2: number;
     ammountM3: number;

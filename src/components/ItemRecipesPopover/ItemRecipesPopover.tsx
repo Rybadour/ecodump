@@ -1,14 +1,16 @@
 import { Button, Popover, Tooltip } from "antd";
 import React, { useState } from "react";
-import { allItems, Item } from "../../utils/typedData";
+import { Item } from "../../utils/typedData";
 import RecipePopup from "../RecipePopup";
 import { CloseOutlined } from "@ant-design/icons";
 import PopupWrapper from "../PopupWrapper";
+import { useAppContext } from "../../AppContext";
 type PropTypes = {
   itemName: string;
 };
 export default ({ itemName }: PropTypes) => {
   const [visible, setVisible] = useState(false);
+  const { allItems } = useAppContext();
   const variants =
     (
       Object.values(allItems)

@@ -6,6 +6,7 @@ import ItemRecipesPopover from "../ItemRecipesPopover";
 import TagItemsPopover from "../TagItemsPopover";
 import ItemGamePricesPopup from "../ItemGamePricesPopup";
 import TagGamePricesPopover from "../TagGamePricesPopover";
+import { ItemTypes } from "../../utils/constants";
 
 type Ing = {
   name: string;
@@ -59,21 +60,27 @@ export default () => {
   return [
     {
       ...getColumn("name"),
-      render: (name: string, item: { tag: string }) => {
+      render: (name: string, item: { tag: ItemTypes }) => {
         switch (item.tag) {
-          case "TAG": return <TagItemsPopover tag={name} />
-          case "ITEM": return <ItemRecipesPopover itemName={name} />;
-          default: return <>{name}</>;
+          case ItemTypes.TAG:
+            return <TagItemsPopover tag={name} />;
+          case ItemTypes.ITEM:
+            return <ItemRecipesPopover itemName={name} />;
+          default:
+            return <>{name}</>;
         }
-      }
+      },
     },
     {
       ...getColumn("gamePrices", "Game prices"),
-      render: (_: unknown, item: { tag: string; name: string }) => {
+      render: (_: unknown, item: { tag: ItemTypes; name: string }) => {
         switch (item.tag) {
-          case "TAG": return <TagGamePricesPopover tag={item.name} />
-          case "ITEM": return <ItemGamePricesPopup itemKey={item.name} />;
-          default: return null;
+          case ItemTypes.TAG:
+            return <TagGamePricesPopover tag={item.name} />;
+          case ItemTypes.ITEM:
+            return <ItemGamePricesPopup itemKey={item.name} />;
+          default:
+            return null;
         }
       },
     },
@@ -81,9 +88,9 @@ export default () => {
       ...getColumn("price"),
       render: (
         price: number | undefined,
-        item: { tag: string; name: string }
+        item: { tag: ItemTypes; name: string }
       ) => {
-        if (item.tag === "COST") return;
+        if (item.tag === ItemTypes.COST) return;
         return (
           <Tooltip title="Update your fixed price for this item">
             <InputNumber

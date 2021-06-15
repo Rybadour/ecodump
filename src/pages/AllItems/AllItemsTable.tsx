@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Table } from "antd";
-import { allItems, Item } from "../../utils/typedData";
+import { Item } from "../../utils/typedData";
 import { useAppContext } from "../../AppContext";
 import { filterByIncludes, filterByText } from "../../utils/helpers";
 import { useGetColumns } from "./useGetColumns";
@@ -34,6 +34,7 @@ export default () => {
     filterCraftStations,
     filterName,
     filterWithRecipe,
+    allItems,
   } = useAppContext();
   const columns = useGetColumns();
 
@@ -43,7 +44,7 @@ export default () => {
         ...item,
         profAndCraftStations: getProfessionAndCraftStations(item),
       })),
-    []
+    [allItems]
   );
 
   const datasource = useMemo(
@@ -72,6 +73,7 @@ export default () => {
 
         return filterWithRecipe
           ? filterByText(filterName, item.key) &&
+              variants.length > 0 &&
               filterByIncludes(filterProfessions, firstSkill) &&
               filterByIncludes(filterCraftStations, craftStation)
           : filterByText(filterName, item.key) && variants.length === 0;

@@ -1,7 +1,6 @@
 import React from "react";
 import { Select } from "antd";
 import { useAppContext } from "../../AppContext";
-import { allProfessions } from "../../utils/typedData";
 
 const { Option } = Select;
 
@@ -10,6 +9,7 @@ export default () => {
     filterWithRecipe,
     filterProfessions,
     setFilterProfessions,
+    allProfessions,
   } = useAppContext();
   return (
     <Select
