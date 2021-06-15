@@ -34,8 +34,8 @@ export default ({ itemName }: PropTypes) => {
           <div key={recipeVariant.key}>
             <PopupWrapper
               popupTitle={`Recipe ${recipeVariant.name}`}
-              buttonText={recipeVariant.key}
-              buttonTooltip={`Click to calculate the item price using the recipe ${recipeVariant.key} in a popover`}
+              buttonText={itemName}
+              buttonTooltip={`Click to calculate the item price using the recipe ${recipeVariant.name} in a popover`}
             >
               <RecipePopup description={requirements} recipe={recipeVariant} />
             </PopupWrapper>
