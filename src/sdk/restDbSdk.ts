@@ -20,3 +20,6 @@ export const getStores = () =>
 
 export const getRecipes = () =>
   axios.get<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));
+
+export const getTags = () =>
+  axios.get<DbResponse<Record<string, string[]>>>(endpoints.readDB("tags"));

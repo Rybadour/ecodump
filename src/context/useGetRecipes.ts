@@ -3,7 +3,15 @@ import { getRecipes } from "../sdk/restDbSdk";
 import { useQuery } from "react-query";
 import { recipesKey } from "../utils/queryKeys";
 import { ItemTypes, min30 } from "../utils/constants";
-import { Recipes, Recipe, Items, Item } from "../utils/typedData";
+import {
+  Recipes,
+  Recipe,
+  Items,
+  Item,
+  allItems as staticAllItems,
+  allProfessions as staticAllProfessions,
+  allCraftStations as staticAllCraftStations,
+} from "../utils/typedData";
 import { filterUnique } from "../utils/helpers";
 
 export const formatNumber = (num: number) => +num.toFixed(2);
@@ -121,6 +129,14 @@ export default () => {
 
     return { allItems: allRecipesByItem, allProfessions, allCraftStations };
   }, [recipesData]);
+
+  if (recipesData === undefined) {
+    return {
+      allItems: staticAllItems,
+      allProfessions: staticAllProfessions,
+      allCraftStations: staticAllCraftStations,
+    };
+  }
 
   return {
     allItems,

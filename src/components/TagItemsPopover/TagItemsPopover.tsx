@@ -1,16 +1,17 @@
 import { Button, Popover, Tooltip } from "antd";
 import React, { useState } from "react";
-import { allTags } from "../../utils/typedData";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, TagOutlined } from "@ant-design/icons";
 import ItemRecipesPopover from "../ItemRecipesPopover";
+import { useAppContext } from "../../AppContext";
 
 type PropTypes = {
   tag: string;
 };
 export default ({ tag }: PropTypes) => {
   const [visible, setVisible] = useState(false);
+  const { allTags } = useAppContext();
   const itemsInTag = allTags[tag];
-  
+
   if (!itemsInTag || itemsInTag.length === 0) {
     return <>{itemsInTag}</>;
   }
@@ -18,9 +19,11 @@ export default ({ tag }: PropTypes) => {
   const content = (
     <>
       {itemsInTag.map((itemKey) => {
-        return <div key={itemKey}>
-          <ItemRecipesPopover itemName={itemKey} />
-        </div>;
+        return (
+          <div key={itemKey}>
+            <ItemRecipesPopover itemName={itemKey} />
+          </div>
+        );
       })}
     </>
   );
@@ -47,7 +50,10 @@ export default ({ tag }: PropTypes) => {
       trigger="click"
     >
       <Tooltip title="Show items in this tag">
-        <Button type="link">{tag}</Button>
+        <Button type="link">
+          {tag}
+          <TagOutlined />
+        </Button>
       </Tooltip>
     </Popover>
   );

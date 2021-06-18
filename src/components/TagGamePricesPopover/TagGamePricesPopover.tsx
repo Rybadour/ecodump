@@ -1,6 +1,6 @@
 import { Button, Popover, Tooltip, Table } from "antd";
 import React, { useState } from "react";
-import { allTags, formatNumber } from "../../utils/typedData";
+import { formatNumber } from "../../utils/typedData";
 import { CloseOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { getColumn } from "../../utils/helpers";
 import { useAppContext } from "../../AppContext";
@@ -11,7 +11,7 @@ type PropTypes = {
 };
 export default ({ tag }: PropTypes) => {
   const [visible, setVisible] = useState(false);
-  const { updatePrice, gamePrices } = useAppContext();
+  const { updatePrice, gamePrices, allTags } = useAppContext();
   const itemsInTag = allTags[tag];
 
   if (!itemsInTag || itemsInTag.length === 0) {
@@ -50,12 +50,11 @@ export default ({ tag }: PropTypes) => {
     return <>NA</>;
   }
 
-  const minMeanPrice = Math.min.apply(
-    null,
-    pricesOfItemsInTag
-      .map((t) => t.meanPrice)
-      .filter((t) => t !== undefined) as number[]
-  );
+  const meanPrices = pricesOfItemsInTag
+    .map((t) => t.meanPrice)
+    .filter((t) => t !== undefined) as number[];
+  const minMeanPrice =
+    meanPrices.length > 0 ? Math.min.apply(null, meanPrices) : undefined;
 
   const columns = [
     getColumn("name"),

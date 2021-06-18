@@ -5,7 +5,7 @@ import { CloseOutlined } from "@ant-design/icons";
 type PropTypes = {
   children: React.ReactNode;
   popupTitle: string;
-  buttonText: string;
+  buttonText: string | React.ReactNode;
   buttonTooltip: string;
 };
 

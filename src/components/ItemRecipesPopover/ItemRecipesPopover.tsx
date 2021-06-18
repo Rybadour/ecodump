@@ -2,7 +2,7 @@ import { Button, Popover, Tooltip } from "antd";
 import React, { useState } from "react";
 import { Item } from "../../utils/typedData";
 import RecipePopup from "../RecipePopup";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, CaretDownOutlined } from "@ant-design/icons";
 import PopupWrapper from "../PopupWrapper";
 import { useAppContext } from "../../AppContext";
 type PropTypes = {
@@ -74,7 +74,10 @@ export default ({ itemName }: PropTypes) => {
       trigger="click"
     >
       <Tooltip title="Show recipes for this item">
-        <Button type="link">{itemName}</Button>
+        <Button type="link">
+          {itemName}
+          <CaretDownOutlined />
+        </Button>
       </Tooltip>
     </Popover>
   );

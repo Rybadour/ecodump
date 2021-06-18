@@ -21,6 +21,7 @@ import {
   SelectedVariants,
 } from "./types";
 import { Items, RecipeVariant } from "./utils/typedData";
+import useGetTags from "./context/useGetTags";
 const emptyStoresDb = {
   Version: 1,
   Stores: [],
@@ -79,6 +80,7 @@ const AppContext = React.createContext<{
   allItems: Items;
   allCraftStations: string[];
   allProfessions: string[];
+  allTags: Record<string, string[]>;
 }>({
   storesDb: emptyStoresDb,
 
@@ -116,10 +118,12 @@ const AppContext = React.createContext<{
   allItems: {} as Items,
   allCraftStations: [] as string[],
   allProfessions: [] as string[],
+  allTags: {},
 });
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const { allItems, allCraftStations, allProfessions } = useGetRecipes();
+  const { allTags } = useGetTags();
   const { storesDb, fetchedGameCurrencies } = useGetStores();
   const {
     currencyList,
@@ -218,6 +222,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         allItems,
         allCraftStations,
         allProfessions,
+        allTags,
       }}
     >
       {children}

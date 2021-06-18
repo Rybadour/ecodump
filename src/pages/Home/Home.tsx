@@ -32,6 +32,14 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.4.0 (2021-06-18)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Read tags exported from game (instead of static files)</li>
+          <li>
+            Added icons for extra visibility: multi recipe and tags menu's
+          </li>
+        </ul>
         <h3>1.3.0 (2021-06-15)</h3>
         <h4>Features</h4>
         <ul>
@@ -40,35 +48,6 @@ export default () => {
         <h4>Fix</h4>
         <ul>
           <li>Fixed recipe name showing up as item name</li>
-        </ul>
-        <h3>1.2.1 (2021-05-22)</h3>
-        <h4>Fix</h4>
-        <ul>
-          <li>Fixed performance issue</li>
-        </ul>
-        <h3>1.2.0 (2021-05-20)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Added support for tag's on recipe popup</li>
-        </ul>
-        <h3>1.1.0 (2021-05-18)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Added recipe margin on recipe popup</li>
-        </ul>
-        <h3>1.0.0 (2021-05-16)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Add personal credit filter</li>
-        </ul>
-        <h4>Tasks</h4>
-        <ul>
-          <li>Minor fix: remove xml tags from currency name</li>
-        </ul>
-        <h3>0.1.4 (2021-05-15)</h3>
-        <h4>Tasks</h4>
-        <ul>
-          <li>Performance improvement</li>
         </ul>
       </div>
     </div>
