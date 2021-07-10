@@ -36,7 +36,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="App">
         <Router>
-          <Menu mode="horizontal">
+          <Menu mode="horizontal" theme="dark">
             <Menu.Item key="home" icon={<HomeOutlined />}>
               <Link to={routes.Home}>Home</Link>
             </Menu.Item>
