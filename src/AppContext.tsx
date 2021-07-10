@@ -23,17 +23,21 @@ import {
 import { Items, RecipeVariant } from "./utils/typedData";
 import useGetTags from "./context/useGetTags";
 const emptyStoresDb = {
-  Version: 1,
+  Version: 2,
   Stores: [],
-  ExportedAtYear: 0,
-  ExportedAtMonth: 0,
-  ExportedAtDay: 0,
-  ExportedAtHour: 0,
-  ExportedAtMin: 0,
-  ExportedAt: "",
+  ExportedAt: {
+    Year: 0,
+    Month: 0,
+    Day: 0,
+    Hour: 0,
+    Min: 0,
+    Sec: 0,
+    StringRepresentation: "",
+    Ticks: 0,
+  },
 };
 const AppContext = React.createContext<{
-  storesDb: StoresHistV1;
+  storesDb: StoresHistV2;
 
   filterProfessions: string[];
   setFilterProfessions: Dispatch<SetStateAction<string[]>>;

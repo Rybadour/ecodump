@@ -13,10 +13,12 @@ export const readDB = (dbname: string, path: string = "/") =>
   axios.get(endpoints.readDB(dbname, path));
 
 export const getStoresLastUpdate = () =>
-  axios.get<DbResponse<string>>(endpoints.readDB("stores", "/ExportedAt"));
+  axios.get<DbResponse<number>>(
+    endpoints.readDB("stores", "/ExportedAt/Ticks")
+  );
 
 export const getStores = () =>
-  axios.get<DbResponse<StoresHistV1>>(endpoints.readDB("stores"));
+  axios.get<DbResponse<StoresHistV2>>(endpoints.readDB("stores"));
 
 export const getRecipes = () =>
   axios.get<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));

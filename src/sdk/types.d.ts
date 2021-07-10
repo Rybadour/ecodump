@@ -7,6 +7,23 @@ declare interface Dictionary<T> {
   [key: string]: T;
 }
 
+declare interface ExportedAtV2 {
+  Year: number;
+  Month: number;
+  Day: number;
+  Hour: number;
+  Min: number;
+  Sec: number;
+  StringRepresentation: string;
+  Ticks: number;
+}
+
+declare interface StoresHistV2 {
+  Version: number;
+  Stores: StoresV1[];
+  ExportedAt: ExportedAtV2;
+}
+
 declare interface OffersV1 {
   ItemName: string;
   Buying: boolean;

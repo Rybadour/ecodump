@@ -30,7 +30,7 @@ export default () => {
     <>
       {storesDb && storesDb.ExportedAt && (
         <p>
-          Last exported on <b>{storesDb.ExportedAt}</b> GMT
+          Last exported on <b>{storesDb.ExportedAt.StringRepresentation}</b> GMT
         </p>
       )}
       <br />
