@@ -127,7 +127,7 @@ const AppContext = React.createContext<{
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const { allItems, allCraftStations, allProfessions } = useGetRecipes();
-  const { allTags } = useGetTags();
+  const allTags = useGetTags();
   const { storesDb, fetchedGameCurrencies } = useGetStores();
   const {
     currencyList,

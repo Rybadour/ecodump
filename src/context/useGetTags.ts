@@ -11,8 +11,9 @@ export default () => {
   });
 
   const tagsData = tagsDbResponse?.data?.data?.data;
+  if (tagsData != null && Object.keys(tagsData).length > 0) {
+    return tagsData;
+  }
 
-  return {
-    allTags: tagsData ?? allTags,
-  };
+  return allTags;
 };
