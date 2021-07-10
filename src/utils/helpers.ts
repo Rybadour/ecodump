@@ -6,6 +6,14 @@ export const filterByIncludes = (valuesToFilter: string[], value: string) =>
   valuesToFilter[0].length === 0 ||
   valuesToFilter.includes(value);
 
+export const filterByIncludesAny = (
+  valuesToFilter: string[],
+  values: string[]
+) =>
+  valuesToFilter.length === 0 ||
+  valuesToFilter[0].length === 0 ||
+  valuesToFilter.some((t) => values.includes(t));
+
 export const filterByText = (valueFilter: string, value: string) =>
   valueFilter.length === 0 ||
   value.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0;
@@ -21,4 +29,4 @@ const removeTagsRegex = /(<([^>]+)>)/gi;
 export const removeXmlTags = (name: string) =>
   name.replace(removeTagsRegex, "");
 
-export const convertToMultiplier= (margin: number) => (margin / 100) + 1;
+export const convertToMultiplier = (margin: number) => margin / 100 + 1;

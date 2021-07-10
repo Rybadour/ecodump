@@ -36,7 +36,7 @@ export default ({ itemName }: PropTypes) => {
           <div key={recipeVariant.key}>
             <PopupWrapper
               popupTitle={`Recipe ${recipeVariant.name}`}
-              buttonText={itemName}
+              buttonText={recipeVariant.name}
               buttonTooltip={`Click to calculate the item price using the recipe ${recipeVariant.name} in a popover`}
             >
               <RecipePopup description={requirements} recipe={recipeVariant} />
@@ -74,7 +74,7 @@ export default ({ itemName }: PropTypes) => {
       trigger="click"
     >
       <Tooltip title="Show recipes for this item">
-        <Button type="link">
+        <Button type="link" className="nopadding">
           {itemName}
           <CaretDownOutlined />
         </Button>

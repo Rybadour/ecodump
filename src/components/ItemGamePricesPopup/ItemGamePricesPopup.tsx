@@ -34,7 +34,7 @@ export default ({ itemKey }: PropTypes) => {
       : undefined;
 
   return (
-    <>
+    <div style={{ display: "flex", flexWrap: "nowrap" }}>
       {calculatedPrice !== undefined ? (
         <Tooltip
           title={`Fix this calculated value as your price for ${itemKey}`}
@@ -51,6 +51,6 @@ export default ({ itemKey }: PropTypes) => {
       )}
 
       <ItemGamePricesPopover itemKey={itemKey} />
-    </>
+    </div>
   );
 };

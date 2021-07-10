@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Table } from "antd";
 import { Item } from "../../utils/typedData";
 import { useAppContext } from "../../AppContext";
-import { filterByIncludes, filterByText } from "../../utils/helpers";
+import { filterByText, filterByIncludesAny } from "../../utils/helpers";
 import { useGetColumns } from "./useGetColumns";
 
 const getProfessionAndCraftStations = (item: Item) => {
@@ -29,7 +29,6 @@ const getProfessionAndCraftStations = (item: Item) => {
 
 export default () => {
   const {
-    selectedVariants,
     filterProfessions,
     filterCraftStations,
     filterName,
@@ -50,32 +49,24 @@ export default () => {
   const datasource = useMemo(
     () =>
       items.filter((item: Item) => {
+        const skillNeeds = item.productInRecipes
+          .map((recipe) =>
+            recipe.skillNeeds.map((skillNeeds) => skillNeeds.skill)
+          )
+          .flat();
+        const craftingTables = item.productInRecipes.map(
+          (recipe) => recipe.craftStation ?? "none"
+        );
+
         const variants = item.productInRecipes
           .map((recipe) => recipe.variants)
           .flat();
-        const selectedVariant =
-          variants.length === 0
-            ? undefined
-            : selectedVariants[item.key] ??
-              item.productInRecipes[0].defaultVariant;
-        const skillNeeds = !selectedVariant
-          ? undefined
-          : item.productInRecipes.find((t) =>
-              t.variants.some((t) => t.key === selectedVariant)
-            )?.skillNeeds;
-        const firstSkill = skillNeeds?.[0]?.skill ?? "none";
-        const craftStation =
-          (!selectedVariant
-            ? undefined
-            : item.productInRecipes.find((t) =>
-                t.variants.some((tt) => tt.key === selectedVariant)
-              )?.craftStation) ?? "none";
 
         return filterWithRecipe
           ? filterByText(filterName, item.key) &&
               variants.length > 0 &&
-              filterByIncludes(filterProfessions, firstSkill) &&
-              filterByIncludes(filterCraftStations, craftStation)
+              filterByIncludesAny(filterProfessions, skillNeeds) &&
+              filterByIncludesAny(filterCraftStations, craftingTables)
           : filterByText(filterName, item.key) && variants.length === 0;
       }),
     [
@@ -84,7 +75,6 @@ export default () => {
       filterName,
       filterProfessions,
       filterWithRecipe,
-      selectedVariants,
     ]
   );
   return <Table dataSource={datasource} columns={columns} />;

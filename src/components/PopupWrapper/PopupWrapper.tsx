@@ -37,7 +37,9 @@ export default ({
       trigger="click"
     >
       <Tooltip title={buttonTooltip}>
-        <Button type="link">{buttonText}</Button>
+        <Button type="link" className="nopadding">
+          {buttonText}
+        </Button>
       </Tooltip>
     </Popover>
   );

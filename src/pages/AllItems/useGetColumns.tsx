@@ -28,7 +28,7 @@ export const useGetColumns = () => {
       ...getColumn("price", "Fixed price"),
       render: (price: number, item: Item) => {
         return (
-          <>
+          <div style={{ display: "flex", flexWrap: "nowrap" }}>
             <InputNumber
               value={personalPrices.find((t) => t.itemName === item.key)?.price}
               width="20"
@@ -44,7 +44,7 @@ export const useGetColumns = () => {
                 <Button type="primary" icon={<DeleteOutlined />} />
               </Popconfirm>
             </Tooltip>
-          </>
+          </div>
         );
       },
     },

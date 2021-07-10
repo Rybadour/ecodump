@@ -50,7 +50,7 @@ export default ({ tag }: PropTypes) => {
       trigger="click"
     >
       <Tooltip title="Show items in this tag">
-        <Button type="link">
+        <Button type="link" className="nopadding">
           {tag}
           <TagOutlined />
         </Button>
