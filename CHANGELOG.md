@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/PedroFonseca/ecodump/compare/v1.4.0...v1.4.1) (2021-07-10)
+
+
+### Bug Fixes
+
+* use hardcoded tags when no tags get returned from db ([35045fb](https://github.com/PedroFonseca/ecodump/commit/35045fb0a7f3902bcf47b558be7560ebd0ee2138))
+* visual fixes + filter profession fix ([0d8020b](https://github.com/PedroFonseca/ecodump/commit/0d8020b7479d4f725c2583a774aec1ad26d225f3))
+
 ## [1.4.0](https://github.com/PedroFonseca/ecodump/compare/v1.3.0...v1.4.0) (2021-06-18)
 
 
