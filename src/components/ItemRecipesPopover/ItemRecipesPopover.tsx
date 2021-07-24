@@ -24,6 +24,11 @@ export default ({ itemName }: PropTypes) => {
         ) ?? []
     ).flat() ?? [];
 
+  if (!variants || variants.length === 0) {
+    return <>{itemName}</>;
+  }
+
+  const hasSingleVariant = variants && variants.length === 1;
   const content = (
     <>
       {variants.map((recipeVariant, index) => {
@@ -36,21 +41,18 @@ export default ({ itemName }: PropTypes) => {
           <div key={recipeVariant.key}>
             <PopupWrapper
               popupTitle={`Recipe ${recipeVariant.name}`}
-              buttonText={recipeVariant.name}
+              buttonText={!hasSingleVariant ? recipeVariant.name : itemName}
               buttonTooltip={`Click to calculate the item price using the recipe ${recipeVariant.name} in a popover`}
             >
               <RecipePopup description={requirements} recipe={recipeVariant} />
             </PopupWrapper>
 
-            {!(variants && variants.length === 1) && `(${requirements})`}
+            {!hasSingleVariant && `(${requirements})`}
           </div>
         );
       })}
     </>
   );
-  if (!variants || variants.length === 0) {
-    return <>{itemName}</>;
-  }
   if (variants && variants.length === 1) {
     return content;
   }
