@@ -1,18 +1,33 @@
 import { Button, InputNumber, Tooltip } from "antd";
 import React from "react";
 import { useAppContext } from "../../AppContext";
+import { RecipeCraftSchemaEnum } from "../../utils/constants";
 import { getColumn } from "../../utils/helpers";
 import { RecipeVariant } from "../../utils/typedData";
 
-export default (recipe: RecipeVariant) => {
-  const { updatePrice, updateRecipeCostPercentage } = useAppContext();
+export type Prod = {
+  name: string;
+  ammount: number;
+  costPercent: number;
+  perModule: {
+    [lvl: number]: { costWithMargin: number; costWithoutMargin: number };
+  };
+};
 
-  return [
+export default (recipe: RecipeVariant) => {
+  const {
+    updatePrice,
+    updateRecipeCostPercentage,
+    recipeCraftSchema,
+    getRecipeCraftModule,
+  } = useAppContext();
+
+  const commonColumns = [
     getColumn("name"),
     getColumn("ammount"),
     {
       ...getColumn("costPercent", "Cost Percentage"),
-      render: (costPercent: number, item: { name: string }) => {
+      render: (costPercent: number, item: Prod) => {
         return (
           <Tooltip title="Cost percentage is used to distribute the cost of the recipe by the output products to help you calculate how much you should charge for each product.">
             <InputNumber
@@ -26,6 +41,46 @@ export default (recipe: RecipeVariant) => {
         );
       },
     },
+  ];
+
+  // eslint-disable-next-line eqeqeq
+  if (recipeCraftSchema == RecipeCraftSchemaEnum.SIMPLE) {
+    const module = getRecipeCraftModule(recipe.key);
+
+    return [
+      ...commonColumns,
+      {
+        ...getColumn("Production Cost"),
+        render: (_: any, item: Prod) => (
+          <Tooltip
+            title={`Calculated production cost for this product (sum of ingredients price without margin)`}
+          >
+            {item.perModule[module].costWithoutMargin}
+          </Tooltip>
+        ),
+      },
+      {
+        ...getColumn("Calculated Price"),
+        render: (_: any, item: Prod) => (
+          <Tooltip
+            title={`Calculated price for this product (cost of ingredients plus profit margin)`}
+          >
+            <Button
+              onClick={() =>
+                updatePrice(item.name, item.perModule[module].costWithMargin)
+              }
+              type="primary"
+            >
+              {item.perModule[module].costWithMargin}
+            </Button>
+          </Tooltip>
+        ),
+      },
+    ];
+  }
+
+  return [
+    ...commonColumns,
     {
       ...getColumn("priceM0", "M0"),
       render: (price: number, item: { name: string }) => (

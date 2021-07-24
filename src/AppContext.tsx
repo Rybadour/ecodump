@@ -22,6 +22,7 @@ import {
 } from "./types";
 import { Items, RecipeVariant } from "./utils/typedData";
 import useGetTags from "./context/useGetTags";
+import { RecipeCraftSchemaEnum } from "./utils/constants";
 const emptyStoresDb = {
   Version: 2,
   Stores: [],
@@ -72,6 +73,10 @@ const AppContext = React.createContext<{
   setSelectedVariants: Dispatch<SetStateAction<SelectedVariants>>;
   getRecipeCraftAmmount: (recipeName: string) => number;
   updateRecipeCraftAmmount: (recipeName: string, newAmmount: number) => void;
+  getRecipeCraftModule: (recipeName: string) => number;
+  updateRecipeCraftModule: (recipeName: string, newModule: number) => void;
+  recipeCraftSchema: RecipeCraftSchemaEnum;
+  setRecipeCraftSchema: (schema: RecipeCraftSchemaEnum) => void;
   getRecipeMargin: (recipeName: string) => number;
   updateRecipeMargin: (recipeName: string, newMargin: number) => void;
 
@@ -113,6 +118,10 @@ const AppContext = React.createContext<{
   setSelectedVariants: () => undefined,
   getRecipeCraftAmmount: () => 0,
   updateRecipeCraftAmmount: () => undefined,
+  getRecipeCraftModule: () => 0,
+  updateRecipeCraftModule: () => undefined,
+  recipeCraftSchema: RecipeCraftSchemaEnum.SIMPLE,
+  setRecipeCraftSchema: () => undefined,
   getRecipeMargin: () => 0,
   updateRecipeMargin: () => undefined,
 
@@ -152,8 +161,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [recipeCraftAmmounts, setRecipeCraftAmmounts] =
     useLocalStorage<RecipeCraftAmmount>("RecipeCraftAmmount", {});
 
+  const [recipeCraftModules, setRecipeCraftModules] =
+    useLocalStorage<RecipeCraftAmmount>("RecipeCraftModules", {});
+
+  const [recipeCraftSchema, setRecipeCraftSchema] =
+    useLocalStorage<RecipeCraftSchemaEnum>(
+      "recipeCraftSchema",
+      RecipeCraftSchemaEnum.SIMPLE
+    );
+
   const getRecipeCraftAmmount = useCallback(
-    (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 1,
+    (recipeName: string) => recipeCraftAmmounts[recipeName] ?? 10,
     [recipeCraftAmmounts]
   );
 
@@ -164,13 +182,25 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     [setRecipeCraftAmmounts]
   );
 
+  const getRecipeCraftModule = useCallback(
+    (recipeName: string) => recipeCraftModules[recipeName] ?? 0,
+    [recipeCraftModules]
+  );
+
+  const updateRecipeCraftModule = useCallback(
+    (recipeName: string, newModule: number) => {
+      setRecipeCraftModules((prev) => ({ ...prev, [recipeName]: newModule }));
+    },
+    [setRecipeCraftModules]
+  );
+
   const [recipeMargins, setRecipeMargins] = useLocalStorage<RecipeMargin>(
     "RecipeMargins",
     {}
   );
 
   const getRecipeMargin = useCallback(
-    (recipeName: string) => recipeMargins[recipeName] ?? 0,
+    (recipeName: string) => recipeMargins[recipeName] ?? 5,
     [recipeMargins]
   );
 
@@ -217,6 +247,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setSelectedVariants,
         getRecipeCraftAmmount,
         updateRecipeCraftAmmount,
+        getRecipeCraftModule,
+        updateRecipeCraftModule,
+        recipeCraftSchema,
+        setRecipeCraftSchema,
         getRecipeMargin,
         updateRecipeMargin,
 

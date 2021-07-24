@@ -6,22 +6,17 @@ import ItemRecipesPopover from "../ItemRecipesPopover";
 import TagItemsPopover from "../TagItemsPopover";
 import ItemGamePricesPopup from "../ItemGamePricesPopup";
 import TagGamePricesPopover from "../TagGamePricesPopover";
-import { ItemTypes } from "../../utils/constants";
+import { ItemTypes, RecipeCraftSchemaEnum } from "../../utils/constants";
 
-type Ing = {
+export type Ing = {
   name: string;
-  ammountM0?: number;
-  ammountM1?: number;
-  ammountM2?: number;
-  ammountM3?: number;
-  ammountM4?: number;
-  ammountM5?: number;
-  priceM0?: number;
-  priceM1?: number;
-  priceM2?: number;
-  priceM3?: number;
-  priceM4?: number;
-  priceM5?: number;
+  perModule: {
+    [moduleLevel: number]: {
+      ammount: number;
+      price: number;
+    };
+  };
+  tag: ItemTypes;
 };
 const renderPrice = (
   moduleLevel: number,
@@ -55,12 +50,18 @@ const renderPrice = (
   );
 };
 
-export default () => {
-  const { updatePrice, currencySymbol } = useAppContext();
-  return [
+export default (recipeKey: string) => {
+  const {
+    updatePrice,
+    currencySymbol,
+    recipeCraftSchema,
+    getRecipeCraftModule,
+  } = useAppContext();
+
+  const commonColumns = [
     {
       ...getColumn("name"),
-      render: (name: string, item: { tag: ItemTypes }) => {
+      render: (name: string, item: Ing) => {
         switch (item.tag) {
           case ItemTypes.TAG:
             return <TagItemsPopover tag={name} />;
@@ -73,7 +74,7 @@ export default () => {
     },
     {
       ...getColumn("gamePrices", "Game prices"),
-      render: (_: unknown, item: { tag: ItemTypes; name: string }) => {
+      render: (_: unknown, item: Ing) => {
         switch (item.tag) {
           case ItemTypes.TAG:
             return <TagGamePricesPopover tag={item.name} />;
@@ -86,10 +87,7 @@ export default () => {
     },
     {
       ...getColumn("price"),
-      render: (
-        price: number | undefined,
-        item: { tag: ItemTypes; name: string }
-      ) => {
+      render: (price: number | undefined, item: Ing) => {
         if (item.tag === ItemTypes.COST) return;
         return (
           <Tooltip title="Update your fixed price for this item">
@@ -102,35 +100,92 @@ export default () => {
         );
       },
     },
+  ];
+
+  // eslint-disable-next-line eqeqeq
+  if (recipeCraftSchema == RecipeCraftSchemaEnum.SIMPLE) {
+    const module = getRecipeCraftModule(recipeKey);
+
+    return [
+      ...commonColumns,
+      {
+        ...getColumn("Item ammount"),
+        render: (_: any, item: Ing) => item.perModule[module]?.ammount,
+      },
+      {
+        ...getColumn("Price"),
+        render: (_: any, item: Ing) => item.perModule[module]?.price,
+      },
+    ];
+  }
+
+  return [
+    ...commonColumns,
     {
       ...getColumn("M0"),
       render: (_: any, item: Ing) =>
-        renderPrice(0, item.name, currencySymbol, item.ammountM0, item.priceM0),
+        renderPrice(
+          0,
+          item.name,
+          currencySymbol,
+          item.perModule[0].ammount,
+          item.perModule[0].price
+        ),
     },
     {
       ...getColumn("M1"),
       render: (_: any, item: Ing) =>
-        renderPrice(1, item.name, currencySymbol, item.ammountM1, item.priceM1),
+        renderPrice(
+          1,
+          item.name,
+          currencySymbol,
+          item.perModule[1].ammount,
+          item.perModule[1].price
+        ),
     },
     {
       ...getColumn("M2"),
       render: (_: any, item: Ing) =>
-        renderPrice(2, item.name, currencySymbol, item.ammountM2, item.priceM2),
+        renderPrice(
+          2,
+          item.name,
+          currencySymbol,
+          item.perModule[2].ammount,
+          item.perModule[2].price
+        ),
     },
     {
       ...getColumn("M3"),
       render: (_: any, item: Ing) =>
-        renderPrice(3, item.name, currencySymbol, item.ammountM3, item.priceM3),
+        renderPrice(
+          3,
+          item.name,
+          currencySymbol,
+          item.perModule[3].ammount,
+          item.perModule[3].price
+        ),
     },
     {
       ...getColumn("M4"),
       render: (_: any, item: Ing) =>
-        renderPrice(4, item.name, currencySymbol, item.ammountM4, item.priceM4),
+        renderPrice(
+          4,
+          item.name,
+          currencySymbol,
+          item.perModule[4].ammount,
+          item.perModule[4].price
+        ),
     },
     {
       ...getColumn("M5"),
       render: (_: any, item: Ing) =>
-        renderPrice(5, item.name, currencySymbol, item.ammountM5, item.priceM5),
+        renderPrice(
+          5,
+          item.name,
+          currencySymbol,
+          item.perModule[5].ammount,
+          item.perModule[5].price
+        ),
     },
   ];
 };

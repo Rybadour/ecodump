@@ -5,3 +5,7 @@ export enum ItemTypes {
   ITEM,
   COST,
 }
+export enum RecipeCraftSchemaEnum {
+  SIMPLE,
+  EXPANDED,
+}
