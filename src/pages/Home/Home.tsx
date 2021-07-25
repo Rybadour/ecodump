@@ -32,20 +32,17 @@ export default () => {
       <br />
       <div className="changelog">
         <h2>Latest changes</h2>
+        <h3>1.5.0 (2021-07-30)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Added simple view on recipe popup</li>
+        </ul>
         <h3>1.4.1 (2021-07-10)</h3>
         <h4>Fixes</h4>
         <ul>
           <li>Visual fixes and improvements</li>
           <li>Fixed profession filter</li>
           <li>Fix for when tags can't be fetched from database</li>
-        </ul>
-        <h3>1.4.0 (2021-06-18)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Read tags exported from game (instead of static files)</li>
-          <li>
-            Added icons for extra visibility: multi recipe and tags menu's
-          </li>
         </ul>
       </div>
     </div>

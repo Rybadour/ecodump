@@ -216,9 +216,18 @@ export default ({ recipe, description }: PropTypes) => {
       <RecipeMargin recipeName={recipe.key} />
       <Divider style={{ margin: "12px 0" }} />
       <h3>Ingredients</h3>
-      <Table dataSource={datasourceIngredients} columns={ingredientColumns} />
+      <Table
+        dataSource={datasourceIngredients}
+        columns={ingredientColumns}
+        pagination={false}
+      />
+      <div style={{ height: "40px" }}></div>
       <h3>Products</h3>
-      <Table dataSource={products} columns={productColumns} />
+      <Table
+        dataSource={products}
+        columns={productColumns}
+        pagination={false}
+      />
     </div>
   );
 };

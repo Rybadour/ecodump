@@ -86,7 +86,13 @@ export default ({ tag }: PropTypes) => {
     },
   ];
 
-  const content = <Table dataSource={pricesOfItemsInTag} columns={columns} />;
+  const content = (
+    <Table
+      dataSource={pricesOfItemsInTag}
+      columns={columns}
+      pagination={false}
+    />
+  );
 
   if (itemsInTag && itemsInTag.length === 1) {
     return content;
