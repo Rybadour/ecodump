@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/PedroFonseca/ecodump/compare/v1.4.1...v1.5.0) (2021-07-30)
+
+
+### Features
+
+* Added simple view to recipe popup ([7c5915e](https://github.com/PedroFonseca/ecodump/commit/7c5915e2c2503e7dde2298683818ff750c4c2591))
+
+
+### Bug Fixes
+
+* Small fix on recipe item name (for cloth recipe) ([c149de5](https://github.com/PedroFonseca/ecodump/commit/c149de5f788c319c113d683325480b6437df4bd6))
+
 ### [1.4.1](https://github.com/PedroFonseca/ecodump/compare/v1.4.0...v1.4.1) (2021-07-10)
 
 
