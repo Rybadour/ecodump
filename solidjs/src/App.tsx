@@ -23,7 +23,6 @@ const routes = {
 
 const App: Component = () => {
   const location = useLocation();
-  console.log("l", location.pathname);
 
   const routesConfig = createMemo(() =>
     Object.keys(routes).map((key) => ({
@@ -31,8 +30,6 @@ const App: Component = () => {
       highlight: location.pathname === routes[key].href,
     }))
   );
-
-  // createEffect(() => console.log("routesConfig", routesConfig()));
 
   const currentRoute = createMemo(() =>
     routesConfig().find((t) => t.highlight)

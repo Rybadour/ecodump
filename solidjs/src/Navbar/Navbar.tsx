@@ -119,24 +119,23 @@ export default (props: Props) => {
       >
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-          {props.routes.map((route) =>
-            route.highlight ? (
-              <a
-                href={route.href}
-                class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-                aria-current="page"
-              >
-                {route.text}
-              </a>
-            ) : (
-              <a
-                href={route.href}
-                class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-              >
-                {route.text}
-              </a>
-            )
-          )}
+          {props.routes.map((route) => (
+            <NavLink
+              href={route.href}
+              end
+              class={classnames(
+                "block px-3 py-2 rounded-md text-base font-medium",
+                {
+                  "bg-gray-900 text-white": route.highlight,
+                  "text-gray-300 hover:bg-gray-700 hover:text-white":
+                    !route.highlight,
+                }
+              )}
+              aria-current={route.highlight ? "page" : undefined}
+            >
+              {route.text}
+            </NavLink>
+          ))}
         </div>
       </div>
     </nav>
