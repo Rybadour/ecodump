@@ -1,4 +1,5 @@
-import { createEffect, createResource } from "solid-js";
+import { createSignal, createResource, createEffect } from "solid-js";
+import { openDownloadFileDialog } from "./downloadFile";
 import { listDBs, readDB } from "./restDbSdk";
 
 export interface DbContent<T> {
@@ -9,7 +10,29 @@ export interface DbContent<T> {
 
 export default () => {
   console.log("CreateResource");
+  const [filenameToDownload, setFilenameToDownload] = createSignal("");
   const [dbs] = createResource(listDBs);
+  const [downloadedFile] = createResource(
+    filenameToDownload,
+    (filename: string) =>
+      filename
+        ? readDB(filename).then((json) => ({ filename, json }))
+        : Promise.resolve(undefined)
+  );
+
+  const downloadFile = (filename: string) => {
+    console.log("downloading file: " + filename);
+    setFilenameToDownload(filename);
+  };
+
+  createEffect(() => {
+    if (downloadedFile() && downloadedFile()?.filename)
+      openDownloadFileDialog(
+        downloadedFile()?.filename ?? "download",
+        downloadedFile()?.json
+      );
+    setFilenameToDownload("");
+  });
   // createEffect(() => console.log("user", user()));
   //   const [dbs, setdbs] = useState<Dictionary<number>>({});
   //   const [dbContents, setDbContents] = useState<Dictionary<DbContent<unknown>>>({
@@ -58,5 +81,6 @@ export default () => {
 
   return {
     dbs,
+    downloadFile,
   };
 };

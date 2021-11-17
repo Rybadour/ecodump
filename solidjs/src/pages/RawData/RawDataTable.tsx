@@ -5,18 +5,11 @@ import Table, {
   TableHeaderColAction,
   TableBody,
 } from "../../components/table";
-import createDBsStore from "../../util/createDBsStore";
+import createDBsStore from "../../utils/createDBsStore";
 import RawDataRow from "./RawDataRow";
 
 export default () => {
-  const { dbs } = createDBsStore();
-  // const dbNames = createMemo(() => {
-  //   return;
-  //   if (dbs.loading || dbs() == null) return [];
-  //   const dbUpdates = dbs() ?? {};
-  //   return Object.keys(dbUpdates);
-  // });
-  // const dbNames =  ? Object.keys(dbs()) : [];
+  const { dbs, downloadFile } = createDBsStore();
   createEffect(() => console.log("eff", dbs()));
   createEffect(() => console.log("eff2", Object.keys(dbs() ?? {}).join(" ")));
   return (
@@ -32,7 +25,7 @@ export default () => {
             <RawDataRow
               filename={dbname}
               updates={(dbs() ?? {})[dbname]}
-              file="asdasd"
+              downloadFile={downloadFile}
             />
           )}
         </For>
