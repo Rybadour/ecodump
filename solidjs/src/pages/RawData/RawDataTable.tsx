@@ -1,4 +1,4 @@
-import { createEffect, createMemo, For } from "solid-js";
+import { For } from "solid-js";
 import Table, {
   TableHeader,
   TableHeaderCol,
@@ -10,8 +10,6 @@ import RawDataRow from "./RawDataRow";
 
 export default () => {
   const { dbs, downloadFile } = createDBsStore();
-  createEffect(() => console.log("eff", dbs()));
-  createEffect(() => console.log("eff2", Object.keys(dbs() ?? {}).join(" ")));
   return (
     <Table>
       <TableHeader>

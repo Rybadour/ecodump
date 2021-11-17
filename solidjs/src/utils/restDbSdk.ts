@@ -1,3 +1,5 @@
+import { removeXmlTags } from "./helpers";
+
 const REACT_APP_DB = "http://176.10.152.250:3030";
 const endpoints = {
   list: () => `${REACT_APP_DB}/operations/list`,
@@ -24,16 +26,22 @@ export const listDBs = () => fetchAsync<Dictionary<number>>(endpoints.list());
 export const readDB = (dbname: string, path: string = "/") =>
   fetchAsync(endpoints.readDB(dbname, path));
 
-export const getStoresLastUpdate = () =>
-  fetchAsync<DbResponse<number>>(
-    endpoints.readDB("stores", "/ExportedAt/Ticks")
-  );
+// export const getStoresLastUpdate = () =>
+//   fetchAsync<DbResponse<number>>(
+//     endpoints.readDB("stores", "/ExportedAt/Ticks")
+//   );
 
 export const getStores = () =>
-  fetchAsync<DbResponse<StoresHistV2>>(endpoints.readDB("stores"));
+  fetchAsync<StoresResponse>(endpoints.readDB("stores")).then((response) => ({
+    ...response,
+    Stores: response.Stores.map((store) => ({
+      ...store,
+      Name: removeXmlTags(store.Name),
+    })),
+  }));
 
-export const getRecipes = () =>
-  fetchAsync<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));
+// export const getRecipes = () =>
+//   fetchAsync<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));
 
-export const getTags = () =>
-  fetchAsync<DbResponse<Record<string, string[]>>>(endpoints.readDB("tags"));
+// export const getTags = () =>
+//   fetchAsync<DbResponse<Record<string, string[]>>>(endpoints.readDB("tags"));

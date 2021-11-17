@@ -4,12 +4,18 @@ import { Routes, Route, useLocation } from "solid-app-router";
 import Navbar from "./Navbar/Navbar";
 
 const Recipes = lazy(() => import("./pages/recipes/index"));
+const Market = lazy(() => import("./pages/market/index"));
 const RawData = lazy(() => import("./pages/RawData/index"));
 const Home = lazy(() => import("./pages/home/index"));
 
 const routes = {
   Home: { text: "Home", description: "", href: "/" },
   Recipes: { text: "Recipes", description: "", href: "/recipes" },
+  Market: {
+    text: "Market",
+    description: "Ingame store buy/sell orders",
+    href: "/market",
+  },
   RawData: {
     text: "Raw data",
     description:
@@ -51,6 +57,7 @@ const App: Component = () => {
           <div class="px-4 py-6 sm:px-0">
             <Routes>
               <Route path={routes.Recipes.href} element={<Recipes />} />
+              <Route path={routes.Market.href} element={<Market />} />
               <Route path={routes.RawData.href} element={<RawData />} />
               <Route path="/" element={<Home />} />
               <Route path="/*all" element={<Home />} />
