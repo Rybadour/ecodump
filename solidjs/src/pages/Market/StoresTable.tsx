@@ -7,27 +7,21 @@ import { Accessor, For } from "solid-js";
 import Tooltip from "../../components/Tooltip";
 
 type Props = {
-  stores: Accessor<StoresResponse | undefined>;
+  stores: Accessor<Stores[]>;
   setSearch: (search: string) => void;
   setCurrencyFilter: (currency: string) => void;
 };
 export default (props: Props) => (
   <Table>
     <TableHeader>
-      <TableHeaderCol text="Name" />
-      <TableHeaderCol text="Owner" />
+      <TableHeaderCol text="Store Name" />
+      <TableHeaderCol text="Store Owner" />
       <TableHeaderCol text="Currency" />
       <TableHeaderCol text="Balance" />
       <TableHeaderCol text="Offers" />
     </TableHeader>
     <TableBody>
-      <For
-        each={props
-          .stores()
-          ?.Stores?.sort((a, b) =>
-            a.Name.toLowerCase().localeCompare(b.Name.toLowerCase())
-          )}
-      >
+      <For each={props.stores()}>
         {(store) => (
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

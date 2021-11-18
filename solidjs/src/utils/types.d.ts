@@ -43,6 +43,12 @@ declare interface Offers {
   MinDurability: number;
 }
 
+declare interface ProductOffer extends Offers {
+  StoreName: string;
+  StoreOwner: string;
+  CurrencyName: string;
+}
+
 // declare interface StoresHistV1 {
 //   Version: number;
 //   Stores: StoresV1[];

@@ -49,7 +49,7 @@ export default (props: Props) => {
       {isMenuOpen() && (
         <div
           class={classNames(
-            "origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transform focus:outline-none",
+            "origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transform focus:outline-none z-50",
             {
               ["transition ease-out duration-100 opacity-100 scale-100"]:
                 isMenuOpen(),
