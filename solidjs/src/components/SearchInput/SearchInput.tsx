@@ -4,9 +4,9 @@ type Props = {
 };
 
 export default (props: Props) => (
-  <div class="flex relative mx-auto w-1/5 max-w-md">
+  <div class="relative">
     <input
-      class="border-2 border-primary bg-red transition h-8 px-2 pr-8 rounded-md focus:outline-none w-full text-black text-sm "
+      class="rounded-md border border-gray-300 h-8 px-2 pr-8 rounded-md text-sm font-small focus:outline-none text-black"
       type="search"
       name="search"
       placeholder="Search"
