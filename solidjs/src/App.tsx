@@ -11,8 +11,8 @@ const routes = {
   Home: { text: "Home", description: "", href: "/" },
   // Recipes: { text: "Recipes", description: "", href: "/recipes" },
   Market: {
-    text: "Market",
-    description: "Ingame store buy/sell orders",
+    text: "Ingame market",
+    description: "Buy/sell orders of all stores ingame",
     href: "/market",
   },
   RawData: {

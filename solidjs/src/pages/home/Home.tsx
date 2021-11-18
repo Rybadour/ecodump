@@ -31,17 +31,11 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
-        <h3>1.5.0 (2021-07-30)</h3>
+        <h3>2.0.0 (2021-11-21)</h3>
         <h4>Features</h4>
         <ul>
-          <li>Added simple view on recipe popup</li>
-        </ul>
-        <h3>1.4.1 (2021-07-10)</h3>
-        <h4>Fixes</h4>
-        <ul>
-          <li>Visual fixes and improvements</li>
-          <li>Fixed profession filter</li>
-          <li>Fix for when tags can't be fetched from database</li>
+          <li>Added Ingame Market page</li>
+          <li>Added Raw data page</li>
         </ul>
       </div>
     </div>

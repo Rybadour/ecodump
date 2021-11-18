@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { NavLink } from "solid-app-router";
 import classnames from "classnames";
+import ecoIconUrl from "../assets/eco-icon.ico";
 
 type Props = {
   routes: Array<{
@@ -18,11 +19,7 @@ export default (props: Props) => {
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <img
-                class="h-8 w-8"
-                src="/src/assets/eco-icon.ico"
-                alt="Workflow"
-              />
+              <img class="h-8 w-8" src={ecoIconUrl} alt="Workflow" />
             </div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
