@@ -27,7 +27,11 @@ export default () => {
           <SearchInput value={state.search} onChange={setSearch} />
         </div>
       </div>
-      <StoresTable stores={stores} />
+      <StoresTable
+        stores={stores}
+        setSearch={setSearch}
+        setCurrencyFilter={setCurrencyFilter}
+      />
     </div>
   );
 };
