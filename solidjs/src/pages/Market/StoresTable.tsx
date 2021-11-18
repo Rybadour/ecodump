@@ -3,10 +3,10 @@ import Table, {
   TableHeaderCol,
   TableBody,
 } from "../../components/table";
-import { For, Resource } from "solid-js";
+import { Accessor, For } from "solid-js";
 
 type Props = {
-  stores: Resource<StoresResponse | undefined>;
+  stores: Accessor<StoresResponse | undefined>;
 };
 export default (props: Props) => (
   <Table>
