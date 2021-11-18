@@ -1,4 +1,9 @@
-import { createSignal, createResource, createEffect } from "solid-js";
+import {
+  createSignal,
+  createResource,
+  createEffect,
+  createMemo,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import { openDownloadFileDialog } from "./downloadFile";
 import { listDBs, readDB } from "./restDbSdk";
@@ -11,13 +16,16 @@ export interface DbContent<T> {
 
 export default () => {
   const [filenameToDownload, setFilenameToDownload] = createSignal("");
-  const [dbs] = createResource(listDBs);
+  const [config] = createResource(listDBs);
   const [downloadedFile] = createResource(
     filenameToDownload,
-    (filename: string) =>
-      filename
-        ? readDB(filename).then((json) => ({ filename, json }))
-        : Promise.resolve(undefined)
+    (filename: string) => {
+      const bin =
+        filename && config()?.dbs.find((db) => db.Name === filename)?.Bin;
+      return filename && bin
+        ? readDB(bin).then((json) => ({ filename, json }))
+        : Promise.resolve(undefined);
+    }
   );
 
   createEffect(() => {
@@ -27,6 +35,8 @@ export default () => {
     }
     setFilenameToDownload("");
   });
+
+  const dbs = createMemo(() => config()?.dbs);
 
   return {
     dbs,

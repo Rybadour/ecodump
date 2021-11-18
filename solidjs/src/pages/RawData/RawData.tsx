@@ -1,7 +1,42 @@
-import Example from "../../components/table/example";
-import RawDataTable from "./RawDataTable";
-export default () => (
-  <>
-    <RawDataTable />
-  </>
-);
+import { For } from "solid-js";
+import createDBsStore from "../../utils/createDBsStore";
+import Table, {
+  TableHeader,
+  TableHeaderCol,
+  TableHeaderColAction,
+  TableBody,
+} from "../../components/table";
+export default () => {
+  const { dbs, downloadFile } = createDBsStore();
+  return (
+    <Table>
+      <TableHeader>
+        <TableHeaderCol text="File name" />
+        <TableHeaderCol text="Last update" />
+        <TableHeaderColAction text="Download" />
+      </TableHeader>
+      <TableBody>
+        <For each={dbs() ?? []}>
+          {(db) => (
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {db?.Name}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {db?.ExportedAt?.StringRepresentation}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
+                  class="text-indigo-800 hover:text-indigo-900"
+                  onclick={() => downloadFile(db?.Name)}
+                >
+                  Download
+                </button>
+              </td>
+            </tr>
+          )}
+        </For>
+      </TableBody>
+    </Table>
+  );
+};

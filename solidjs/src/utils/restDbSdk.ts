@@ -1,10 +1,9 @@
 import { removeXmlTags } from "./helpers";
 
-const REACT_APP_DB = "http://176.10.152.250:3030";
+const key = "fa89590a-2849-4563-aa75-a960d2e11c6f";
 const endpoints = {
-  list: () => `${REACT_APP_DB}/operations/list`,
-  readDB: (dbname: string, path: string = "/") =>
-    `${REACT_APP_DB}/${dbname}?path=${path}`,
+  list: () => `https://api.jsonstorage.net/v1/json/${key}`,
+  readDB: (bin: string) => `https://api.jsonstorage.net/v1/json/${bin}`,
 };
 
 async function fetchAsync<T>(url: string): Promise<T> {
@@ -13,32 +12,33 @@ async function fetchAsync<T>(url: string): Promise<T> {
     throw new Error(response.statusText);
   }
 
-  const result = (await response.json()) as DbResponse<T>;
-  if (result == null || !result.success) {
-    throw new Error("Response not successful");
-  }
-
-  return result.data;
+  return (await response.json()) as T;
 }
 
-export const listDBs = () => fetchAsync<Dictionary<number>>(endpoints.list());
-
-export const readDB = (dbname: string, path: string = "/") =>
-  fetchAsync(endpoints.readDB(dbname, path));
+export const listDBs = () => fetchAsync<Config>(endpoints.list());
+export const readDB = (bin: string) => fetchAsync(endpoints.readDB(bin));
 
 // export const getStoresLastUpdate = () =>
 //   fetchAsync<DbResponse<number>>(
 //     endpoints.readDB("stores", "/ExportedAt/Ticks")
 //   );
 
-export const getStores = () =>
-  fetchAsync<StoresResponse>(endpoints.readDB("stores")).then((response) => ({
-    ...response,
-    Stores: response.Stores.map((store) => ({
-      ...store,
-      Name: removeXmlTags(store.Name),
-    })),
-  }));
+export const getStores = (): Promise<StoresResponse | undefined> =>
+  listDBs()
+    .then((config) => config.dbs.find((t) => t.Name === "Stores"))
+    .then((stores) =>
+      stores?.Bin
+        ? fetchAsync<StoresResponse>(endpoints.readDB(stores?.Bin)).then(
+            (response) => ({
+              ...response,
+              Stores: response.Stores.map((store) => ({
+                ...store,
+                Name: removeXmlTags(store.Name),
+              })),
+            })
+          )
+        : Promise.resolve(undefined)
+    );
 
 // export const getRecipes = () =>
 //   fetchAsync<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));

@@ -1,3 +1,13 @@
+declare interface Config {
+  dbs: DB[];
+}
+
+declare interface DB {
+  Name: string;
+  ExportedAt: ExportedAt;
+  Bin: string;
+}
+
 declare interface DbResponse<T> {
   success: boolean;
   data: T;
