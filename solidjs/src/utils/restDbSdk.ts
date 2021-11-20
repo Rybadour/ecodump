@@ -1,6 +1,6 @@
 import { removeXmlTags } from "./helpers";
 
-const key = "fa89590a-2849-4563-aa75-a960d2e11c6f";
+const key = "425aff9f-2361-4031-b941-91d9b7d58f82";
 const endpoints = {
   list: () => `https://api.jsonstorage.net/v1/json/${key}`,
   readDB: (bin: string) => `https://api.jsonstorage.net/v1/json/${bin}`,
@@ -18,14 +18,9 @@ async function fetchAsync<T>(url: string): Promise<T> {
 export const listDBs = () => fetchAsync<Config>(endpoints.list());
 export const readDB = (bin: string) => fetchAsync(endpoints.readDB(bin));
 
-// export const getStoresLastUpdate = () =>
-//   fetchAsync<DbResponse<number>>(
-//     endpoints.readDB("stores", "/ExportedAt/Ticks")
-//   );
-
 export const getStores = (): Promise<StoresResponse | undefined> =>
   listDBs()
-    .then((config) => config.dbs.find((t) => t.Name === "Stores"))
+    .then((config) => config.Dbs.find((db) => db.Name === "Stores"))
     .then((stores) =>
       stores?.Bin
         ? fetchAsync<StoresResponse>(endpoints.readDB(stores?.Bin)).then(
@@ -40,8 +35,14 @@ export const getStores = (): Promise<StoresResponse | undefined> =>
         : Promise.resolve(undefined)
     );
 
-// export const getRecipes = () =>
-//   fetchAsync<DbResponse<RecipeV1[]>>(endpoints.readDB("recipes"));
+export const getRecipes = (): Promise<Recipe[] | undefined> =>
+  listDBs()
+    .then((config) => config.Dbs.find((db) => db.Name === "Recipes"))
+    .then((recipes) =>
+      recipes?.Bin
+        ? fetchAsync<Recipe[]>(endpoints.readDB(recipes?.Bin))
+        : Promise.resolve(undefined)
+    );
 
 // export const getTags = () =>
 //   fetchAsync<DbResponse<Record<string, string[]>>>(endpoints.readDB("tags"));

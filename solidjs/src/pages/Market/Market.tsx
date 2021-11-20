@@ -5,7 +5,7 @@ import StoresTable from "./StoresTable";
 import RadioToggle from "../../components/RadioToggle";
 import { Show } from "solid-js";
 import ProductsTable from "./ProductsTable";
-import Pagination from "../../components/Pagination/Pagination";
+import Pagination from "../../components/Pagination";
 
 export default () => {
   const {

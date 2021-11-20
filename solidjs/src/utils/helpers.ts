@@ -6,6 +6,10 @@ export const filterByText = (valueFilter: string, value: string) =>
   valueFilter.length === 0 ||
   value?.toLowerCase()?.indexOf(valueFilter?.toLowerCase()) >= 0;
 
+export const filterByTextEqual = (valueFilter: string, value: string) =>
+  valueFilter.length === 0 ||
+  value?.toLowerCase() === valueFilter?.toLowerCase();
+
 export const filterUnique = <T>(value: T, index: number, self: T[]) =>
   self.indexOf(value) === index;
 

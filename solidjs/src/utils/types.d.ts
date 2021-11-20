@@ -1,16 +1,11 @@
 declare interface Config {
-  dbs: DB[];
+  Dbs: DB[];
 }
 
 declare interface DB {
   Name: string;
   ExportedAt: ExportedAt;
   Bin: string;
-}
-
-declare interface DbResponse<T> {
-  success: boolean;
-  data: T;
 }
 
 declare interface Dictionary<T> {
@@ -59,45 +54,34 @@ declare interface ProductOffer extends Offers {
   CurrencyName: string;
 }
 
-// declare interface StoresHistV1 {
-//   Version: number;
-//   Stores: StoresV1[];
-//   ExportedAtYear: number;
-//   ExportedAtMonth: number;
-//   ExportedAtDay: number;
-//   ExportedAtHour: number;
-//   ExportedAtMin: number;
-//   ExportedAt: string;
-// }
+declare interface Recipe {
+  Key: string;
+  Untranslated: string;
+  BaseCraftTime: number;
+  BaseLaborCost: number;
+  BaseXPGain: number;
+  CraftStation: string[];
+  DefaultVariant: string;
+  NumberOfVariants: number;
+  SkillNeeds: {
+    Skill: string;
+    Level: number;
+  }[];
+  Variants: {
+    Key: string;
+    Name: string;
+    Ingredients: RecipeIngredient[];
+    Products: {
+      Name: string;
+      Ammount: number;
+    }[];
+  }[];
+}
 
-// declare interface RecipeV1 {
-//   Key: string;
-//   Untranslated: string;
-//   BaseCraftTime: number;
-//   BaseLaborCost: number;
-//   BaseXPGain: number;
-//   CraftStation: string[];
-//   DefaultVariant: string;
-//   NumberOfVariants: number;
-//   SkillNeeds: {
-//     Skill: string;
-//     Level: number;
-//   }[];
-//   Variants: {
-//     Key: string;
-//     Name: string;
-//     Ingredients: RecipeV1Ingredient[];
-//     Products: {
-//       Name: string;
-//       Ammount: number;
-//     }[];
-//   }[];
-// }
-
-// declare interface RecipeV1Ingredient {
-//   IsSpecificItem: boolean;
-//   Tag: string;
-//   Name: string;
-//   Ammount: number;
-//   IsStatic: boolean;
-// }
+declare interface RecipeIngredient {
+  IsSpecificItem: boolean;
+  Tag: string;
+  Name: string;
+  Ammount: number;
+  IsStatic: boolean;
+}

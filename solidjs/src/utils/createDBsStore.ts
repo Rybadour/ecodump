@@ -21,7 +21,7 @@ export default () => {
     filenameToDownload,
     (filename: string) => {
       const bin =
-        filename && config()?.dbs.find((db) => db.Name === filename)?.Bin;
+        filename && config()?.Dbs.find((db) => db.Name === filename)?.Bin;
       return filename && bin
         ? readDB(bin).then((json) => ({ filename, json }))
         : Promise.resolve(undefined);
@@ -36,7 +36,7 @@ export default () => {
     setFilenameToDownload("");
   });
 
-  const dbs = createMemo(() => config()?.dbs);
+  const dbs = createMemo(() => config()?.Dbs);
 
   return {
     dbs,

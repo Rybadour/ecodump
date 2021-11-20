@@ -1,4 +1,5 @@
 import { createMemo, createResource } from "solid-js";
+import createDebounce from "../../hooks/createDebounce";
 import { createLocalStore } from "../../utils/createLocalStore";
 import {
   filterByText,
@@ -7,7 +8,7 @@ import {
 } from "../../utils/helpers";
 import { getStores } from "../../utils/restDbSdk";
 
-const pageSize = 200;
+const pageSize = 100;
 type Store = {
   search: string;
   currency: string;
@@ -95,12 +96,16 @@ export default () => {
       state.productsPage * pageSize
     )
   );
+  const [setSearch] = createDebounce(
+    (newValue: string) =>
+      setState({ search: newValue, storesPage: 1, productsPage: 1 }),
+    200
+  );
   return {
     state,
     storesResource,
     stores,
-    setSearch: (newValue: string) =>
-      setState({ search: newValue, storesPage: 1, productsPage: 1 }),
+    setSearch,
     setCurrencyFilter: (newValue: string) =>
       setState({ currency: newValue, storesPage: 1, productsPage: 1 }),
     toggleTableType: () =>
