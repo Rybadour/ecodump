@@ -7,7 +7,7 @@ import { MainContextProvider } from "./hooks/MainContext";
 
 const Market = lazy(() => import("./pages/Market"));
 const RawData = lazy(() => import("./pages/RawData"));
-const Home = lazy(() => import("./pages/HomePage"));
+const Home = lazy(() => import("./pages/Home"));
 
 const routes = {
   Home: { text: "Home", description: "", href: "/" },
