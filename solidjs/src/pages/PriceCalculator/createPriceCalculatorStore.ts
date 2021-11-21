@@ -29,7 +29,7 @@ export default () => {
   );
 
   const filteredProducts = createMemo(() =>
-    allCraftableProducts?.()?.filter(
+    allCraftableProducts()?.filter(
       (product) =>
         filterByText(state.search, product.Name ?? "") &&
         filterByTextEqual(

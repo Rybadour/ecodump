@@ -4,7 +4,7 @@ import Table, {
   TableHeader,
   TableHeaderCol,
   TableBody,
-} from "../../components/Table";
+} from "../../components/TableT";
 import SearchInput from "../../components/SearchInput";
 import Dropdown from "../../components/Dropdown";
 import Tooltip from "../../components/Tooltip";

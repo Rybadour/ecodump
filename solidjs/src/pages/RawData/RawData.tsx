@@ -5,7 +5,7 @@ import Table, {
   TableHeaderCol,
   TableHeaderColAction,
   TableBody,
-} from "../../components/Table";
+} from "../../components/TableT";
 export default () => {
   const { dbs, downloadFile } = createDBsStore();
   return (

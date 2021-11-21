@@ -1,8 +1,10 @@
 import { removeXmlTags } from "./helpers";
 
-const key = "425aff9f-2361-4031-b941-91d9b7d58f82";
 const endpoints = {
-  list: () => `https://api.jsonstorage.net/v1/json/${key}`,
+  list: () =>
+    `https://api.jsonstorage.net/v1/json/${
+      import.meta.env.VITE_STORAGE_MASTERKEY
+    }`,
   readDB: (bin: string) => `https://api.jsonstorage.net/v1/json/${bin}`,
 };
 
