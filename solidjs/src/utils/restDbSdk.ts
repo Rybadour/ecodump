@@ -18,31 +18,27 @@ async function fetchAsync<T>(url: string): Promise<T> {
 export const listDBs = () => fetchAsync<Config>(endpoints.list());
 export const readDB = (bin: string) => fetchAsync(endpoints.readDB(bin));
 
-export const getStores = (): Promise<StoresResponse | undefined> =>
-  listDBs()
-    .then((config) => config.Dbs.find((db) => db.Name === "Stores"))
-    .then((stores) =>
-      stores?.Bin
-        ? fetchAsync<StoresResponse>(endpoints.readDB(stores?.Bin)).then(
-            (response) => ({
-              ...response,
-              Stores: response.Stores.map((store) => ({
-                ...store,
-                Name: removeXmlTags(store.Name),
-              })),
-            })
-          )
-        : Promise.resolve(undefined)
-    );
+export const getStores = (
+  storesBin: string
+): Promise<StoresResponse | undefined> =>
+  !storesBin
+    ? Promise.resolve(undefined)
+    : fetchAsync<StoresResponse>(endpoints.readDB(storesBin)).then(
+        (response) => ({
+          ...response,
+          Stores: response.Stores.map((store) => ({
+            ...store,
+            Name: removeXmlTags(store.Name),
+          })),
+        })
+      );
 
-export const getRecipes = (): Promise<Recipe[] | undefined> =>
-  listDBs()
-    .then((config) => config.Dbs.find((db) => db.Name === "Recipes"))
-    .then((recipes) =>
-      recipes?.Bin
-        ? fetchAsync<Recipe[]>(endpoints.readDB(recipes?.Bin))
-        : Promise.resolve(undefined)
-    );
+export const getRecipes = (recipesBin: string): Promise<Recipe[] | undefined> =>
+  !recipesBin
+    ? Promise.resolve(undefined)
+    : fetchAsync<Recipe[]>(endpoints.readDB(recipesBin));
 
-// export const getTags = () =>
-//   fetchAsync<DbResponse<Record<string, string[]>>>(endpoints.readDB("tags"));
+export const getTags = (tagsBin: string) =>
+  !tagsBin
+    ? Promise.resolve(undefined)
+    : fetchAsync<Record<string, string[]>>(endpoints.readDB(tagsBin));

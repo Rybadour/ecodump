@@ -1,18 +1,13 @@
-import { Accessor, createEffect, createMemo, JSXElement } from "solid-js";
-import {
-  createSignal,
-  createContext,
-  useContext,
-  createResource,
-  Resource,
-} from "solid-js";
+import { Accessor, createMemo, JSXElement } from "solid-js";
+import { createContext, useContext, createResource, Resource } from "solid-js";
 import { filterUnique, sortByTextExcludingWord } from "../../utils/helpers";
-import { getRecipes, getStores, listDBs } from "../../utils/restDbSdk";
+import { getRecipes, getStores, getTags, listDBs } from "../../utils/restDbSdk";
 
 type MainContextType = {
   config: Resource<Config | undefined>;
   storesResource: Resource<StoresResponse | undefined>;
   recipesResource: Resource<Recipe[] | undefined>;
+  tagsResource: Resource<Record<string, string[]> | undefined>;
   dbs: Accessor<DB[] | undefined>;
   allCurrencies: Accessor<string[] | undefined>;
   allProductsInStores: Accessor<ProductOffer[] | undefined>;
@@ -20,13 +15,24 @@ type MainContextType = {
 };
 
 const [config] = createResource(listDBs);
-const [storesResource] = createResource(getStores);
-const [recipesResource] = createResource(getRecipes);
+const [storesResource] = createResource(
+  () => config()?.Dbs?.find((db) => db.Name === "Stores")?.Bin ?? null,
+  getStores
+);
+const [recipesResource] = createResource(
+  () => config()?.Dbs?.find((db) => db.Name === "Recipes")?.Bin ?? null,
+  getRecipes
+);
+const [tagsResource] = createResource(
+  () => config()?.Dbs?.find((db) => db.Name === "Tags")?.Bin ?? null,
+  getTags
+);
 
 const MainContext = createContext<MainContextType>({
   config,
   storesResource,
   recipesResource,
+  tagsResource,
   dbs: () => [],
   allCurrencies: () => [],
   allProductsInStores: () => [],
