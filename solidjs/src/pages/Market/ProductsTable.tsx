@@ -2,7 +2,7 @@ import Table, {
   TableHeader,
   TableHeaderCol,
   TableBody,
-} from "../../components/table";
+} from "../../components/Table";
 import { Accessor, For } from "solid-js";
 import Tooltip from "../../components/Tooltip";
 

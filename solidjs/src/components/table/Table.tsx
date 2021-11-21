@@ -1,11 +1,9 @@
-import TableBody from "./TableBody";
-import TableHeader from "./TableHeader";
-import TableHeaderCol from "./TableHeaderCol";
-import TableHeaderColAction from "./TableHeaderColAction";
+import type { JSXElement } from "solid-js";
 
 type Props = {
-  children: any;
+  children: JSXElement;
 };
+
 export default (props: Props) => (
   <div class="flex flex-col">
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

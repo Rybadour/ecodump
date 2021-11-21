@@ -1,8 +1,9 @@
+import type { JSXElement } from "solid-js";
 import classNames from "classnames";
 import styles from "./Tooltip.module.css";
 type Props = {
   text: string;
-  children: any;
+  children: JSXElement;
 };
 export default (props: Props) => (
   <div class={styles.hasTooltip}>

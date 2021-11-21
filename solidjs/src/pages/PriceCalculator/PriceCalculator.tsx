@@ -4,7 +4,7 @@ import Table, {
   TableHeader,
   TableHeaderCol,
   TableBody,
-} from "../../components/table";
+} from "../../components/Table";
 import SearchInput from "../../components/SearchInput";
 import Dropdown from "../../components/Dropdown";
 import Tooltip from "../../components/Tooltip";
@@ -71,7 +71,7 @@ export default () => {
                   </Tooltip>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.recipe.SkillNeeds.map((skill) => (
+                  {product.Recipe.SkillNeeds.map((skill) => (
                     <>
                       <Tooltip text="Click to filter by profession">
                         <button
@@ -83,8 +83,8 @@ export default () => {
                       {` lvl${skill.Level}`}
                     </>
                   ))}
-                  {product.recipe.SkillNeeds.length > 0 && ` @ `}
-                  {product.recipe.CraftStation.map((station) => (
+                  {product.Recipe.SkillNeeds.length > 0 && ` @ `}
+                  {product.Recipe.CraftStation.map((station) => (
                     <Tooltip text="Click to filter by craft station">
                       <button onClick={() => setFilterCraftStation(station)}>
                         {station}

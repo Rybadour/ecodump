@@ -67,14 +67,16 @@ declare interface Recipe {
     Skill: string;
     Level: number;
   }[];
-  Variants: {
-    Key: string;
+  Variants: Variant[];
+}
+
+declare interface Variant {
+  Key: string;
+  Name: string;
+  Ingredients: RecipeIngredient[];
+  Products: {
     Name: string;
-    Ingredients: RecipeIngredient[];
-    Products: {
-      Name: string;
-      Ammount: number;
-    }[];
+    Ammount: number;
   }[];
 }
 
@@ -84,4 +86,10 @@ declare interface RecipeIngredient {
   Name: string;
   Ammount: number;
   IsStatic: boolean;
+}
+
+declare interface CraftableProduct {
+  Name: string;
+  Recipe: Recipe;
+  Variant: Variant;
 }

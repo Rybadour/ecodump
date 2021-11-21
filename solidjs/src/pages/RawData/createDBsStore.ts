@@ -4,9 +4,9 @@ import {
   createEffect,
   createMemo,
 } from "solid-js";
-import { createStore } from "solid-js/store";
-import { openDownloadFileDialog } from "./downloadFile";
-import { listDBs, readDB } from "./restDbSdk";
+import { useMainContext } from "../../hooks/MainContext";
+import { openDownloadFileDialog } from "../../utils/downloadFile";
+import { readDB } from "../../utils/restDbSdk";
 
 export interface DbContent<T> {
   isLoading: boolean;
@@ -15,8 +15,8 @@ export interface DbContent<T> {
 }
 
 export default () => {
+  const { config, dbs } = useMainContext();
   const [filenameToDownload, setFilenameToDownload] = createSignal("");
-  const [config] = createResource(listDBs);
   const [downloadedFile] = createResource(
     filenameToDownload,
     (filename: string) => {
@@ -35,8 +35,6 @@ export default () => {
     }
     setFilenameToDownload("");
   });
-
-  const dbs = createMemo(() => config()?.Dbs);
 
   return {
     dbs,

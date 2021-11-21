@@ -1,11 +1,11 @@
 import { For } from "solid-js";
-import createDBsStore from "../../utils/createDBsStore";
+import createDBsStore from "./createDBsStore";
 import Table, {
   TableHeader,
   TableHeaderCol,
   TableHeaderColAction,
   TableBody,
-} from "../../components/table";
+} from "../../components/Table";
 export default () => {
   const { dbs, downloadFile } = createDBsStore();
   return (

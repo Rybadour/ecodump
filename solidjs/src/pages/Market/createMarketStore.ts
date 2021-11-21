@@ -1,12 +1,12 @@
 import { createMemo, createResource } from "solid-js";
 import createDebounce from "../../hooks/createDebounce";
+import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
 import {
   filterByText,
   filterUnique,
   sortByTextExcludingWord,
 } from "../../utils/helpers";
-import { getStores } from "../../utils/restDbSdk";
 
 const pageSize = 100;
 type Store = {
@@ -17,7 +17,8 @@ type Store = {
   productsPage: number;
 };
 export default () => {
-  const [storesResource] = createResource(getStores);
+  const { storesResource, allCurrencies, allProductsInStores } =
+    useMainContext();
   const [state, setState] = createLocalStore<Store>(
     {
       search: "",
@@ -48,38 +49,9 @@ export default () => {
   const storesTotalPages = createMemo(() =>
     Math.ceil((storesResource()?.Stores?.length ?? 0) / pageSize)
   );
-  const allCurrencies = createMemo(() =>
-    storesResource()
-      ?.Stores.map((store) => store.CurrencyName)
-      .filter(filterUnique)
-      .sort(sortByTextExcludingWord("Credit"))
-  );
-  const allProducts = createMemo(() =>
-    storesResource()
-      ?.Stores.map((store) =>
-        store.AllOffers.map(
-          (offer) =>
-            ({
-              ...offer,
-              StoreName: store.Name,
-              StoreOwner: store.Owner,
-              CurrencyName: store.CurrencyName,
-            } as ProductOffer)
-        )
-      )
-      .flat()
-      .sort((a, b) => {
-        const nameSort = a.ItemName.toLowerCase().localeCompare(
-          b.ItemName.toLowerCase()
-        );
-        if (nameSort !== 0) {
-          return nameSort;
-        }
-        return a.Buying ? 1 : -1;
-      })
-  );
+
   const filteredProducts = createMemo(() =>
-    (allProducts() ?? []).filter(
+    (allProductsInStores() ?? []).filter(
       (product) =>
         (filterByText(state.search, product.ItemName ?? "") ||
           filterByText(state.search, product.StoreName ?? "") ||

@@ -1,5 +1,6 @@
 import { createMemo, createResource } from "solid-js";
 import createDebounce from "../../hooks/createDebounce";
+import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
 import {
   filterByText,
@@ -16,7 +17,7 @@ type Store = {
   currentPage: number;
 };
 export default () => {
-  const [recipesResource] = createResource(getRecipes);
+  const { recipesResource, allCraftableProducts } = useMainContext();
   const [state, setState] = createLocalStore<Store>(
     {
       search: "",
@@ -27,28 +28,17 @@ export default () => {
     "PriceCalculatorStore"
   );
 
-  const allProducts = createMemo(() =>
-    recipesResource()
-      ?.map((recipe) =>
-        recipe.Variants.map((variant) =>
-          variant.Products.map((prod) => ({ Name: prod.Name, recipe, variant }))
-        )?.flat()
-      )
-      ?.flat()
-      .sort((a, b) => a.Name.toLowerCase().localeCompare(b.Name.toLowerCase()))
-  );
-
   const filteredProducts = createMemo(() =>
-    allProducts()?.filter(
+    allCraftableProducts?.()?.filter(
       (product) =>
         filterByText(state.search, product.Name ?? "") &&
         filterByTextEqual(
           state.filterProfession,
-          product.recipe.SkillNeeds[0]?.Skill ?? ""
+          product.Recipe.SkillNeeds[0]?.Skill ?? ""
         ) &&
         filterByTextEqual(
           state.filterCraftStation,
-          product.recipe.CraftStation[0] ?? ""
+          product.Recipe.CraftStation[0] ?? ""
         )
     )
   );

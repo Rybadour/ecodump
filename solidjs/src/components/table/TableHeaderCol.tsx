@@ -1,6 +1,7 @@
 type Props = {
   text: string;
 };
+
 export default (props: Props) => (
   <th
     scope="col"

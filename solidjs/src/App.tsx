@@ -3,6 +3,7 @@ import { lazy, createMemo } from "solid-js";
 import { Routes, Route, useLocation } from "solid-app-router";
 import Navbar from "./Navbar/Navbar";
 import PriceCalculator from "./pages/PriceCalculator";
+import { MainContextProvider } from "./hooks/MainContext";
 
 const Market = lazy(() => import("./pages/Market"));
 const RawData = lazy(() => import("./pages/RawData"));
@@ -61,17 +62,19 @@ const App: Component = () => {
       <main>
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div class="px-4 py-6 sm:px-0">
-            <Routes>
-              {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
-              <Route
-                path={routes.PriceCalculator.href}
-                element={<PriceCalculator />}
-              />
-              <Route path={routes.Market.href} element={<Market />} />
-              <Route path={routes.RawData.href} element={<RawData />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/*all" element={<Home />} />
-            </Routes>
+            <MainContextProvider>
+              <Routes>
+                {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
+                <Route
+                  path={routes.PriceCalculator.href}
+                  element={<PriceCalculator />}
+                />
+                <Route path={routes.Market.href} element={<Market />} />
+                <Route path={routes.RawData.href} element={<RawData />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/*all" element={<Home />} />
+              </Routes>
+            </MainContextProvider>
           </div>
         </div>
       </main>
