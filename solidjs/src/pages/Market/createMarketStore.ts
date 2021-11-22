@@ -1,28 +1,27 @@
-import { createMemo, createResource } from "solid-js";
+import { createEffect, createMemo } from "solid-js";
 import createDebounce from "../../hooks/createDebounce";
 import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
-import {
-  filterByText,
-  filterUnique,
-  sortByTextExcludingWord,
-} from "../../utils/helpers";
+import { filterByText } from "../../utils/helpers";
 
 const pageSize = 100;
 type Store = {
   search: string;
-  currency: string;
   isStoresTable: boolean;
   storesPage: number;
   productsPage: number;
 };
 export default () => {
-  const { storesResource, allCurrencies, allProductsInStores } =
-    useMainContext();
+  const {
+    storesResource,
+    allCurrencies,
+    allProductsInStores,
+    mainState,
+    update,
+  } = useMainContext();
   const [state, setState] = createLocalStore<Store>(
     {
       search: "",
-      currency: "",
       isStoresTable: true,
       storesPage: 1,
       productsPage: 1,
@@ -36,7 +35,7 @@ export default () => {
           (store) =>
             (filterByText(state.search, store.Name ?? "") ||
               filterByText(state.search, store.Owner ?? "")) &&
-            filterByText(state.currency, store.CurrencyName ?? "")
+            filterByText(mainState.currency, store.CurrencyName ?? "")
         )
         .sort((a, b) =>
           a.Name.toLowerCase().localeCompare(b.Name.toLowerCase())
@@ -56,7 +55,7 @@ export default () => {
         (filterByText(state.search, product.ItemName ?? "") ||
           filterByText(state.search, product.StoreName ?? "") ||
           filterByText(state.search, product.StoreOwner ?? "")) &&
-        filterByText(state.currency, product.CurrencyName ?? "")
+        filterByText(mainState.currency, product.CurrencyName ?? "")
     )
   );
   const productsTotalPages = createMemo(() =>
@@ -73,13 +72,19 @@ export default () => {
       setState({ search: newValue, storesPage: 1, productsPage: 1 }),
     200
   );
+  createEffect(() => {
+    // We want to updated state when currency changes
+    // TODO: is there a better way to do this?
+    mainState.currency;
+    setState({ storesPage: 1, productsPage: 1 });
+  });
   return {
+    mainState,
     state,
     storesResource,
     stores,
     setSearch,
-    setCurrencyFilter: (newValue: string) =>
-      setState({ currency: newValue, storesPage: 1, productsPage: 1 }),
+    setCurrencyFilter: (newValue: string) => update.currency(newValue),
     toggleTableType: () =>
       setState((prev) => ({ isStoresTable: !prev.isStoresTable })),
     setStoresPage: (pageNum: number) => setState({ storesPage: pageNum }),

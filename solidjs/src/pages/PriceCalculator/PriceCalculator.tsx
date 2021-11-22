@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import createMatCalculatorStore from "./createPriceCalculatorStore";
+import createPriceCalculatorStore from "./createPriceCalculatorStore";
 import Table, {
   TableHeader,
   TableHeaderCol,
@@ -9,19 +9,25 @@ import SearchInput from "../../components/SearchInput";
 import Dropdown from "../../components/Dropdown";
 import Tooltip from "../../components/Tooltip";
 import Pagination from "../../components/Pagination";
+import GamePricesModal from "../../components/GamePricesModal";
 
 export default () => {
   const {
+    mainState,
     state,
     allProfessions,
     allCraftStations,
+    allCurrencies,
     paginatedProducts,
     setSearch,
     setFilterProfession,
     setFilterCraftStation,
+    setCurrencyFilter,
     totalPages,
     setCurrentPage,
-  } = createMatCalculatorStore();
+    showPricesForProduct,
+  } = createPriceCalculatorStore();
+
   return (
     <>
       <div class="flex justify-between">
@@ -50,13 +56,24 @@ export default () => {
             ]}
             onChange={(newValue) => setFilterCraftStation(`${newValue}`)}
           />
+          <Dropdown
+            value={mainState.currency}
+            values={[
+              { value: "", text: "All Currencies" },
+              ...(allCurrencies()?.map((name) => ({
+                value: name,
+                text: name,
+              })) ?? []),
+            ]}
+            onChange={(newValue) => setCurrencyFilter(`${newValue}`)}
+          />
         </div>
       </div>
       <Table>
         <TableHeader>
           <TableHeaderCol text="Product Name" />
           <TableHeaderCol text="Profession/Craft Station" />
-          <TableHeaderCol text="Game prices" />
+          <TableHeaderCol text="Average price" />
           <TableHeaderCol text="Fixed price" />
         </TableHeader>
         <TableBody>
@@ -93,7 +110,19 @@ export default () => {
                   ))}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  TODO
+                  <Tooltip text="Click for ingame prices. Select currency for average.">
+                    <button onClick={() => showPricesForProduct(product.Name)}>
+                      {(product.Offers.length <= 0 ||
+                        (mainState.currency && !product.calculatedPrice)) &&
+                        "no offers in currency"}
+                      {product.Offers.length > 0 &&
+                        !mainState.currency &&
+                        "select currency"}
+                      {mainState.currency &&
+                        product.calculatedPrice &&
+                        `${product.calculatedPrice} ${mainState.currency}`}
+                    </button>
+                  </Tooltip>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   TODO
@@ -108,6 +137,12 @@ export default () => {
         totalPages={totalPages()}
         onChange={setCurrentPage}
       />
+      {state.showPricesForProduct && (
+        <GamePricesModal
+          productName={state.showPricesForProduct}
+          onClose={() => showPricesForProduct(undefined)}
+        />
+      )}
     </>
   );
 };

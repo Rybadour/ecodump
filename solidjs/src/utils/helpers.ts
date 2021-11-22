@@ -13,6 +13,17 @@ export const filterByTextEqual = (valueFilter: string, value: string) =>
 export const filterUnique = <T>(value: T, index: number, self: T[]) =>
   self.indexOf(value) === index;
 
+export const paginateArray = <T>(
+  currentPage: number,
+  pageSize: number,
+  items?: T[]
+) => items?.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+export const calcTotalPages = <T>(pageSize: number, items?: T[]) =>
+  Math.ceil((items?.length ?? 0) / pageSize);
+
+export const formatNumber = (num: number) => +num.toFixed(2);
+
 export const sortByTextExcludingWord =
   (word: string) => (a: string, b: string) => {
     const aContainsWord = a.indexOf(word) >= 0;

@@ -9,6 +9,7 @@ import Pagination from "../../components/Pagination";
 
 export default () => {
   const {
+    mainState,
     state,
     storesResource,
     stores,
@@ -33,7 +34,7 @@ export default () => {
         <div class="flex items-center gap-2 mb-2">
           <SearchInput value={state.search} onChange={setSearch} />
           <Dropdown
-            value={state.currency}
+            value={mainState.currency}
             values={[
               { value: "", text: "All Currencies" },
               ...(allCurrencies()?.map((name) => ({

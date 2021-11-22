@@ -1,5 +1,7 @@
 import { Accessor, createMemo, JSXElement } from "solid-js";
 import { createContext, useContext, createResource, Resource } from "solid-js";
+import { Store } from "solid-js/store";
+import { createLocalStore } from "../../utils/createLocalStore";
 import { filterUnique, sortByTextExcludingWord } from "../../utils/helpers";
 import { getRecipes, getStores, getTags, listDBs } from "../../utils/restDbSdk";
 
@@ -12,6 +14,10 @@ type MainContextType = {
   allCurrencies: Accessor<string[] | undefined>;
   allProductsInStores: Accessor<ProductOffer[] | undefined>;
   allCraftableProducts: Accessor<CraftableProduct[] | undefined>;
+  mainState: Store<MainStore>;
+  update: {
+    currency: (newCurrency: string) => void;
+  };
 };
 
 const [config] = createResource(listDBs);
@@ -37,10 +43,18 @@ const MainContext = createContext<MainContextType>({
   allCurrencies: () => [],
   allProductsInStores: () => [],
   allCraftableProducts: () => [],
+  mainState: {
+    currency: "",
+  },
+  update: { currency: () => undefined },
 });
 type Props = {
   children: JSXElement;
 };
+type MainStore = {
+  currency: string;
+};
+
 export const MainContextProvider = (props: Props) => {
   const dbs = createMemo(() => config()?.Dbs);
 
@@ -82,24 +96,39 @@ export const MainContextProvider = (props: Props) => {
             Name: prod.Name,
             Recipe: recipe,
             Variant: variant,
+            Offers: allProductsInStores()?.filter(
+              (t) => t.ItemName === prod.Name
+            ),
           }))
         )?.flat()
       )
       ?.flat()
       .sort((a, b) => a.Name.toLowerCase().localeCompare(b.Name.toLowerCase()))
   );
+  const [mainState, setState] = createLocalStore<MainStore>(
+    {
+      currency: "",
+    },
+    "MainStore"
+  );
 
-  const store = {
+  const value = {
+    config,
     storesResource,
     recipesResource,
+    tagsResource,
     dbs,
     allCurrencies,
     allProductsInStores,
     allCraftableProducts,
+    mainState,
+    update: {
+      currency: (newCurrency: string) => setState({ currency: newCurrency }),
+    },
   } as MainContextType;
 
   return (
-    <MainContext.Provider value={store}>{props.children}</MainContext.Provider>
+    <MainContext.Provider value={value}>{props.children}</MainContext.Provider>
   );
 };
 
