@@ -13,6 +13,7 @@ import Tooltip from "../../components/Tooltip";
 import Pagination from "../../components/Pagination";
 import GamePricesModal from "../../components/GamePricesModal";
 import { filterByTextEqual, formatNumber } from "../../utils/helpers";
+import NumericInput from "../../components/NumericInput";
 
 export default () => {
   const {
@@ -167,18 +168,15 @@ export default () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {!mainState.currency && "select currency"}
                   {mainState.currency && (
-                    <input
-                      type="number"
-                      value={product.PersonalPrices?.[mainState.currency] ?? ""}
-                      onChange={(ev) =>
+                    <NumericInput
+                      value={product.PersonalPrices?.[mainState.currency]}
+                      onChange={(newValue) =>
                         updatePersonalPrice(
                           product.Name,
                           mainState.currency,
-                          formatNumber(Number(ev.currentTarget.value))
+                          newValue
                         )
                       }
-                      style={{ width: "60px", "-webkit-appearance": "none" }}
-                      class="rounded-md border border-gray-300 pl-1 text-sm font-small focus:outline-none text-black"
                     />
                   )}
                 </td>
