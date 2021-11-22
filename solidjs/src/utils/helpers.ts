@@ -10,6 +10,14 @@ export const filterByTextEqual = (valueFilter: string, value: string) =>
   valueFilter.length === 0 ||
   value?.toLowerCase() === valueFilter?.toLowerCase();
 
+export const filterByIncludesAny = (
+  valuesToFilter: string[],
+  values: string[]
+) =>
+  valuesToFilter.length === 0 ||
+  valuesToFilter[0].length === 0 ||
+  valuesToFilter.some((t) => values.includes(t));
+
 export const filterUnique = <T>(value: T, index: number, self: T[]) =>
   self.indexOf(value) === index;
 
@@ -23,6 +31,9 @@ export const calcTotalPages = <T>(pageSize: number, items?: T[]) =>
   Math.ceil((items?.length ?? 0) / pageSize);
 
 export const formatNumber = (num: number) => +num.toFixed(2);
+
+export const sortByText = (a: string, b: string) =>
+  a.toLowerCase().localeCompare(b.toLowerCase());
 
 export const sortByTextExcludingWord =
   (word: string) => (a: string, b: string) => {

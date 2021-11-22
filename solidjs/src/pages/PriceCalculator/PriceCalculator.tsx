@@ -1,5 +1,7 @@
 import { For } from "solid-js";
-import createPriceCalculatorStore from "./createPriceCalculatorStore";
+import createPriceCalculatorStore, {
+  Survivalist,
+} from "./createPriceCalculatorStore";
 import Table, {
   TableHeader,
   TableHeaderCol,
@@ -10,6 +12,7 @@ import Dropdown from "../../components/Dropdown";
 import Tooltip from "../../components/Tooltip";
 import Pagination from "../../components/Pagination";
 import GamePricesModal from "../../components/GamePricesModal";
+import { filterByTextEqual, formatNumber } from "../../utils/helpers";
 
 export default () => {
   const {
@@ -89,26 +92,62 @@ export default () => {
                   </Tooltip>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.Recipe.SkillNeeds.map((skill) => (
-                    <>
-                      <Tooltip text="Click to filter by profession">
-                        <button
-                          onClick={() => setFilterProfession(skill.Skill)}
-                        >
-                          {skill.Skill}
-                        </button>
-                      </Tooltip>
-                      {` lvl${skill.Level}`}
-                    </>
-                  ))}
-                  {product.Recipe.SkillNeeds.length > 0 && ` @ `}
-                  {product.Recipe.CraftStation.map((station) => (
-                    <Tooltip text="Click to filter by craft station">
-                      <button onClick={() => setFilterCraftStation(station)}>
-                        {station}
-                      </button>
-                    </Tooltip>
-                  ))}
+                  {product.RecipeVariants.map((recipeVariant) =>
+                    recipeVariant.Recipe.CraftStation.map((craftStation) =>
+                      (recipeVariant.Recipe.SkillNeeds.length > 0
+                        ? recipeVariant.Recipe.SkillNeeds
+                        : [{ Skill: Survivalist, Level: 0 }]
+                      ).map((skillNeed) => ({
+                        Skill: skillNeed.Skill,
+                        SkillLevel: skillNeed.Level,
+                        craftStation,
+                      }))
+                    ).flat()
+                  )
+                    .flat()
+                    // Remove duplicates:
+                    .filter(
+                      (value, index, self) =>
+                        self.findIndex(
+                          (t) =>
+                            t.Skill === value.Skill &&
+                            t.SkillLevel === value.SkillLevel &&
+                            t.craftStation === value.craftStation
+                        ) === index
+                    )
+                    // Filter by profession and crafting station filters
+                    .filter(
+                      (t) =>
+                        filterByTextEqual(state.filterProfession, t.Skill) &&
+                        filterByTextEqual(
+                          state.filterCraftStation,
+                          t.craftStation
+                        )
+                    )
+                    .map((recipe) => (
+                      <div>
+                        <>
+                          <Tooltip text="Click to filter by profession">
+                            <button
+                              onClick={() => setFilterProfession(recipe.Skill)}
+                            >
+                              {recipe.Skill}
+                            </button>
+                          </Tooltip>
+                          {` lvl${recipe.SkillLevel}`}
+                        </>
+                        {recipe.Skill && ` @ `}
+                        <Tooltip text="Click to filter by craft station">
+                          <button
+                            onClick={() =>
+                              setFilterCraftStation(recipe.craftStation)
+                            }
+                          >
+                            {recipe.craftStation}
+                          </button>
+                        </Tooltip>
+                      </div>
+                    ))}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <Tooltip text="Click for ingame prices. Select currency for average.">
@@ -126,6 +165,7 @@ export default () => {
                   </Tooltip>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {!mainState.currency && "select currency"}
                   {mainState.currency && (
                     <input
                       type="number"
@@ -134,9 +174,11 @@ export default () => {
                         updatePersonalPrice(
                           product.Name,
                           mainState.currency,
-                          Number(ev.currentTarget.value)
+                          formatNumber(Number(ev.currentTarget.value))
                         )
                       }
+                      style={{ width: "60px", "-webkit-appearance": "none" }}
+                      class="rounded-md border border-gray-300 pl-1 text-sm font-small focus:outline-none text-black"
                     />
                   )}
                 </td>

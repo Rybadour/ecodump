@@ -3,10 +3,12 @@ import createDebounce from "../../hooks/createDebounce";
 import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
 import {
+  filterByIncludesAny,
   filterByText,
   filterByTextEqual,
   filterUnique,
   formatNumber,
+  sortByText,
 } from "../../utils/helpers";
 
 const pageSize = 100;
@@ -17,6 +19,7 @@ type Store = {
   currentPage: number;
   showPricesForProduct?: string;
 };
+export const Survivalist = "Survivalist";
 
 const calcAvgPrice = (items: { price: number; quantity: number }[]) => {
   const avgCalc = items.reduce(
@@ -53,13 +56,17 @@ export default () => {
       ?.filter(
         (product) =>
           filterByText(state.search, product.Name ?? "") &&
-          filterByTextEqual(
-            state.filterProfession,
-            product.Recipe.SkillNeeds[0]?.Skill ?? ""
+          filterByIncludesAny(
+            [state.filterProfession],
+            product.RecipeVariants.map((variant) =>
+              variant.Recipe.SkillNeeds.map((t) => t.Skill)
+            ).flat()
           ) &&
-          filterByTextEqual(
-            state.filterCraftStation,
-            product.Recipe.CraftStation[0] ?? ""
+          filterByIncludesAny(
+            [state.filterCraftStation],
+            product.RecipeVariants.map(
+              (variant) => variant.Recipe.CraftStation
+            ).flat()
           )
       )
       .map((product) => ({
@@ -92,6 +99,7 @@ export default () => {
       ?.map((recipe) => recipe.SkillNeeds.map((t) => t.Skill))
       .flat()
       .filter(filterUnique)
+      .sort(sortByText)
   );
 
   const allCraftStations = createMemo(() =>
@@ -99,6 +107,7 @@ export default () => {
       ?.map((recipe) => recipe.CraftStation)
       .flat()
       .filter(filterUnique)
+      .sort(sortByText)
   );
 
   const totalPages = createMemo(() =>
@@ -117,7 +126,10 @@ export default () => {
     paginatedProducts,
     setSearch,
     setFilterProfession: (newSearch: string) =>
-      setState({ filterProfession: newSearch, currentPage: 1 }),
+      setState({
+        filterProfession: newSearch === Survivalist ? "" : newSearch,
+        currentPage: 1,
+      }),
     setFilterCraftStation: (newSearch: string) =>
       setState({ filterCraftStation: newSearch, currentPage: 1 }),
     setCurrentPage: (newPage: number) => setState({ currentPage: newPage }),

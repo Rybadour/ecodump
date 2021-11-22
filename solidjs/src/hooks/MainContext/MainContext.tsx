@@ -111,24 +111,49 @@ export const MainContextProvider = (props: Props) => {
         return a.Buying ? 1 : -1;
       })
   );
-  const allCraftableProducts = createMemo(() =>
-    recipesResource()
-      ?.map((recipe) =>
-        recipe.Variants.map((variant) =>
-          variant.Products.map((prod) => ({
-            Name: prod.Name,
-            Recipe: recipe,
-            Variant: variant,
+  const allCraftableProducts = createMemo(() => {
+    const CraftableProductsDict =
+      recipesResource()
+        ?.map((recipe) =>
+          recipe.Variants.map((variant) =>
+            variant.Products.map((prod) => ({
+              Name: prod.Name,
+              Recipe: recipe,
+              Variant: variant,
+            }))
+          )?.flat()
+        )
+        ?.flat()
+        ?.reduce(
+          (prev, next) => ({
+            ...prev,
+            [next.Name]: {
+              Name: next.Name,
+              RecipeVariants: [
+                ...(prev[next.Name]?.RecipeVariants ?? []),
+                { Recipe: next.Recipe, Variant: next.Variant },
+              ],
+            } as CraftableProduct,
+          }),
+          {} as { [name: string]: CraftableProduct }
+        ) ?? {};
+
+    return Object.values(CraftableProductsDict)
+      .map(
+        (prod) =>
+          ({
+            ...prod,
             Offers: allProductsInStores()?.filter(
               (t) => t.ItemName === prod.Name
             ),
-            PersonalPrices: personalPricesState?.[prod.Name] ?? {},
-          }))
-        )?.flat()
+            PersonalPrices: personalPricesState?.[prod.Name ?? ""] ?? {},
+          } as CraftableProduct)
       )
-      ?.flat()
-      .sort((a, b) => a.Name.toLowerCase().localeCompare(b.Name.toLowerCase()))
-  );
+      .sort(
+        (a, b) =>
+          a.Name?.toLowerCase()?.localeCompare(b.Name?.toLowerCase() ?? "") ?? 0
+      );
+  });
 
   const value = {
     config,
