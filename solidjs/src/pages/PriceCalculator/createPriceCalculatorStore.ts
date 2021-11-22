@@ -38,6 +38,7 @@ export default () => {
     allCraftableProducts,
     allCurrencies,
     mainState,
+    personalPricesState,
     update,
   } = useMainContext();
   const [state, setState] = createLocalStore<Store>(
@@ -119,6 +120,7 @@ export default () => {
   );
   return {
     mainState,
+    personalPricesState,
     state,
     allProfessions,
     allCraftStations,

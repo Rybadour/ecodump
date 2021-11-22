@@ -92,5 +92,4 @@ declare interface CraftableProduct {
   Name: string;
   RecipeVariants: { Recipe: Recipe; Variant: Variant }[];
   Offers: ProductOffer[];
-  PersonalPrices: { [currency: string]: number };
 }

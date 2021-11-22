@@ -18,6 +18,7 @@ import NumericInput from "../../components/NumericInput";
 export default () => {
   const {
     mainState,
+    personalPricesState,
     state,
     allProfessions,
     allCraftStations,
@@ -169,7 +170,11 @@ export default () => {
                   {!mainState.currency && "select currency"}
                   {mainState.currency && (
                     <NumericInput
-                      value={product.PersonalPrices?.[mainState.currency]}
+                      value={
+                        personalPricesState?.[product.Name]?.[
+                          mainState.currency
+                        ]
+                      }
                       onChange={(newValue) =>
                         updatePersonalPrice(
                           product.Name,

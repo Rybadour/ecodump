@@ -1,6 +1,6 @@
-import { Accessor, createEffect, createMemo, JSXElement } from "solid-js";
+import { Accessor, createMemo, JSXElement } from "solid-js";
 import { createContext, useContext, createResource, Resource } from "solid-js";
-import { Store, produce } from "solid-js/store";
+import { Store } from "solid-js/store";
 import { createLocalStore } from "../../utils/createLocalStore";
 import { filterUnique, sortByTextExcludingWord } from "../../utils/helpers";
 import { getRecipes, getStores, getTags, listDBs } from "../../utils/restDbSdk";
@@ -15,6 +15,7 @@ type MainContextType = {
   allProductsInStores: Accessor<ProductOffer[] | undefined>;
   allCraftableProducts: Accessor<CraftableProduct[] | undefined>;
   mainState: Store<MainStore>;
+  personalPricesState: Store<PersonalPricesStore>;
   update: {
     currency: (newCurrency: string) => void;
     personalPrice: (
@@ -51,6 +52,7 @@ const MainContext = createContext<MainContextType>({
   mainState: {
     currency: "",
   },
+  personalPricesState: {},
   update: {
     currency: () => undefined,
     personalPrice: (product: string, currency: string, newPrice: number) =>
@@ -146,7 +148,6 @@ export const MainContextProvider = (props: Props) => {
             Offers: allProductsInStores()?.filter(
               (t) => t.ItemName === prod.Name
             ),
-            PersonalPrices: personalPricesState?.[prod.Name ?? ""] ?? {},
           } as CraftableProduct)
       )
       .sort(
@@ -165,6 +166,7 @@ export const MainContextProvider = (props: Props) => {
     allProductsInStores,
     allCraftableProducts,
     mainState,
+    personalPricesState,
     update: {
       currency: (newCurrency: string) => setState({ currency: newCurrency }),
       personalPrice: (product: string, currency: string, newPrice: number) =>
