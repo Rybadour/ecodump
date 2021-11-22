@@ -46,7 +46,7 @@ export default (props: Props) => (
       From: "opacity-100 translate-y-0 sm:scale-100"
       To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
   --> */}
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md\:max-w-2xl lg\:max-w-4xl xl\:max-w-5xl">
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-2xl lg:max-w-4xl xl:max-w-5xl">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 relative">
           <div class="absolute top-2 right-2 flex items-center justify-center h-8 w-8 rounded-full bg-gray-100">
             <button onClick={props.onClose}>

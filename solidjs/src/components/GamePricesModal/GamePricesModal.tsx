@@ -21,7 +21,7 @@ type Props = {
 const pageSize = 10;
 
 export default (props: Props) => {
-  const { allProductsInStores, mainState } = useMainContext();
+  const { allProductsInStores, mainState, update } = useMainContext();
   const [currentPage, setCurrentPage] = createSignal(1);
   const filteredProducts = createMemo(() =>
     allProductsInStores()
@@ -41,7 +41,7 @@ export default (props: Props) => {
   return (
     <Modal onClose={props.onClose}>
       <div class="sm:flex sm:items-start">
-        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+        <div class="flex-grow mt-3 text-center sm:mt-0 sm:text-left">
           <ModalHeader>
             Ingame prices for product {props.productName}
           </ModalHeader>
@@ -74,16 +74,19 @@ export default (props: Props) => {
                           : `Selling ${product.MaxNumWanted} for`}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {`${product.Price} ${product.CurrencyName}`}
-                        {/* TODO: <Tooltip text="Click to set your personal price">
+                        <Tooltip text="Click to set your personal price">
                           <button
                             onClick={() =>
-                              props.setCurrencyFilter?.(product.CurrencyName)
+                              update.personalPrice(
+                                product.ItemName,
+                                product.CurrencyName,
+                                product.Price
+                              )
                             }
                           >
                             {`${product.Price} ${product.CurrencyName}`}
                           </button>
-                        </Tooltip> */}
+                        </Tooltip>
                       </td>
                     </tr>
                   )}

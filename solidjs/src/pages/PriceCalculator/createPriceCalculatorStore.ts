@@ -125,5 +125,6 @@ export default () => {
     totalPages,
     showPricesForProduct: (showPricesForProduct?: string) =>
       setState({ showPricesForProduct }),
+    updatePersonalPrice: update.personalPrice,
   };
 };

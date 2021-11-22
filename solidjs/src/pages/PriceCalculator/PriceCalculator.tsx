@@ -26,6 +26,7 @@ export default () => {
     totalPages,
     setCurrentPage,
     showPricesForProduct,
+    updatePersonalPrice,
   } = createPriceCalculatorStore();
 
   return (
@@ -74,7 +75,7 @@ export default () => {
           <TableHeaderCol text="Product Name" />
           <TableHeaderCol text="Profession/Craft Station" />
           <TableHeaderCol text="Average price" />
-          <TableHeaderCol text="Fixed price" />
+          <TableHeaderCol text="Personal price" />
         </TableHeader>
         <TableBody>
           <For each={paginatedProducts()}>
@@ -125,7 +126,19 @@ export default () => {
                   </Tooltip>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  TODO
+                  {mainState.currency && (
+                    <input
+                      type="number"
+                      value={product.PersonalPrices?.[mainState.currency] ?? ""}
+                      onChange={(ev) =>
+                        updatePersonalPrice(
+                          product.Name,
+                          mainState.currency,
+                          Number(ev.currentTarget.value)
+                        )
+                      }
+                    />
+                  )}
                 </td>
               </tr>
             )}

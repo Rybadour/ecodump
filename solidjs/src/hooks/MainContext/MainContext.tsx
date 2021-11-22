@@ -1,6 +1,6 @@
-import { Accessor, createMemo, JSXElement } from "solid-js";
+import { Accessor, createEffect, createMemo, JSXElement } from "solid-js";
 import { createContext, useContext, createResource, Resource } from "solid-js";
-import { Store } from "solid-js/store";
+import { Store, produce } from "solid-js/store";
 import { createLocalStore } from "../../utils/createLocalStore";
 import { filterUnique, sortByTextExcludingWord } from "../../utils/helpers";
 import { getRecipes, getStores, getTags, listDBs } from "../../utils/restDbSdk";
@@ -17,6 +17,11 @@ type MainContextType = {
   mainState: Store<MainStore>;
   update: {
     currency: (newCurrency: string) => void;
+    personalPrice: (
+      product: string,
+      currency: string,
+      newPrice: number
+    ) => void;
   };
 };
 
@@ -46,7 +51,11 @@ const MainContext = createContext<MainContextType>({
   mainState: {
     currency: "",
   },
-  update: { currency: () => undefined },
+  update: {
+    currency: () => undefined,
+    personalPrice: (product: string, currency: string, newPrice: number) =>
+      undefined,
+  },
 });
 type Props = {
   children: JSXElement;
@@ -55,7 +64,21 @@ type MainStore = {
   currency: string;
 };
 
+type PersonalPricesStore = {
+  [productName: string]: { [currency: string]: number };
+};
+
 export const MainContextProvider = (props: Props) => {
+  const [personalPricesState, setPersonalPricesState] =
+    createLocalStore<PersonalPricesStore>({}, "PersonalPricesStore");
+
+  const [mainState, setState] = createLocalStore<MainStore>(
+    {
+      currency: "",
+    },
+    "MainStore"
+  );
+
   const dbs = createMemo(() => config()?.Dbs);
 
   const allCurrencies = createMemo(() =>
@@ -99,17 +122,12 @@ export const MainContextProvider = (props: Props) => {
             Offers: allProductsInStores()?.filter(
               (t) => t.ItemName === prod.Name
             ),
+            PersonalPrices: personalPricesState?.[prod.Name] ?? {},
           }))
         )?.flat()
       )
       ?.flat()
       .sort((a, b) => a.Name.toLowerCase().localeCompare(b.Name.toLowerCase()))
-  );
-  const [mainState, setState] = createLocalStore<MainStore>(
-    {
-      currency: "",
-    },
-    "MainStore"
   );
 
   const value = {
@@ -124,6 +142,10 @@ export const MainContextProvider = (props: Props) => {
     mainState,
     update: {
       currency: (newCurrency: string) => setState({ currency: newCurrency }),
+      personalPrice: (product: string, currency: string, newPrice: number) =>
+        setPersonalPricesState((prev) => ({
+          [product]: { ...(prev[product] ?? {}), [currency]: newPrice },
+        })),
     },
   } as MainContextType;
 
