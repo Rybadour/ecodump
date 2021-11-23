@@ -45,7 +45,10 @@ export default () => {
             onChange={(newValue) => setCurrencyFilter(`${newValue}`)}
           />
           <RadioToggle
-            options={["Stores", "Products"]}
+            options={[
+              { text: "Stores", value: "Stores" },
+              { text: "Products", value: "Products" },
+            ]}
             onChange={() => toggleTableType()}
             selected={state.isStoresTable ? "Stores" : "Products"}
           />

@@ -6,31 +6,46 @@ export default () => {
       <p>
         I go by the nicknames of <i>Ucat</i> and <i>Fon</i> and i've been
         building this tool on my spare time. You can contact me using discord,
-        my handle is Fon#2880
+        my handle is Fon#2880. Here's a brief explanation on current features:
       </p>
       <p>
-        <b>Json viewer</b> is where you can download the raw files i use on this
-        tool to check raw data or to create your own tool.
+        <b>Price calculator</b> page is where you can find all recipes in game
+        and use them to figure out how much you should price your products in
+        your store. No more excel or calculator, this tool does all those
+        calculations for you.
       </p>
       <p>
-        <b>All items</b> is where you can find all items on the game as well as
-        their recipes. It also allows you to input item prices and uses the
-        recipe data to help you calculate your price for items. I got this data
-        using the&nbsp;
-        <a href="https://github.com/ZeelNightwolf/EcoDataExporter">
-          EcoDataExporter
-        </a>
-        &nbsp;plugin.
+        <b>Ingame market</b> page is where you can check the products that are
+        being sold at this moment in ingame stores. There are currently two
+        views with different visibility level: one for stores and one for
+        products.
       </p>
+      <p>
+        <b>Raw data</b> page is where you can download the raw files i use on
+        this tool to check raw data or to create your own tool.
+      </p>
+      <br />
       <p>
         This is very much a work in progress and more sections should be added
-        later.
+        in the future.
       </p>
-      <p>So stay tuned. And i hope you enjoy it</p>
+      <p>So stay tuned, and i hope you enjoy it</p>
+      <br />
+      <br />
+      <p>
+        PS: I could really use the help of a UX designer to improve this tool.
+        If you have the skills and are willing to help, please reach out to me
+        over discord.{" "}
+      </p>
       <br />
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.1.0 (2021-11-23)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Added Price calculator page</li>
+        </ul>
         <h3>2.0.0 (2021-11-21)</h3>
         <h4>Features</h4>
         <ul>

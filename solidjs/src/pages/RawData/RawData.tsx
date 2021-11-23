@@ -11,9 +11,9 @@ export default () => {
   return (
     <Table>
       <TableHeader>
-        <TableHeaderCol text="File name" />
-        <TableHeaderCol text="Last update" />
-        <TableHeaderColAction text="Download" />
+        <TableHeaderCol>File name</TableHeaderCol>
+        <TableHeaderCol>Last update</TableHeaderCol>
+        <TableHeaderColAction>Download</TableHeaderColAction>
       </TableHeader>
       <TableBody>
         <For each={dbs() ?? []}>

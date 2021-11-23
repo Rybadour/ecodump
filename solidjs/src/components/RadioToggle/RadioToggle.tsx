@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { For } from "solid-js";
 type Props = {
-  options: string[];
-  onChange: (selected: string) => void;
-  selected: string;
+  options: { value: string | number; text: string }[];
+  onChange: (selected: string | number) => void;
+  selected: string | number;
 };
 export default (props: Props) => (
   <div class="inline-flex shadow-sm rounded-md" role="group">
@@ -14,9 +14,9 @@ export default (props: Props) => (
           class={classNames(
             "border-gray-900 bg-transparent text-sm font-medium px-4 py-1 h-8",
             {
-              ["z-10 bg-gray-900 text-white"]: option == props.selected,
+              ["bg-gray-900 text-white"]: option.value == props.selected,
               ["text-gray-900 hover:bg-gray-900 hover:text-white"]:
-                option != props.selected,
+                option.value != props.selected,
               ["rounded-l-lg border"]: index() === 0,
               ["rounded-r-md border"]: index() === props.options.length - 1,
               ["border-t border-b"]:
@@ -25,10 +25,12 @@ export default (props: Props) => (
             }
           )}
           onClick={() =>
-            option !== props.selected ? props.onChange(option) : undefined
+            option.value !== props.selected
+              ? props.onChange(option.value)
+              : undefined
           }
         >
-          {option}
+          {option.text}
         </button>
       )}
     </For>

@@ -11,7 +11,7 @@ export default (props: Props) => (
       role="tooltip"
       class={classNames(
         styles.tooltip,
-        "absolute z-10 inline-block bg-gray-900 font-medium shadow-sm text-white py-2 px-3 text-sm rounded-lg"
+        "absolute z-15 inline-block bg-gray-900 font-medium shadow-sm text-white py-2 px-3 text-sm rounded-lg"
       )}
     >
       {props.text}

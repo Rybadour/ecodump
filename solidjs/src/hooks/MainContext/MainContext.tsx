@@ -2,7 +2,11 @@ import { Accessor, createMemo, JSXElement } from "solid-js";
 import { createContext, useContext, createResource, Resource } from "solid-js";
 import { Store } from "solid-js/store";
 import { createLocalStore } from "../../utils/createLocalStore";
-import { filterUnique, sortByTextExcludingWord } from "../../utils/helpers";
+import {
+  filterUnique,
+  sortByText,
+  sortByTextExcludingWord,
+} from "../../utils/helpers";
 import { getRecipes, getStores, getTags, listDBs } from "../../utils/restDbSdk";
 
 type MainContextType = {
@@ -12,6 +16,8 @@ type MainContextType = {
   tagsResource: Resource<Record<string, string[]> | undefined>;
   dbs: Accessor<DB[] | undefined>;
   allCurrencies: Accessor<string[] | undefined>;
+  allProfessions: Accessor<string[] | undefined>;
+  allCraftStations: Accessor<string[] | undefined>;
   allProductsInStores: Accessor<ProductOffer[] | undefined>;
   allCraftableProducts: Accessor<CraftableProduct[] | undefined>;
   mainState: Store<MainStore>;
@@ -47,6 +53,8 @@ const MainContext = createContext<MainContextType>({
   tagsResource,
   dbs: () => [],
   allCurrencies: () => [],
+  allProfessions: () => [],
+  allCraftStations: () => [],
   allProductsInStores: () => [],
   allCraftableProducts: () => [],
   mainState: {
@@ -156,6 +164,22 @@ export const MainContextProvider = (props: Props) => {
       );
   });
 
+  const allProfessions = createMemo(() =>
+    recipesResource()
+      ?.map((recipe) => recipe.SkillNeeds.map((t) => t.Skill))
+      .flat()
+      .filter(filterUnique)
+      .sort(sortByText)
+  );
+
+  const allCraftStations = createMemo(() =>
+    recipesResource()
+      ?.map((recipe) => recipe.CraftStation)
+      .flat()
+      .filter(filterUnique)
+      .sort(sortByText)
+  );
+
   const value = {
     config,
     storesResource,
@@ -163,6 +187,8 @@ export const MainContextProvider = (props: Props) => {
     tagsResource,
     dbs,
     allCurrencies,
+    allProfessions,
+    allCraftStations,
     allProductsInStores,
     allCraftableProducts,
     mainState,

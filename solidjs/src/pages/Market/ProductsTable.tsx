@@ -14,11 +14,11 @@ type Props = {
 export default (props: Props) => (
   <Table>
     <TableHeader>
-      <TableHeaderCol text="Product Name" />
-      <TableHeaderCol text="Store Name" />
-      <TableHeaderCol text="Store Owner" />
-      <TableHeaderCol text="Quantity" />
-      <TableHeaderCol text="Price" />
+      <TableHeaderCol>Product Name</TableHeaderCol>
+      <TableHeaderCol>Store Name</TableHeaderCol>
+      <TableHeaderCol>Store Owner</TableHeaderCol>
+      <TableHeaderCol>Quantity</TableHeaderCol>
+      <TableHeaderCol>Price</TableHeaderCol>
     </TableHeader>
     <TableBody>
       <For each={props.products()}>

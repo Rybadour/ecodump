@@ -30,7 +30,12 @@ export default (props: Props) => {
           filterByTextEqual(props.productName, product.ItemName) &&
           (!mainState.currency || product.CurrencyName === mainState.currency)
       )
-      .sort((a, b) => a.Price - b.Price)
+      .sort((a, b) => {
+        if (a.Buying === b.Buying) {
+          return a.Price - b.Price;
+        }
+        return !a.Buying ? -1 : 1;
+      })
   );
   const paginatedProducts = createMemo(() =>
     paginateArray(currentPage(), pageSize, filteredProducts())
@@ -48,11 +53,11 @@ export default (props: Props) => {
           <div class="mt-2">
             <Table>
               <TableHeader>
-                <TableHeaderCol text="Product Name" />
-                <TableHeaderCol text="Store Name" />
-                <TableHeaderCol text="Store Owner" />
-                <TableHeaderCol text="Quantity" />
-                <TableHeaderCol text="Price" />
+                <TableHeaderCol>Product Name</TableHeaderCol>
+                <TableHeaderCol>Store Name</TableHeaderCol>
+                <TableHeaderCol>Store Owner</TableHeaderCol>
+                <TableHeaderCol>Quantity</TableHeaderCol>
+                <TableHeaderCol>Price</TableHeaderCol>
               </TableHeader>
               <TableBody>
                 <For each={paginatedProducts()}>

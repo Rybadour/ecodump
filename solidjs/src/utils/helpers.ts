@@ -34,6 +34,10 @@ export const formatNumber = (num: number) => +num.toFixed(2);
 
 export const sortByText = (a: string, b: string) =>
   a.toLowerCase().localeCompare(b.toLowerCase());
+export const sortByTextFn =
+  <T>(fn: (c: T) => string) =>
+  (a: T, b: T) =>
+    fn(a).toLowerCase().localeCompare(fn(b).toLowerCase());
 
 export const sortByTextExcludingWord =
   (word: string) => (a: string, b: string) => {
@@ -45,3 +49,63 @@ export const sortByTextExcludingWord =
 
     return aContainsWord ? 1 : -1;
   };
+
+export const calcAvgPrice = (items: { price: number; quantity: number }[]) => {
+  const avgCalc = items.reduce(
+    (agg, next) => ({
+      sum: agg.sum + next.price * next.quantity,
+      count: agg.count + next.quantity,
+    }),
+    { sum: 0, count: 0 } as { sum: number; count: number }
+  );
+  return avgCalc.count > 0 ? formatNumber(avgCalc.sum / avgCalc.count) : null;
+};
+
+export const calcAmmount = (ammount: number, craftAmmout: number) => {
+  return Math.ceil(ammount * craftAmmout);
+};
+
+export const calcPrice = (ammount: number, price?: number) =>
+  !price ? 0 : formatNumber(ammount * price);
+
+export const convertToMarginMultiplier = (margin: number) => margin / 100 + 1;
+
+// When user hasn't picked cost percentages yet, we divide those percentages even
+export const getRecipeEvenPercentages = (recipe: Variant) => {
+  const evenPercent = Math.floor(100 / recipe.Products.length);
+  return recipe.Products.map((prod, index) => ({
+    productName: prod.Name,
+    percentage:
+      index !== recipe.Products.length - 1
+        ? evenPercent
+        : 100 - (recipe.Products.length - 1) * evenPercent,
+  }));
+};
+
+// Fixes percentages so that the sum is 100%
+export const fixPercentages = (
+  prevPercentages: {
+    productName: string;
+    percentage: number;
+  }[],
+  prodName: string,
+  newPercentage: number
+) => {
+  let sum = newPercentage;
+  return prevPercentages.map((t, index) => {
+    let percentage = t.productName === prodName ? newPercentage : t.percentage;
+    if (t.productName !== prodName) {
+      if (sum + percentage > 100) {
+        percentage = 100 - sum;
+      }
+      sum += percentage;
+    }
+    if (index === prevPercentages.length - 1) {
+      percentage += 100 - sum;
+    }
+    return {
+      ...t,
+      percentage,
+    };
+  });
+};
