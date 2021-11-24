@@ -3,6 +3,7 @@ import { createSignal, For } from "solid-js";
 import PortalMenuPosition, {
   CardinalPoint,
 } from "../PortalMenuPosition/PortalMenuPosition";
+import createOnClickOutside from "../../hooks/createOnClickOutside";
 
 type Props = {
   value: string | number;
@@ -13,10 +14,12 @@ type Props = {
 };
 export default (props: Props) => {
   const [isMenuOpen, setMenuOpen] = createSignal(false);
+  const out = createOnClickOutside(() => setMenuOpen(false), isMenuOpen);
 
   const renderMenu = () =>
     isMenuOpen() ? (
       <div
+        {...out}
         class={classNames(
           "w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transform focus:outline-none z-50",
           {

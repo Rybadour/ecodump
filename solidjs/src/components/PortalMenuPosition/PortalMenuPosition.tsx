@@ -63,7 +63,6 @@ export default (props: Props) => {
     );
     const shift = getShift(props.direction ?? defaultDirection);
 
-    console.log("Updating position!");
     setMenuPosition({
       left: `${origin.x}px`,
       top: `${origin.y + document.documentElement.scrollTop}px`,
@@ -84,7 +83,6 @@ export default (props: Props) => {
     window.removeEventListener("scroll", updateMenuPosition);
     window.removeEventListener("resize", updateMenuPosition);
   });
-  createEffect(() => console.log("position1: ", menuPosition()));
   return (
     <div ref={el}>
       {props.children}
