@@ -48,6 +48,8 @@ export default (props: Props) => {
             onChange={(newValue) =>
               props.stateUpdate.setFilterProfession(`${newValue}`)
             }
+            origin="SE"
+            direction="SW"
           />
           <Dropdown
             value={props.state.filterCraftStation}
@@ -61,6 +63,8 @@ export default (props: Props) => {
             onChange={(newValue) =>
               props.stateUpdate.setFilterCraftStation(`${newValue}`)
             }
+            origin="SE"
+            direction="SW"
           />
           <Dropdown
             value={mainState.currency}
@@ -72,6 +76,8 @@ export default (props: Props) => {
               })) ?? []),
             ]}
             onChange={(newValue) => update.currency(`${newValue}`)}
+            origin="SE"
+            direction="SW"
           />
         </div>
       </div>

@@ -59,24 +59,20 @@ const App: Component = () => {
           <span>{currentRoute()?.description}</span>
         </div>
       </header>
-      <main>
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div class="px-4 py-6 sm:px-0">
-            <MainContextProvider>
-              <Routes>
-                {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
-                <Route
-                  path={routes.PriceCalculator.href}
-                  element={<PriceCalculator />}
-                />
-                <Route path={routes.Market.href} element={<Market />} />
-                <Route path={routes.RawData.href} element={<RawData />} />
-                <Route path="/" element={<Home />} />
-                <Route path="/*all" element={<Home />} />
-              </Routes>
-            </MainContextProvider>
-          </div>
-        </div>
+      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <MainContextProvider>
+          <Routes>
+            {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
+            <Route
+              path={routes.PriceCalculator.href}
+              element={<PriceCalculator />}
+            />
+            <Route path={routes.Market.href} element={<Market />} />
+            <Route path={routes.RawData.href} element={<RawData />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/*all" element={<Home />} />
+          </Routes>
+        </MainContextProvider>
       </main>
     </div>
   );

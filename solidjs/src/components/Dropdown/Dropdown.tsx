@@ -1,16 +1,65 @@
 import classNames from "classnames";
 import { createSignal, For } from "solid-js";
+import PortalMenuPosition, {
+  CardinalPoint,
+} from "../PortalMenuPosition/PortalMenuPosition";
 
 type Props = {
   value: string | number;
   values: { value: string | number; text: string }[];
   onChange: (newValue: string | number) => void;
+  origin?: CardinalPoint;
+  direction?: CardinalPoint;
 };
 export default (props: Props) => {
   const [isMenuOpen, setMenuOpen] = createSignal(false);
+
+  const renderMenu = () =>
+    isMenuOpen() ? (
+      <div
+        class={classNames(
+          "w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transform focus:outline-none z-50",
+          {
+            ["transition ease-out duration-100 opacity-100 scale-100"]:
+              isMenuOpen(),
+            ["transition ease-in duration-75 opacity-0 scale-95"]:
+              !isMenuOpen(),
+          }
+        )}
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        tabindex="-1"
+      >
+        <div class="py-1" role="none">
+          <For each={props.values}>
+            {(item) => (
+              <button
+                class={classNames("block px-4 py-2 text-sm w-full text-left", {
+                  ["bg-gray-100 text-gray-900"]: item.value == props.value,
+                  ["text-gray-700"]: item.value != props.value,
+                })}
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false);
+                  props.onChange(item.value);
+                }}
+              >
+                {item.text}
+              </button>
+            )}
+          </For>
+        </div>
+      </div>
+    ) : undefined;
   return (
-    <div class="relative inline-block text-left">
-      <div>
+    <PortalMenuPosition
+      isMenuOpen={isMenuOpen}
+      renderMenu={renderMenu}
+      origin={props.origin}
+      direction={props.direction}
+    >
+      <div class="inline-block text-left">
         <button
           type="button"
           class="inline-flex justify-center w-full rounded-md border border-gray-300 h-8 px-2 py-1 bg-white text-sm font-small text-black hover:bg-gray-50 focus:outline-none"
@@ -35,57 +84,6 @@ export default (props: Props) => {
           </svg>
         </button>
       </div>
-
-      {/* <!--
-    Dropdown menu, show/hide based on menu state.
-
-    Entering: "transition ease-out duration-100"
-      From: "transform opacity-0 scale-95"
-      To: "transform opacity-100 scale-100"
-    Leaving: "transition ease-in duration-75"
-      From: "transform opacity-100 scale-100"
-      To: "transform opacity-0 scale-95"
-  --> */}
-      {isMenuOpen() && (
-        <div
-          class={classNames(
-            "origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transform focus:outline-none z-50",
-            {
-              ["transition ease-out duration-100 opacity-100 scale-100"]:
-                isMenuOpen(),
-              ["transition ease-in duration-75 opacity-0 scale-95"]:
-                !isMenuOpen(),
-            }
-          )}
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="menu-button"
-          tabindex="-1"
-        >
-          <div class="py-1" role="none">
-            <For each={props.values}>
-              {(item) => (
-                <button
-                  class={classNames(
-                    "block px-4 py-2 text-sm w-full text-left",
-                    {
-                      ["bg-gray-100 text-gray-900"]: item.value == props.value,
-                      ["text-gray-700"]: item.value != props.value,
-                    }
-                  )}
-                  role="menuitem"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    props.onChange(item.value);
-                  }}
-                >
-                  {item.text}
-                </button>
-              )}
-            </For>
-          </div>
-        </div>
-      )}
-    </div>
+    </PortalMenuPosition>
   );
 };
