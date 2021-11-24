@@ -23,6 +23,7 @@ import {
 } from "../../utils/helpers";
 import NumericInput from "../../components/NumericInput";
 import Tooltip from "../../components/Tooltip";
+import TagDropdown from "../../components/TagDropdown/TagDropdown";
 
 type Props = {
   calculatePriceForProduct: string;
@@ -53,6 +54,9 @@ export default (props: Props) => {
       percentage: number;
     }[]
   >([]);
+  const [tagSelection, setTagSelection] = createSignal<{
+    [tagName: string]: string;
+  }>({});
 
   const product = createMemo(() =>
     allCraftableProducts()?.find(
@@ -116,12 +120,14 @@ export default (props: Props) => {
       return {
         ...product,
         costPercentage,
-        productionCost:
+        productionCost: formatNumber(
           ((totalIngredientCost() / state.craftAmmount) *
             (costPercentage / 100)) /
-          product.Ammount,
-        retailPrice:
-          (unitCostWithProfit() * (costPercentage / 100)) / product.Ammount,
+            product.Ammount
+        ),
+        retailPrice: formatNumber(
+          (unitCostWithProfit() * (costPercentage / 100)) / product.Ammount
+        ),
       };
     });
   });
@@ -216,7 +222,20 @@ export default (props: Props) => {
                     {(ingredient) => (
                       <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {ingredient.Name}
+                          {ingredient.IsSpecificItem ? (
+                            ingredient.Name
+                          ) : (
+                            <TagDropdown
+                              tagName={ingredient.Tag}
+                              selectedProduct={tagSelection()[ingredient.Tag]}
+                              onSelectProduct={(prod) =>
+                                setTagSelection((prev) => ({
+                                  ...prev,
+                                  [ingredient.Tag]: prod,
+                                }))
+                              }
+                            />
+                          )}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {ingredient.calcQuantity}
@@ -224,7 +243,11 @@ export default (props: Props) => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <AveragePrice
                             product={allCraftableProducts()?.find(
-                              (t) => t.Name === ingredient.Name
+                              (t) =>
+                                t.Name ===
+                                (ingredient.IsSpecificItem
+                                  ? ingredient.Name
+                                  : tagSelection()[ingredient.Tag])
                             )}
                             showPricesForProductModal={
                               props.showPricesForProductModal
