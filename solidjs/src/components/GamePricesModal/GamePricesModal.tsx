@@ -2,8 +2,9 @@ import { createMemo, createSignal, For } from "solid-js";
 import { useMainContext } from "../../hooks/MainContext";
 import {
   calcTotalPages,
-  filterByTextEqual,
+  filterByIncludesAny,
   paginateArray,
+  tagPersonalPriceId,
 } from "../../utils/helpers";
 import Table, {
   TableHeader,
@@ -16,18 +17,23 @@ import Pagination from "../Pagination";
 import Tooltip from "../Tooltip";
 type Props = {
   onClose: () => void;
-  productName: string;
+  name: string;
+  isSpecificProduct: boolean;
 };
 const pageSize = 10;
 
 export default (props: Props) => {
-  const { allProductsInStores, mainState, update } = useMainContext();
+  const { allProductsInStores, mainState, update, tagsResource } =
+    useMainContext();
   const [currentPage, setCurrentPage] = createSignal(1);
+  const productNames = createMemo(() =>
+    props.isSpecificProduct ? [props.name] : tagsResource()?.[props.name] ?? []
+  );
   const filteredProducts = createMemo(() =>
     allProductsInStores()
       ?.filter(
         (product) =>
-          filterByTextEqual(props.productName, product.ItemName) &&
+          filterByIncludesAny(productNames(), [product.ItemName]) &&
           (!mainState.currency || product.CurrencyName === mainState.currency)
       )
       .sort((a, b) => {
@@ -48,7 +54,8 @@ export default (props: Props) => {
       <div class="sm:flex sm:items-start">
         <div class="flex-grow mt-3 text-center sm:mt-0 sm:text-left">
           <ModalHeader>
-            Ingame prices for product {props.productName}
+            Ingame prices for product{productNames().length > 1 ? "s" : ""}:{" "}
+            {productNames().join(", ")}
           </ModalHeader>
           <div class="mt-2">
             <Table>
@@ -82,13 +89,21 @@ export default (props: Props) => {
                         <Tooltip text="Click to set your personal price">
                           <button
                             class="px-2 py-1"
-                            onClick={() =>
+                            onClick={() => {
+                              //Updates both personal price for this product as well as tag price if !isSpecificProduct
                               update.personalPrice(
                                 product.ItemName,
                                 product.CurrencyName,
                                 product.Price
-                              )
-                            }
+                              );
+                              if (!props.isSpecificProduct) {
+                                update.personalPrice(
+                                  tagPersonalPriceId(props.name),
+                                  product.CurrencyName,
+                                  product.Price
+                                );
+                              }
+                            }}
                           >
                             {`${product.Price} ${product.CurrencyName}`}
                           </button>

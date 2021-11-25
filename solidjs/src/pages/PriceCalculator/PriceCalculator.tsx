@@ -18,17 +18,18 @@ export default () => {
           totalPages={totalPages}
         />
       )}
-      {state.showPricesForProductModal && (
+      {state.showPricesForProductsModal && (
         <GamePricesModal
-          productName={state.showPricesForProductModal}
-          onClose={() => update.showPricesForProductModal(undefined)}
+          name={state.showPricesForProductsModal.name}
+          isSpecificProduct={state.showPricesForProductsModal.isSpecificProduct}
+          onClose={() => update.hidePricesForProductsModal()}
         />
       )}
       {!!state.calculatePriceForProduct && (
         <CalculatePriceView
           calculatePriceForProduct={state.calculatePriceForProduct}
           onClose={() => update.calculatePriceForProduct(undefined)}
-          showPricesForProductModal={update.showPricesForProductModal}
+          showPricesForProductsModal={update.showPricesForProductsModal}
         />
       )}
     </>

@@ -9,7 +9,7 @@ import SearchInput from "../../components/SearchInput";
 import Dropdown from "../../components/Dropdown";
 import Tooltip from "../../components/Tooltip";
 import Pagination from "../../components/Pagination";
-import { filterByTextEqual, formatNumber } from "../../utils/helpers";
+import { filterByTextEqual } from "../../utils/helpers";
 import Button from "../../components/Button";
 import type { Store } from "./createPriceCalculatorStore";
 import { useMainContext } from "../../hooks/MainContext";
@@ -177,9 +177,10 @@ export default (props: Props) => {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <AveragePrice
-                    product={product}
-                    showPricesForProductModal={
-                      props.stateUpdate.showPricesForProductModal
+                    name={product.Name}
+                    isSpecificItem={false}
+                    showPricesForProductsModal={
+                      props.stateUpdate.showPricesForProductsModal
                     }
                   />
                 </td>
@@ -187,7 +188,7 @@ export default (props: Props) => {
                   {!mainState.currency && "select currency"}
                   {mainState.currency && (
                     <div class="flex">
-                      <PersonalPrice productName={product.Name} />
+                      <PersonalPrice personalPriceId={product.Name} />
                       <Button
                         class="ml-2"
                         onClick={() =>

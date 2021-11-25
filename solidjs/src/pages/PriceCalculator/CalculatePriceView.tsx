@@ -20,15 +20,15 @@ import {
   formatNumber,
   getRecipeEvenPercentages,
   sortByTextFn,
+  getPersonalPriceId,
 } from "../../utils/helpers";
 import NumericInput from "../../components/NumericInput";
 import Tooltip from "../../components/Tooltip";
-import TagDropdown from "../../components/TagDropdown/TagDropdown";
 
 type Props = {
   calculatePriceForProduct: string;
   onClose: () => void;
-  showPricesForProductModal: (productName: string) => void;
+  showPricesForProductsModal: (Name: string, isSpecificItem: boolean) => void;
 };
 
 type Store = {
@@ -46,17 +46,19 @@ const recipeMargins = [0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100].map((t) => ({
 const multipliers = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
 
 export default (props: Props) => {
-  const { allCraftableProducts, mainState, personalPricesState, update } =
-    useMainContext();
+  const {
+    allCraftableProducts,
+    tagsResource,
+    mainState,
+    personalPricesState,
+    update,
+  } = useMainContext();
   const [costPercentages, setCostPercentages] = createSignal<
     {
       productName: string;
       percentage: number;
     }[]
   >([]);
-  const [tagSelection, setTagSelection] = createSignal<{
-    [tagName: string]: string;
-  }>({});
 
   const product = createMemo(() =>
     allCraftableProducts()?.find(
@@ -93,11 +95,15 @@ export default (props: Props) => {
         calcQuantity: quantityBasedOnCraftAmmount,
         unitPrice: calcPrice(
           quantityBasedOnCraftAmmount / state.craftAmmount,
-          personalPricesState?.[ingredient.Name]?.[mainState.currency]
+          personalPricesState?.[getPersonalPriceId(ingredient)]?.[
+            mainState.currency
+          ]
         ),
         calcPrice: calcPrice(
           quantityBasedOnCraftAmmount,
-          personalPricesState?.[ingredient.Name]?.[mainState.currency]
+          personalPricesState?.[getPersonalPriceId(ingredient)]?.[
+            mainState.currency
+          ]
         ),
       };
     });
@@ -225,16 +231,15 @@ export default (props: Props) => {
                           {ingredient.IsSpecificItem ? (
                             ingredient.Name
                           ) : (
-                            <TagDropdown
-                              tagName={ingredient.Tag}
-                              selectedProduct={tagSelection()[ingredient.Tag]}
-                              onSelectProduct={(prod) =>
-                                setTagSelection((prev) => ({
-                                  ...prev,
-                                  [ingredient.Tag]: prod,
-                                }))
-                              }
-                            />
+                            <Tooltip
+                              text={`One of: ${tagsResource()?.[
+                                ingredient.Tag
+                              ]?.join(", ")}`}
+                              origin="NW"
+                              direction="NE"
+                            >
+                              <div class="inline-block px-2 py-1">{`Tag ${ingredient.Tag}`}</div>
+                            </Tooltip>
                           )}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -242,20 +247,21 @@ export default (props: Props) => {
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <AveragePrice
-                            product={allCraftableProducts()?.find(
-                              (t) =>
-                                t.Name ===
-                                (ingredient.IsSpecificItem
-                                  ? ingredient.Name
-                                  : tagSelection()[ingredient.Tag])
-                            )}
-                            showPricesForProductModal={
-                              props.showPricesForProductModal
+                            name={
+                              ingredient.IsSpecificItem
+                                ? ingredient.Name
+                                : ingredient.Tag
+                            }
+                            isSpecificItem={ingredient.IsSpecificItem}
+                            showPricesForProductsModal={
+                              props.showPricesForProductsModal
                             }
                           />
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <PersonalPrice productName={ingredient.Name} />
+                          <PersonalPrice
+                            personalPriceId={getPersonalPriceId(ingredient)}
+                          />
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatNumber(ingredient.unitPrice)}
@@ -377,7 +383,7 @@ export default (props: Props) => {
                           </Tooltip>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <PersonalPrice productName={product.Name} />
+                          <PersonalPrice personalPriceId={product.Name} />
                         </td>
                       </tr>
                     )}

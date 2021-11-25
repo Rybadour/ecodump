@@ -2,7 +2,8 @@ import { useMainContext } from "../../hooks/MainContext";
 import NumericInput from "../NumericInput";
 
 type Props = {
-  productName: string;
+  // this can either be a product name or a tag id. Use function getPersonalPriceId for ingredients or product.Name for products
+  personalPriceId: string;
 };
 
 export default (props: Props) => {
@@ -10,9 +11,13 @@ export default (props: Props) => {
   if (!mainState.currency) return <>"select currency"</>;
   return (
     <NumericInput
-      value={personalPricesState?.[props.productName]?.[mainState.currency]}
+      value={personalPricesState?.[props.personalPriceId]?.[mainState.currency]}
       onChange={(newValue) =>
-        update.personalPrice(props.productName, mainState.currency, newValue)
+        update.personalPrice(
+          props.personalPriceId,
+          mainState.currency,
+          newValue
+        )
       }
     />
   );

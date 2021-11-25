@@ -2,11 +2,7 @@ import { createMemo } from "solid-js";
 import createDebounce from "../../hooks/createDebounce";
 import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
-import {
-  filterByIncludesAny,
-  filterByText,
-  formatNumber,
-} from "../../utils/helpers";
+import { filterByIncludesAny, filterByText } from "../../utils/helpers";
 
 const pageSize = 100;
 export type Store = {
@@ -14,7 +10,7 @@ export type Store = {
   filterProfession: string;
   filterCraftStation: string;
   currentPage: number;
-  showPricesForProductModal?: string;
+  showPricesForProductsModal?: { name: string; isSpecificProduct: boolean };
   calculatePriceForProduct?: string;
 };
 export type StoreUpdate = {
@@ -22,7 +18,11 @@ export type StoreUpdate = {
   setFilterProfession: (newSearch: string) => void;
   setFilterCraftStation: (newSearch: string) => void;
   setCurrentPage: (newPage: number) => void;
-  showPricesForProductModal: (showPricesForProductModal?: string) => void;
+  showPricesForProductsModal: (
+    name: string,
+    isSpecificProduct: boolean
+  ) => void;
+  hidePricesForProductsModal: () => void;
   calculatePriceForProduct: (product?: string) => void;
 };
 export const Survivalist = "Survivalist";
@@ -35,7 +35,7 @@ export default () => {
       filterProfession: "",
       filterCraftStation: "",
       currentPage: 1,
-      showPricesForProductModal: undefined,
+      showPricesForProductsModal: undefined,
       calculatePriceForProduct: undefined,
     },
     "PriceCalculatorStore"
@@ -88,8 +88,10 @@ export default () => {
       setFilterCraftStation: (newSearch: string) =>
         setState({ filterCraftStation: newSearch, currentPage: 1 }),
       setCurrentPage: (newPage: number) => setState({ currentPage: newPage }),
-      showPricesForProductModal: (showPricesForProductModal?: string) =>
-        setState({ showPricesForProductModal }),
+      showPricesForProductsModal: (name: string, isSpecificProduct: boolean) =>
+        setState({ showPricesForProductsModal: { name, isSpecificProduct } }),
+      hidePricesForProductsModal: () =>
+        setState({ showPricesForProductsModal: undefined }),
       calculatePriceForProduct: (product?: string) =>
         setState({ calculatePriceForProduct: product }),
     } as StoreUpdate,
