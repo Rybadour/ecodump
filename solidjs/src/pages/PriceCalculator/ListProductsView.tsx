@@ -93,8 +93,13 @@ export default (props: Props) => {
             {(product) => (
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <Tooltip text="Click to filter by recipe name">
+                  <Tooltip
+                    text="Click to filter by recipe name"
+                    origin="NW"
+                    direction="NE"
+                  >
                     <button
+                      class="px-2 py-1"
                       onClick={() => props.stateUpdate.setSearch(product.Name)}
                     >
                       {product.Name}
@@ -142,6 +147,7 @@ export default (props: Props) => {
                         <>
                           <Tooltip text="Click to filter by profession">
                             <button
+                              class="px-2 py-1"
                               onClick={() =>
                                 props.stateUpdate.setFilterProfession(
                                   recipe.Skill
@@ -156,6 +162,7 @@ export default (props: Props) => {
                         {recipe.Skill && ` @ `}
                         <Tooltip text="Click to filter by craft station">
                           <button
+                            class="px-2 py-1"
                             onClick={() =>
                               props.stateUpdate.setFilterCraftStation(
                                 recipe.craftStation

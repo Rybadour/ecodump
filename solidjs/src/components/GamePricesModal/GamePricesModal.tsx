@@ -81,6 +81,7 @@ export default (props: Props) => {
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <Tooltip text="Click to set your personal price">
                           <button
+                            class="px-2 py-1"
                             onClick={() =>
                               update.personalPrice(
                                 product.ItemName,

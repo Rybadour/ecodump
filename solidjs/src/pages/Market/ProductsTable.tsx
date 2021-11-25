@@ -26,21 +26,30 @@ export default (props: Props) => (
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <Tooltip text="Click to filter by product name">
-                <button onClick={() => props.setSearch(product.ItemName)}>
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.ItemName)}
+                >
                   {product.ItemName}
                 </button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <Tooltip text="Click to filter by store name">
-                <button onClick={() => props.setSearch(product.StoreName)}>
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.StoreName)}
+                >
                   {product.StoreName}
                 </button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <Tooltip text="Click to filter by store owner">
-                <button onClick={() => props.setSearch(product.StoreOwner)}>
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.StoreOwner)}
+                >
                   {product.StoreOwner}
                 </button>
               </Tooltip>
@@ -56,6 +65,7 @@ export default (props: Props) => (
               &nbsp;
               <Tooltip text="Click to filter by currency">
                 <button
+                  class="px-2 py-1"
                   onClick={() => props.setCurrencyFilter(product.CurrencyName)}
                 >
                   {product.CurrencyName}

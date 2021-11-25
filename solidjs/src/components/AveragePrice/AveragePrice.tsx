@@ -33,6 +33,7 @@ export default (props: Props) => {
   return (
     <Tooltip text="Click for ingame prices. Select currency for average.">
       <button
+        class="px-2 py-1"
         onClick={() =>
           props.showPricesForProductModal(props.product?.Name ?? "")
         }
