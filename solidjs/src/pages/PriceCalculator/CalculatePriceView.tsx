@@ -24,6 +24,7 @@ import {
 } from "../../utils/helpers";
 import NumericInput from "../../components/NumericInput";
 import Tooltip from "../../components/Tooltip";
+import Accordion from "../../components/Accordion/Accordion";
 
 type Props = {
   calculatePriceForProduct: string;
@@ -181,12 +182,17 @@ export default (props: Props) => {
 
       {!!selectedRecipe() && (
         <div>
-          <div class="ingredients border rounded mt-4 pb-5">
-            <div class="px-8 py-5 border-b bg-gray-50">
-              <span class="font-medium">Ingredients</span>: Calculate the costs
-              of your recipe ingredients
-            </div>
-            <div class="mt-5 px-8 flex gap-5 flex-wrap">
+          <Accordion
+            startsOpen
+            class="mt-4"
+            headerText={
+              <span>
+                <span class="font-medium">Ingredients</span>: Calculate the
+                costs of your recipe ingredients
+              </span>
+            }
+          >
+            <div class="flex gap-5 flex-wrap">
               <LabeledField vertical text="Craft ammount:">
                 <RadioToggle
                   options={[
@@ -213,7 +219,7 @@ export default (props: Props) => {
                 />
               </LabeledField>
             </div>
-            <div class="px-8 mt-8">
+            <div class="mt-8">
               <Table>
                 <TableHeader>
                   <TableHeaderCol>Ingredient name</TableHeaderCol>
@@ -275,7 +281,7 @@ export default (props: Props) => {
                 </TableBody>
               </Table>
             </div>
-            <div class="flex items-center px-8 mt-2">
+            <div class="flex items-center mt-8">
               Recipe production cost is
               <span class="border rounded px-2 font-normal mx-1">
                 {totalIngredientCost()}
@@ -292,13 +298,18 @@ export default (props: Props) => {
                 </>
               )}
             </div>
-          </div>
-          <div class="products border rounded mt-6 pb-5">
-            <div class="px-8 py-5 border-b bg-gray-50">
-              <span class="font-medium">Products</span>: Distribute recipe costs
-              between resulting products
-            </div>
-            <div class="px-8 mt-5 flex gap-5 flex-wrap">
+          </Accordion>
+          <Accordion
+            startsOpen
+            class="mt-6"
+            headerText={
+              <span>
+                <span class="font-medium">Products</span>: Distribute recipe
+                costs between resulting products
+              </span>
+            }
+          >
+            <div class="flex gap-5 flex-wrap">
               <LabeledField vertical text="Recipe margin:">
                 <RadioToggle
                   options={recipeMargins}
@@ -309,14 +320,14 @@ export default (props: Props) => {
                 />
               </LabeledField>
             </div>
-            <div class="flex items-center px-8 mt-2">
+            <div class="flex items-center mt-2">
               Cost per recipe with margin applied is
               <span class="font-bold border rounded px-2 font-normal mx-1">
                 {unitCostWithProfit()}
               </span>
               {mainState.currency}
             </div>
-            <div class="px-8 mt-8">
+            <div class="mt-8">
               <Table>
                 <TableHeader>
                   <TableHeaderCol>Product name</TableHeaderCol>
@@ -391,7 +402,7 @@ export default (props: Props) => {
                 </TableBody>
               </Table>
             </div>
-          </div>
+          </Accordion>
         </div>
       )}
     </>
