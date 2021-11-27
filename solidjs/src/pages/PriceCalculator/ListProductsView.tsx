@@ -1,5 +1,5 @@
 import { Accessor, For } from "solid-js";
-import { StoreUpdate, Survivalist } from "./createPriceCalculatorStore";
+import { StoreUpdate, Survivalist } from "./context/createPriceCalculatorStore";
 import Table, {
   TableHeader,
   TableHeaderCol,
@@ -11,22 +11,16 @@ import Tooltip from "../../components/Tooltip";
 import Pagination from "../../components/Pagination";
 import { filterByTextEqual } from "../../utils/helpers";
 import Button from "../../components/Button";
-import type { Store } from "./createPriceCalculatorStore";
+import type { StoreType } from "./context/createPriceCalculatorStore";
 import { useMainContext } from "../../hooks/MainContext";
 import PersonalPrice from "../../components/PersonalPrice/PersonalPrice";
 import AveragePrice from "../../components/AveragePrice";
+import { useCalcContext } from "./context/CalcContext";
 
-type Props = {
-  state: Store;
-  paginatedProducts: Accessor<CraftableProduct[] | undefined>;
-  totalPages: Accessor<number>;
-  stateUpdate: StoreUpdate;
-};
-
-export default (props: Props) => {
+export default () => {
   const { mainState, update, allCurrencies, allProfessions, allCraftStations } =
     useMainContext();
-
+  const { listProductsStore: props, setSelectedProduct } = useCalcContext();
   return (
     <>
       <div class="flex justify-between">
@@ -34,7 +28,7 @@ export default (props: Props) => {
         <div class="flex items-center gap-2 mb-2">
           <SearchInput
             value={props.state.search}
-            onChange={props.stateUpdate.setSearch}
+            onChange={props.update.setSearch}
           />
           <Dropdown
             value={props.state.filterProfession}
@@ -46,7 +40,7 @@ export default (props: Props) => {
               })) ?? []),
             ]}
             onChange={(newValue) =>
-              props.stateUpdate.setFilterProfession(`${newValue}`)
+              props.update.setFilterProfession(`${newValue}`)
             }
             origin="SE"
             direction="SW"
@@ -61,7 +55,7 @@ export default (props: Props) => {
               })) ?? []),
             ]}
             onChange={(newValue) =>
-              props.stateUpdate.setFilterCraftStation(`${newValue}`)
+              props.update.setFilterCraftStation(`${newValue}`)
             }
             origin="SE"
             direction="SW"
@@ -100,7 +94,7 @@ export default (props: Props) => {
                   >
                     <button
                       class="px-2 py-1"
-                      onClick={() => props.stateUpdate.setSearch(product.Name)}
+                      onClick={() => props.update.setSearch(product.Name)}
                     >
                       {product.Name}
                     </button>
@@ -149,9 +143,7 @@ export default (props: Props) => {
                             <button
                               class="px-2 py-1"
                               onClick={() =>
-                                props.stateUpdate.setFilterProfession(
-                                  recipe.Skill
-                                )
+                                props.update.setFilterProfession(recipe.Skill)
                               }
                             >
                               {recipe.Skill}
@@ -164,7 +156,7 @@ export default (props: Props) => {
                           <button
                             class="px-2 py-1"
                             onClick={() =>
-                              props.stateUpdate.setFilterCraftStation(
+                              props.update.setFilterCraftStation(
                                 recipe.craftStation
                               )
                             }
@@ -178,9 +170,9 @@ export default (props: Props) => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <AveragePrice
                     name={product.Name}
-                    isSpecificItem={false}
+                    isSpecificItem={true}
                     showPricesForProductsModal={
-                      props.stateUpdate.showPricesForProductsModal
+                      props.update.showPricesForProductsModal
                     }
                   />
                 </td>
@@ -191,11 +183,7 @@ export default (props: Props) => {
                       <PersonalPrice personalPriceId={product.Name} />
                       <Button
                         class="ml-2"
-                        onClick={() =>
-                          props.stateUpdate.calculatePriceForProduct(
-                            product.Name
-                          )
-                        }
+                        onClick={() => setSelectedProduct(product.Name)}
                       >
                         Calculate now
                       </Button>
@@ -210,7 +198,7 @@ export default (props: Props) => {
       <Pagination
         currentPage={props.state.currentPage}
         totalPages={props.totalPages()}
-        onChange={props.stateUpdate.setCurrentPage}
+        onChange={props.update.setCurrentPage}
       />
     </>
   );

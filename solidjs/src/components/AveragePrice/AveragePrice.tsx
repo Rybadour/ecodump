@@ -1,7 +1,7 @@
 import { useMainContext } from "../../hooks/MainContext";
 import Tooltip from "../Tooltip";
 import { calcAvgPrice } from "../../utils/helpers";
-import { createEffect, createMemo } from "solid-js";
+import { createMemo } from "solid-js";
 
 type Props = {
   name: string;

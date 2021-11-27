@@ -4,7 +4,7 @@ import {
   calcTotalPages,
   filterByIncludesAny,
   paginateArray,
-  tagPersonalPriceId,
+  getTagPersonalPriceId,
 } from "../../utils/helpers";
 import Table, {
   TableHeader,
@@ -15,20 +15,26 @@ import Modal from "../Modal";
 import ModalHeader from "../Modal/ModalHeader";
 import Pagination from "../Pagination";
 import Tooltip from "../Tooltip";
-type Props = {
-  onClose: () => void;
-  name: string;
-  isSpecificProduct: boolean;
-};
+import { useCalcContext } from "../../pages/PriceCalculator/context/CalcContext";
 const pageSize = 10;
 
-export default (props: Props) => {
+export default () => {
+  const {
+    listProductsStore: {
+      state,
+      update: { hidePricesForProductsModal },
+    },
+  } = useCalcContext();
+
   const { allProductsInStores, mainState, update, tagsResource } =
     useMainContext();
   const [currentPage, setCurrentPage] = createSignal(1);
-  const productNames = createMemo(() =>
-    props.isSpecificProduct ? [props.name] : tagsResource()?.[props.name] ?? []
-  );
+  const productNames = createMemo(() => {
+    if (state.showPricesForProductsModal == undefined) return [];
+    return state.showPricesForProductsModal.isSpecificProduct
+      ? [state.showPricesForProductsModal.name]
+      : tagsResource()?.[state.showPricesForProductsModal.name] ?? [];
+  });
   const filteredProducts = createMemo(() =>
     allProductsInStores()
       ?.filter(
@@ -50,78 +56,89 @@ export default (props: Props) => {
     calcTotalPages(pageSize, filteredProducts())
   );
   return (
-    <Modal onClose={props.onClose}>
-      <div class="sm:flex sm:items-start">
-        <div class="flex-grow mt-3 text-center sm:mt-0 sm:text-left">
-          <ModalHeader>
-            Ingame prices for product{productNames().length > 1 ? "s" : ""}:{" "}
-            {productNames().join(", ")}
-          </ModalHeader>
-          <div class="mt-2">
-            <Table>
-              <TableHeader>
-                <TableHeaderCol>Product Name</TableHeaderCol>
-                <TableHeaderCol>Store Name</TableHeaderCol>
-                <TableHeaderCol>Store Owner</TableHeaderCol>
-                <TableHeaderCol>Quantity</TableHeaderCol>
-                <TableHeaderCol>Price</TableHeaderCol>
-              </TableHeader>
-              <TableBody>
-                <For each={paginatedProducts()}>
-                  {(product) => (
-                    <tr>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.ItemName}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.StoreName}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.StoreOwner}
-                      </td>
+    <>
+      {state.showPricesForProductsModal && (
+        <Modal onClose={hidePricesForProductsModal}>
+          <div class="sm:flex sm:items-start">
+            <div class="flex-grow mt-3 text-center sm:mt-0 sm:text-left">
+              <ModalHeader>
+                Ingame prices for product{productNames().length > 1 ? "s" : ""}:{" "}
+                {productNames().join(", ")}
+              </ModalHeader>
+              <div class="mt-2">
+                <Table>
+                  <TableHeader>
+                    <TableHeaderCol>Product Name</TableHeaderCol>
+                    <TableHeaderCol>Store Name</TableHeaderCol>
+                    <TableHeaderCol>Store Owner</TableHeaderCol>
+                    <TableHeaderCol>Quantity</TableHeaderCol>
+                    <TableHeaderCol>Price</TableHeaderCol>
+                  </TableHeader>
+                  <TableBody>
+                    <For each={paginatedProducts()}>
+                      {(product) => (
+                        <tr>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {product.ItemName}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {product.StoreName}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {product.StoreOwner}
+                          </td>
 
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                        {product.Buying
-                          ? `Buying ${product.Limit} for`
-                          : `Selling ${product.MaxNumWanted} for`}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Tooltip text="Click to set your personal price">
-                          <button
-                            class="px-2 py-1"
-                            onClick={() => {
-                              //Updates both personal price for this product as well as tag price if !isSpecificProduct
-                              update.personalPrice(
-                                product.ItemName,
-                                product.CurrencyName,
-                                product.Price
-                              );
-                              if (!props.isSpecificProduct) {
-                                update.personalPrice(
-                                  tagPersonalPriceId(props.name),
-                                  product.CurrencyName,
-                                  product.Price
-                                );
-                              }
-                            }}
-                          >
-                            {`${product.Price} ${product.CurrencyName}`}
-                          </button>
-                        </Tooltip>
-                      </td>
-                    </tr>
-                  )}
-                </For>
-              </TableBody>
-            </Table>
-            <Pagination
-              currentPage={currentPage()}
-              totalPages={totalPages()}
-              onChange={setCurrentPage}
-            />
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                            {product.Buying
+                              ? `Buying ${product.Limit} for`
+                              : `Selling ${product.MaxNumWanted} for`}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <Tooltip text="Click to set your personal price">
+                              <button
+                                class="px-2 py-1"
+                                onClick={() => {
+                                  //Updates both personal price for this product as well as tag price if !isSpecificProduct
+                                  update.personalPrice(
+                                    product.ItemName,
+                                    product.CurrencyName,
+                                    product.Price
+                                  );
+                                  if (
+                                    state.showPricesForProductsModal !=
+                                      undefined &&
+                                    state.showPricesForProductsModal
+                                      .isSpecificProduct
+                                  ) {
+                                    update.personalPrice(
+                                      getTagPersonalPriceId(
+                                        state.showPricesForProductsModal.name
+                                      ),
+                                      product.CurrencyName,
+                                      product.Price
+                                    );
+                                  }
+                                }}
+                              >
+                                {`${product.Price} ${product.CurrencyName}`}
+                              </button>
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      )}
+                    </For>
+                  </TableBody>
+                </Table>
+                <Pagination
+                  currentPage={currentPage()}
+                  totalPages={totalPages()}
+                  onChange={setCurrentPage}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </Modal>
+        </Modal>
+      )}
+    </>
   );
 };

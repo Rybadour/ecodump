@@ -110,8 +110,12 @@ export const fixPercentages = (
   });
 };
 
-export const tagPersonalPriceId = (tagName: string) => `TAGID_${tagName}`;
-export const getPersonalPriceId = (ingredient: RecipeIngredient) =>
+export const getTagPersonalPriceId = (tagName: string) => `TAGID_${tagName}`;
+export const getIngredientId = (ingredient: {
+  IsSpecificItem: boolean;
+  Tag: string;
+  Name: string;
+}) =>
   ingredient.IsSpecificItem
     ? ingredient.Name
-    : tagPersonalPriceId(ingredient.Tag);
+    : getTagPersonalPriceId(ingredient.Tag);

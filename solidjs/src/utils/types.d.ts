@@ -88,8 +88,17 @@ declare interface RecipeIngredient {
   IsStatic: boolean;
 }
 
+declare interface RecipeVariant {
+  Recipe: Recipe;
+  Variant: Variant;
+}
+
 declare interface CraftableProduct {
   Name: string;
-  RecipeVariants: { Recipe: Recipe; Variant: Variant }[];
+  RecipeVariants: RecipeVariant[];
   Offers: ProductOffer[];
+}
+
+declare interface SetSignal<T> {
+  (t: T | ((prev: T) => T)): void;
 }
