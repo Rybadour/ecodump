@@ -41,6 +41,11 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.2.0 (2021-11-28)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Improvement on price calculator: recipe tree navigation</li>
+        </ul>
         <h3>2.1.0 (2021-11-23)</h3>
         <h4>Features</h4>
         <ul>

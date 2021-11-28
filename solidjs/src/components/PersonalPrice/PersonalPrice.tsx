@@ -7,11 +7,11 @@ type Props = {
 };
 
 export default (props: Props) => {
-  const { mainState, personalPricesState, update } = useMainContext();
+  const { mainState, get, update } = useMainContext();
   if (!mainState.currency) return <>"select currency"</>;
   return (
     <NumericInput
-      value={personalPricesState?.[props.personalPriceId]?.[mainState.currency]}
+      value={get.personalPrice(props.personalPriceId)}
       onChange={(newValue) =>
         update.personalPrice(
           props.personalPriceId,

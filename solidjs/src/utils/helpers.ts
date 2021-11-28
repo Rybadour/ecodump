@@ -74,8 +74,8 @@ export const convertToMarginMultiplier = (margin: number) => margin / 100 + 1;
 export const getRecipeEvenPercentages = (recipe: Variant) => {
   const evenPercent = Math.floor(100 / recipe.Products.length);
   return recipe.Products.map((prod, index) => ({
-    productName: prod.Name,
-    percentage:
+    prod: prod.Name,
+    perc:
       index !== recipe.Products.length - 1
         ? evenPercent
         : 100 - (recipe.Products.length - 1) * evenPercent,
@@ -85,16 +85,16 @@ export const getRecipeEvenPercentages = (recipe: Variant) => {
 // Fixes percentages so that the sum is 100%
 export const fixPercentages = (
   prevPercentages: {
-    productName: string;
-    percentage: number;
+    prod: string;
+    perc: number;
   }[],
   prodName: string,
   newPercentage: number
 ) => {
   let sum = newPercentage;
   return prevPercentages.map((t, index) => {
-    let percentage = t.productName === prodName ? newPercentage : t.percentage;
-    if (t.productName !== prodName) {
+    let percentage = t.prod === prodName ? newPercentage : t.perc;
+    if (t.prod !== prodName) {
       if (sum + percentage > 100) {
         percentage = 100 - sum;
       }
@@ -105,7 +105,7 @@ export const fixPercentages = (
     }
     return {
       ...t,
-      percentage,
+      perc: percentage,
     };
   });
 };

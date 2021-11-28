@@ -69,7 +69,10 @@ export default (props: Props) => {
           id="menu-button"
           aria-expanded="true"
           aria-haspopup="true"
-          onClick={() => setMenuOpen((prev) => !prev)}
+          onClick={(ev) => {
+            setMenuOpen((prev) => !prev);
+            ev.stopPropagation();
+          }}
         >
           {props.values.find((t) => t.value == props.value)?.text}
           <svg

@@ -41,7 +41,7 @@ export default () => {
       currentPage: 1,
       showPricesForProductsModal: undefined,
     },
-    "PriceCalculatorStore"
+    "PriceCalculatorListProductsStore"
   );
 
   const filteredProducts = createMemo(() =>

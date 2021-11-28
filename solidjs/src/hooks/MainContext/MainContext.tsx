@@ -28,13 +28,32 @@ type MainContextType = {
   allProductsInStores: Accessor<ProductOffer[] | undefined>;
   allCraftableProducts: Accessor<CraftableProduct[] | undefined>;
   mainState: Store<MainStore>;
-  personalPricesState: Store<PersonalPricesStore>;
+  get: {
+    personalPrice: (productName?: string) => number;
+    craftAmmount: (productName?: string) => number;
+    craftModule: (productName?: string) => number;
+    recipeMargin: (recipeKey?: string) => number;
+    costPercentage: (variantKey?: string) => {
+      prod: string;
+      perc: number;
+    }[];
+  };
   update: {
     currency: (newCurrency: string) => void;
     personalPrice: (
       product: string,
       currency: string,
       newPrice: number
+    ) => void;
+    craftAmmount: (product: string, ammount: number) => void;
+    craftModule: (product: string, module: number) => void;
+    recipeMargin: (recipeKey: string, margin: number) => void;
+    costPercentage: (
+      variantKey: string,
+      percentages: {
+        prod: string;
+        perc: number;
+      }[]
     ) => void;
   };
 };
@@ -67,11 +86,21 @@ const MainContext = createContext<MainContextType>({
   mainState: {
     currency: "",
   },
-  personalPricesState: {},
+  get: {
+    personalPrice: (productName?: string) => 0,
+    craftAmmount: (productName?: string) => 1,
+    craftModule: (productName?: string) => 0,
+    recipeMargin: (recipeKey?: string) => 0,
+    costPercentage: (variantKey?: string) => [],
+  },
   update: {
     currency: () => undefined,
     personalPrice: (product: string, currency: string, newPrice: number) =>
       undefined,
+    craftAmmount: (product: string, ammount: number) => undefined,
+    craftModule: (product: string, module: number) => undefined,
+    recipeMargin: (recipeKey: string, module: number) => undefined,
+    costPercentage: () => undefined,
   },
 });
 type Props = {
@@ -85,9 +114,25 @@ type PersonalPricesStore = {
   [productName: string]: { [currency: string]: number };
 };
 
+type ProdNumberStore = {
+  [productName: string]: number;
+};
+
+type CostPercentagesStore = {
+  [variantKey: string]: { prod: string; perc: number }[];
+};
+
 export const MainContextProvider = (props: Props) => {
   const [personalPricesState, setPersonalPricesState] =
     createLocalStore<PersonalPricesStore>({}, "PersonalPricesStore");
+  const [craftAmmoutState, setCraftAmmoutState] =
+    createLocalStore<ProdNumberStore>({}, "craftAmmountStore");
+  const [craftModuleState, setCraftModuleState] =
+    createLocalStore<ProdNumberStore>({}, "craftModuleStore");
+  const [recipeMarginState, setRecipeMarginState] =
+    createLocalStore<ProdNumberStore>({}, "recipeMarginStore");
+  const [CostPercentagesState, setCostPercentagesState] =
+    createLocalStore<CostPercentagesStore>({}, "CostPercentagesStore");
 
   const [mainState, setState] = createLocalStore<MainStore>(
     {
@@ -199,12 +244,40 @@ export const MainContextProvider = (props: Props) => {
     allProductsInStores,
     allCraftableProducts,
     mainState,
-    personalPricesState,
+    get: {
+      personalPrice: (productName?: string) =>
+        personalPricesState[productName ?? ""]?.[mainState.currency],
+      craftAmmount: (productName?: string) =>
+        craftAmmoutState[productName ?? ""] ?? 1,
+      craftModule: (productName?: string) =>
+        craftModuleState[productName ?? ""] ?? 0,
+      recipeMargin: (recipeKey?: string) =>
+        recipeMarginState[recipeKey ?? ""] ?? 0,
+      costPercentage: (variantKey?: string) =>
+        CostPercentagesState[variantKey ?? ""],
+    },
     update: {
       currency: (newCurrency: string) => setState({ currency: newCurrency }),
       personalPrice: (product: string, currency: string, newPrice: number) =>
         setPersonalPricesState((prev) => ({
           [product]: { ...(prev[product] ?? {}), [currency]: newPrice },
+        })),
+      craftAmmount: (product: string, ammount: number) =>
+        setCraftAmmoutState({ [product]: ammount }),
+      craftModule: (product: string, module: number) =>
+        setCraftModuleState({ [product]: module }),
+      recipeMargin: (recipeKey: string, margin: number) =>
+        setRecipeMarginState({ [recipeKey]: margin }),
+      costPercentage: (
+        variantKey: string,
+        percentages: {
+          prod: string;
+          perc: number;
+        }[]
+      ) =>
+        setCostPercentagesState((prev) => ({
+          ...prev,
+          [variantKey]: percentages,
         })),
     },
   } as MainContextType;

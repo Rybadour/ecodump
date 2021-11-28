@@ -54,7 +54,7 @@ export default (props: Props) => {
         {!mainState.currency && "select currency"}
         {mainState.currency &&
           avgPrice() &&
-          `${avgPrice().calculatedPrice} ${mainState.currency}`}
+          `${avgPrice().calculatedPrice ?? "?"} ${mainState.currency}`}
       </button>
     </Tooltip>
   );

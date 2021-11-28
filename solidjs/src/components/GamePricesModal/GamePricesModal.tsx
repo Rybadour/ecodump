@@ -107,7 +107,7 @@ export default () => {
                                   if (
                                     state.showPricesForProductsModal !=
                                       undefined &&
-                                    state.showPricesForProductsModal
+                                    !state.showPricesForProductsModal
                                       .isSpecificProduct
                                   ) {
                                     update.personalPrice(
