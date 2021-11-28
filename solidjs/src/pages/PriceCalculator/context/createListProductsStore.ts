@@ -12,6 +12,7 @@ export type StoreType = {
   filterCraftStation: string;
   currentPage: number;
   showPricesForProductsModal?: { name: string; isSpecificProduct: boolean };
+  filterByOwner: boolean;
 };
 export type StoreUpdate = {
   setSearch: (newSearch: string) => void;
@@ -23,6 +24,7 @@ export type StoreUpdate = {
     isSpecificProduct: boolean
   ) => void;
   hidePricesForProductsModal: () => void;
+  setFilterByOwner: (filterByOwner: boolean) => void;
 };
 export type ListProductsStore = {
   state: Store<StoreType>;
@@ -31,8 +33,9 @@ export type ListProductsStore = {
   update: StoreUpdate;
 };
 export const Survivalist = "Survivalist";
-export default () => {
-  const { allCraftableProducts } = useMainContext();
+export default (): ListProductsStore => {
+  const { allCraftableProducts, allProductsInStores, mainState } =
+    useMainContext();
   const [state, setState] = createLocalStore<StoreType>(
     {
       search: "",
@@ -40,9 +43,19 @@ export default () => {
       filterCraftStation: "",
       currentPage: 1,
       showPricesForProductsModal: undefined,
+      filterByOwner: false,
     },
     "PriceCalculatorListProductsStore"
   );
+
+  const mySellingProducts = createMemo(() => {
+    if (!state.filterByOwner || mainState.userName.length === 0) return [];
+    return (
+      allProductsInStores()
+        ?.filter((t) => t.StoreOwner === mainState.userName)
+        .map((t) => t.ItemName) ?? []
+    );
+  });
 
   const filteredProducts = createMemo(() =>
     allCraftableProducts()?.filter(
@@ -59,7 +72,10 @@ export default () => {
           product.RecipeVariants.map(
             (variant) => variant.Recipe.CraftStation
           ).flat()
-        )
+        ) &&
+        (!state.filterByOwner ||
+          mainState.userName.length === 0 ||
+          filterByIncludesAny(mySellingProducts(), [product.Name]))
     )
   );
 
@@ -95,6 +111,7 @@ export default () => {
         setState({ showPricesForProductsModal: { name, isSpecificProduct } }),
       hidePricesForProductsModal: () =>
         setState({ showPricesForProductsModal: undefined }),
-    } as StoreUpdate,
+      setFilterByOwner: (filterByOwner: boolean) => setState({ filterByOwner }),
+    },
   };
 };

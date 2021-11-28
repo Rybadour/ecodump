@@ -9,12 +9,13 @@ const endpoints = {
 };
 
 async function fetchAsync<T>(url: string): Promise<T> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(response.statusText);
+  try {
+    const response = await fetch(url);
+    return (await response.json()) as T;
+  } catch (e) {
+    console.log(`Could not fetch from ${url}`);
   }
-
-  return (await response.json()) as T;
+  return {} as T;
 }
 
 export const listDBs = () => fetchAsync<Config>(endpoints.list());

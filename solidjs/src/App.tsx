@@ -4,6 +4,7 @@ import { Routes, Route, useLocation } from "solid-app-router";
 import Navbar from "./Navbar/Navbar";
 import PriceCalculator from "./pages/PriceCalculator";
 import { MainContextProvider } from "./hooks/MainContext";
+import Username from "./components/Username";
 
 const Market = lazy(() => import("./pages/Market"));
 const RawData = lazy(() => import("./pages/RawData"));
@@ -49,18 +50,22 @@ const App: Component = () => {
   );
 
   return (
-    <div class="min-h-full">
-      <Navbar routes={routesConfig()} />
-      <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 class="text-3xl font-bold text-gray-900">
-            {currentRoute()?.text}
-          </h1>
-          <span>{currentRoute()?.description}</span>
-        </div>
-      </header>
-      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <MainContextProvider>
+    <MainContextProvider>
+      <div class="min-h-full">
+        <Navbar routes={routesConfig()} />
+        <header class="bg-white shadow relative">
+          <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900">
+                {currentRoute()?.text}
+              </h1>
+              <span>{currentRoute()?.description}</span>
+            </div>
+
+            <Username />
+          </div>
+        </header>
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <Routes>
             {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
             <Route
@@ -72,9 +77,9 @@ const App: Component = () => {
             <Route path="/" element={<Home />} />
             <Route path="/*all" element={<Home />} />
           </Routes>
-        </MainContextProvider>
-      </main>
-    </div>
+        </main>
+      </div>
+    </MainContextProvider>
   );
 };
 

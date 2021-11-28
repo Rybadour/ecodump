@@ -16,6 +16,7 @@ import PersonalPrice from "../../components/PersonalPrice/PersonalPrice";
 import AveragePrice from "../../components/AveragePrice";
 import { useCalcContext } from "./context/CalcContext";
 import classNames from "classnames";
+import Checkbox from "../../components/Checkbox";
 
 export default () => {
   const { mainState, update, allCurrencies, allProfessions, allCraftStations } =
@@ -26,7 +27,19 @@ export default () => {
       {priceCalcStore.selectedProduct() == undefined && (
         <>
           <div class="flex justify-between">
-            <span></span>
+            <div>
+              <Tooltip
+                text="click to filter items being sold by stores owned by you (set your name on top right corner)"
+                origin="NW"
+                direction="NE"
+              >
+                <Checkbox
+                  label="only what i'm selling"
+                  checked={props.state.filterByOwner}
+                  onChange={(checked) => props.update.setFilterByOwner(checked)}
+                />
+              </Tooltip>
+            </div>
             <div class="flex items-center gap-2 mb-2">
               <SearchInput
                 value={props.state.search}

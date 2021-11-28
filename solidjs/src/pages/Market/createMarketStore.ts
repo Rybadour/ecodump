@@ -10,6 +10,7 @@ type Store = {
   isStoresTable: boolean;
   storesPage: number;
   productsPage: number;
+  filterByOwner: boolean;
 };
 export default () => {
   const {
@@ -25,6 +26,7 @@ export default () => {
       isStoresTable: true,
       storesPage: 1,
       productsPage: 1,
+      filterByOwner: false,
     },
     "MarketStore"
   );
@@ -35,7 +37,10 @@ export default () => {
           (store) =>
             (filterByText(state.search, store.Name ?? "") ||
               filterByText(state.search, store.Owner ?? "")) &&
-            filterByText(mainState.currency, store.CurrencyName ?? "")
+            filterByText(mainState.currency, store.CurrencyName ?? "") &&
+            (!state.filterByOwner ||
+              mainState.userName.length === 0 ||
+              filterByText(mainState.userName, store.Owner ?? ""))
         )
         .sort((a, b) =>
           a.Name.toLowerCase().localeCompare(b.Name.toLowerCase())
@@ -55,7 +60,10 @@ export default () => {
         (filterByText(state.search, product.ItemName ?? "") ||
           filterByText(state.search, product.StoreName ?? "") ||
           filterByText(state.search, product.StoreOwner ?? "")) &&
-        filterByText(mainState.currency, product.CurrencyName ?? "")
+        filterByText(mainState.currency, product.CurrencyName ?? "") &&
+        (!state.filterByOwner ||
+          mainState.userName.length === 0 ||
+          filterByText(mainState.userName, product.StoreOwner ?? ""))
     )
   );
   const productsTotalPages = createMemo(() =>
@@ -89,6 +97,8 @@ export default () => {
       setState((prev) => ({ isStoresTable: !prev.isStoresTable })),
     setStoresPage: (pageNum: number) => setState({ storesPage: pageNum }),
     setProductsPage: (pageNum: number) => setState({ productsPage: pageNum }),
+    setFilterByOwner: (filterByOwner: boolean) =>
+      setState({ filterByOwner: filterByOwner }),
     allCurrencies,
     products,
     storesTotalPages,

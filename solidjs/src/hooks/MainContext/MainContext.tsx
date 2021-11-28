@@ -40,6 +40,7 @@ type MainContextType = {
   };
   update: {
     currency: (newCurrency: string) => void;
+    userName: (username: string) => void;
     personalPrice: (
       product: string,
       currency: string,
@@ -85,6 +86,7 @@ const MainContext = createContext<MainContextType>({
   allCraftableProducts: () => [],
   mainState: {
     currency: "",
+    userName: "",
   },
   get: {
     personalPrice: (productName?: string) => 0,
@@ -95,6 +97,7 @@ const MainContext = createContext<MainContextType>({
   },
   update: {
     currency: () => undefined,
+    userName: () => undefined,
     personalPrice: (product: string, currency: string, newPrice: number) =>
       undefined,
     craftAmmount: (product: string, ammount: number) => undefined,
@@ -108,6 +111,7 @@ type Props = {
 };
 type MainStore = {
   currency: string;
+  userName: string;
 };
 
 type PersonalPricesStore = {
@@ -137,6 +141,7 @@ export const MainContextProvider = (props: Props) => {
   const [mainState, setState] = createLocalStore<MainStore>(
     {
       currency: "",
+      userName: "",
     },
     "MainStore"
   );
@@ -258,6 +263,7 @@ export const MainContextProvider = (props: Props) => {
     },
     update: {
       currency: (newCurrency: string) => setState({ currency: newCurrency }),
+      userName: (username: string) => setState({ userName: username }),
       personalPrice: (product: string, currency: string, newPrice: number) =>
         setPersonalPricesState((prev) => ({
           [product]: { ...(prev[product] ?? {}), [currency]: newPrice },

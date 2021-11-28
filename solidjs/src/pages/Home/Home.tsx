@@ -45,6 +45,7 @@ export default () => {
         <h4>Features</h4>
         <ul>
           <li>Improvement on price calculator: recipe tree navigation</li>
+          <li>Added easy way to filter by current user</li>
         </ul>
         <h3>2.1.0 (2021-11-23)</h3>
         <h4>Features</h4>
