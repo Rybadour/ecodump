@@ -4,6 +4,7 @@ import NumericInput from "../NumericInput";
 type Props = {
   // this can either be a product name or a tag id. Use function getPersonalPriceId for ingredients or product.Name for products
   personalPriceId: string;
+  class?: string;
 };
 
 export default (props: Props) => {
@@ -19,6 +20,7 @@ export default (props: Props) => {
           newValue
         )
       }
+      class={props.class}
     />
   );
 };

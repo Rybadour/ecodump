@@ -20,11 +20,13 @@ import {
 
 type StoreType = {
   showRecipes: boolean;
+  showPersonalPrices: boolean;
   focusedProd?: { name: string; isSpecificProduct: boolean };
 };
 
 type StoreUpdate = {
   setShowRecipes: (showRecipes: boolean) => void;
+  setShowPersonalPrices: (showPersonalProces: boolean) => void;
   setFocusedProduct: (focusedProd: string, isSpecificProduct: boolean) => void;
 };
 
@@ -76,6 +78,7 @@ export default (): PriceCalcStore => {
   const [state, setState] = createLocalStore<StoreType>(
     {
       showRecipes: false,
+      showPersonalPrices: false,
       focusedProd: undefined,
     },
     "PriceCalculatorPriceCalcStore"
@@ -206,6 +209,8 @@ export default (): PriceCalcStore => {
     update: {
       setShowRecipes: (newValue: boolean) =>
         setState({ showRecipes: newValue }),
+      setShowPersonalPrices: (newValue: boolean) =>
+        setState({ showPersonalPrices: newValue }),
       setFocusedProduct: (prod: string, isSpecificProduct: boolean) =>
         setState({
           focusedProd: { name: prod, isSpecificProduct },

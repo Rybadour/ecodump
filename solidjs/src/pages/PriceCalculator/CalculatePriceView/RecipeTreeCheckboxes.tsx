@@ -11,6 +11,14 @@ export default () => {
         onChange={(checked) => priceCalcStore.update.setShowRecipes(checked)}
         left
       />
+      <Checkbox
+        label="show personal price"
+        checked={priceCalcStore.state.showPersonalPrices}
+        onChange={(checked) =>
+          priceCalcStore.update.setShowPersonalPrices(checked)
+        }
+        left
+      />
     </div>
   );
 };

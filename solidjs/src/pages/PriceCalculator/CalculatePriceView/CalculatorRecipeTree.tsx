@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createMemo, For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
+import PersonalPrice from "../../../components/PersonalPrice";
 import Tooltip from "../../../components/Tooltip";
 import { useMainContext } from "../../../hooks/MainContext";
 import { getFlatRecipeIngredients } from "../../../utils/recipeHelper";
@@ -9,7 +10,7 @@ import RecipePicker from "./RecipePicker";
 import RecipeTreeCheckboxes from "./RecipeTreeCheckboxes";
 
 export default () => {
-  const { allCraftableProducts, tagsResource } = useMainContext();
+  const { allCraftableProducts, tagsResource, mainState } = useMainContext();
   const { priceCalcStore } = useCalcContext();
   const flatRecipeIngredients = createMemo(() =>
     getFlatRecipeIngredients(
@@ -33,7 +34,7 @@ export default () => {
         <For each={flatRecipeIngredients()}>
           {(recipe) => (
             <div
-              class="mt-1"
+              class="mt-1 flex items-center"
               style={{ "margin-left": `${recipe.level * 30}px` }}
             >
               {recipe.recipeVariants.length > 0 && (
@@ -82,7 +83,7 @@ export default () => {
                 !!recipe.selectedVariant?.Variant.Key && (
                   <>
                     at table
-                    <span class="border rounded px-2 py-1 mx-2 font-normal">
+                    <span class="border rounded px-2 py-1 ml-2 font-normal">
                       {
                         recipe.recipeVariants.find(
                           (t) =>
@@ -93,6 +94,16 @@ export default () => {
                     </span>
                   </>
                 )}
+              {priceCalcStore.state.showPersonalPrices && (
+                <>
+                  <span class="ml-2">for</span>
+                  <PersonalPrice
+                    class="mx-2"
+                    personalPriceId={recipe.ingredientId}
+                  />
+                  {mainState.currency}
+                </>
+              )}
             </div>
           )}
         </For>
