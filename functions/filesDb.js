@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 
 async function fetchFileAsync(key) {
     const url = `https://api.jsonstorage.net/v1/json/${key}`;
