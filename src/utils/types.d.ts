@@ -5,7 +5,6 @@ declare interface Config {
 declare interface DB {
   Name: string;
   ExportedAt: ExportedAt;
-  Bin: string;
 }
 
 declare interface Dictionary<T> {

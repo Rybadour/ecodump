@@ -1,11 +1,8 @@
 import { removeXmlTags } from "./helpers";
 
 const endpoints = {
-  list: () =>
-    `https://api.jsonstorage.net/v1/json/${
-      import.meta.env.VITE_STORAGE_MASTERKEY
-    }`,
-  readDB: (bin: string) => `https://api.jsonstorage.net/v1/json/${bin}`,
+  list: () => ".netlify/functions/filesDb",
+  readDB: (fileName: string) => `.netlify/functions/filesDb?file=${fileName}`,
 };
 
 async function fetchAsync<T>(url: string): Promise<T> {
@@ -19,29 +16,20 @@ async function fetchAsync<T>(url: string): Promise<T> {
 }
 
 export const listDBs = () => fetchAsync<Config>(endpoints.list());
-export const readDB = (bin: string) => fetchAsync(endpoints.readDB(bin));
+export const readDB = (fileName: string) =>
+  fetchAsync(endpoints.readDB(fileName));
 
-export const getStores = (
-  storesBin: string
-): Promise<StoresResponse | undefined> =>
-  !storesBin
-    ? Promise.resolve(undefined)
-    : fetchAsync<StoresResponse>(endpoints.readDB(storesBin)).then(
-        (response) => ({
-          ...response,
-          Stores: response.Stores.map((store) => ({
-            ...store,
-            Name: removeXmlTags(store.Name),
-          })),
-        })
-      );
+export const getStores = (): Promise<StoresResponse | undefined> =>
+  fetchAsync<StoresResponse>(endpoints.readDB("Stores")).then((response) => ({
+    ...response,
+    Stores: response.Stores.map((store) => ({
+      ...store,
+      Name: removeXmlTags(store.Name),
+    })),
+  }));
 
-export const getRecipes = (recipesBin: string): Promise<Recipe[] | undefined> =>
-  !recipesBin
-    ? Promise.resolve(undefined)
-    : fetchAsync<Recipe[]>(endpoints.readDB(recipesBin));
+export const getRecipes = (): Promise<Recipe[] | undefined> =>
+  fetchAsync<Recipe[]>(endpoints.readDB("Recipes"));
 
-export const getTags = (tagsBin: string) =>
-  !tagsBin
-    ? Promise.resolve(undefined)
-    : fetchAsync<Record<string, string[]>>(endpoints.readDB(tagsBin));
+export const getTags = () =>
+  fetchAsync<Record<string, string[]>>(endpoints.readDB("Tags"));

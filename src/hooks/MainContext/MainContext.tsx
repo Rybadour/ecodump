@@ -60,18 +60,9 @@ type MainContextType = {
 };
 
 const [config] = createResource(listDBs);
-const [storesResource] = createResource(
-  () => config()?.Dbs?.find((db) => db.Name === "Stores")?.Bin ?? null,
-  getStores
-);
-const [recipesResource] = createResource(
-  () => config()?.Dbs?.find((db) => db.Name === "Recipes")?.Bin ?? null,
-  getRecipes
-);
-const [tagsResource] = createResource(
-  () => config()?.Dbs?.find((db) => db.Name === "Tags")?.Bin ?? null,
-  getTags
-);
+const [storesResource] = createResource(getStores);
+const [recipesResource] = createResource(getRecipes);
+const [tagsResource] = createResource(getTags);
 
 const MainContext = createContext<MainContextType>({
   config,
