@@ -15,15 +15,13 @@ export interface DbContent<T> {
 }
 
 export default () => {
-  const { config, dbs } = useMainContext();
+  const { dbs } = useMainContext();
   const [filenameToDownload, setFilenameToDownload] = createSignal("");
   const [downloadedFile] = createResource(
     filenameToDownload,
     (filename: string) => {
-      const bin =
-        filename && config()?.Dbs.find((db) => db.Name === filename)?.Bin;
-      return filename && bin
-        ? readDB(bin).then((json) => ({ filename, json }))
+      return filename
+        ? readDB(filename).then((json) => ({ filename, json }))
         : Promise.resolve(undefined);
     }
   );
