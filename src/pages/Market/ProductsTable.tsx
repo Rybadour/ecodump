@@ -1,0 +1,80 @@
+import Table, {
+  TableHeader,
+  TableHeaderCol,
+  TableBody,
+} from "../../components/Table";
+import { Accessor, For } from "solid-js";
+import Tooltip from "../../components/Tooltip";
+
+type Props = {
+  products: Accessor<ProductOffer[] | undefined>;
+  setSearch: (search: string) => void;
+  setCurrencyFilter: (currency: string) => void;
+};
+export default (props: Props) => (
+  <Table>
+    <TableHeader>
+      <TableHeaderCol>Product Name</TableHeaderCol>
+      <TableHeaderCol>Store Name</TableHeaderCol>
+      <TableHeaderCol>Store Owner</TableHeaderCol>
+      <TableHeaderCol>Quantity</TableHeaderCol>
+      <TableHeaderCol>Price</TableHeaderCol>
+    </TableHeader>
+    <TableBody>
+      <For each={props.products()}>
+        {(product) => (
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <Tooltip text="Click to filter by product name">
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.ItemName)}
+                >
+                  {product.ItemName}
+                </button>
+              </Tooltip>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <Tooltip text="Click to filter by store name">
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.StoreName)}
+                >
+                  {product.StoreName}
+                </button>
+              </Tooltip>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <Tooltip text="Click to filter by store owner">
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setSearch(product.StoreOwner)}
+                >
+                  {product.StoreOwner}
+                </button>
+              </Tooltip>
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+              {product.Buying
+                ? `Buying ${product.Limit} for`
+                : `Selling ${product.MaxNumWanted} for`}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {product.Price}
+              &nbsp;
+              <Tooltip text="Click to filter by currency">
+                <button
+                  class="px-2 py-1"
+                  onClick={() => props.setCurrencyFilter(product.CurrencyName)}
+                >
+                  {product.CurrencyName}
+                </button>
+              </Tooltip>
+            </td>
+          </tr>
+        )}
+      </For>
+    </TableBody>
+  </Table>
+);

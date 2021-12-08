@@ -1,82 +1,86 @@
-import React from "react";
-import Home from "./pages/Home";
-import JsonViewer from "./pages/JsonViewer";
-import AllItems from "./pages/AllItems";
-import Currencies from "./pages/Currencies";
-import Stores from "./pages/Stores";
-import { Menu } from "antd";
-import { ReactQueryDevtools } from "react-query/devtools";
-import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  HomeOutlined,
-  FileOutlined,
-  TableOutlined,
-  EuroCircleOutlined,
-  BankOutlined,
-} from "@ant-design/icons";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { AppProvider } from "./AppContext";
+import type { Component } from "solid-js";
+import { lazy, createMemo } from "solid-js";
+import { Routes, Route, useLocation } from "solid-app-router";
+import Navbar from "./Navbar/Navbar";
+import PriceCalculator from "./pages/PriceCalculator";
+import { MainContextProvider } from "./hooks/MainContext";
+import Username from "./components/Username";
 
-import "./App.css";
+const Market = lazy(() => import("./pages/Market"));
+const RawData = lazy(() => import("./pages/RawData"));
+const Home = lazy(() => import("./pages/Home"));
 
 const routes = {
-  JsonViewer: "/jsonViewer",
-  Recipes: "/recipes",
-  Items: "/items",
-  Currencies: "/currencies",
-  Stores: "/stores",
-  Home: "/",
-};
+  Home: { text: "Home", description: "", href: "/" },
+  // Recipes: { text: "Recipes", description: "", href: "/recipes" },
+  PriceCalculator: {
+    text: "Price Calculator",
+    description:
+      "Allows calculation of price for products in a recipe based on all ingredients / raw materials necessary",
+    href: "/calculator",
+  },
+  Market: {
+    text: "Ingame market",
+    description: "Buy/sell orders of all stores ingame",
+    href: "/market",
+  },
+  RawData: {
+    text: "Raw data",
+    description:
+      "Download the raw files that this app uses for your own personal uses",
+    href: "/rawData",
+  },
+  // Items: { text: "Items", description: "", href: "/items" },
+  // Currencies: { text: "Currencies", description: "", href: "/currencies" },
+  // Stores: { text: "Stores", description: "", href: "/stores" },
+} as { [key: string]: { text: string; description: string; href: string } };
 
-// Create a client
-const queryClient = new QueryClient();
+const App: Component = () => {
+  const location = useLocation();
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <div className="App">
-        <Router>
-          <Menu mode="horizontal" theme="dark">
-            <Menu.Item key="home" icon={<HomeOutlined />}>
-              <Link to={routes.Home}>Home</Link>
-            </Menu.Item>
-            <Menu.Item key="jsonViewer" icon={<FileOutlined />}>
-              <Link to={routes.JsonViewer}>Json viewer</Link>
-            </Menu.Item>
-            <Menu.Item key="Items" icon={<TableOutlined />}>
-              <Link to={routes.Items}>All items</Link>
-            </Menu.Item>
-            <Menu.Item key="Currencies" icon={<EuroCircleOutlined />}>
-              <Link to={routes.Currencies}>Currencies</Link>
-            </Menu.Item>
-            <Menu.Item key="Stores" icon={<BankOutlined />}>
-              <Link to={routes.Stores}>Stores</Link>
-            </Menu.Item>
-          </Menu>
-          <Switch>
-            <AppProvider>
-              <Route path={routes.JsonViewer}>
-                <JsonViewer />
-              </Route>
-              <Route path={routes.Items}>
-                <AllItems />
-              </Route>
-              <Route path={routes.Currencies}>
-                <Currencies />
-              </Route>
-              <Route path={routes.Stores}>
-                <Stores />
-              </Route>
-              <Route exact path="/">
-                <Home />
-              </Route>
-            </AppProvider>
-          </Switch>
-        </Router>
-      </div>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+  const routesConfig = createMemo(() =>
+    Object.keys(routes).map((key) => ({
+      ...routes[key],
+      highlight: location.pathname === routes[key].href,
+    }))
   );
-}
+
+  const currentRoute = createMemo(() =>
+    routesConfig().find((t) => t.highlight)
+  );
+
+  return (
+    <MainContextProvider>
+      <div class="min-h-full">
+        <Navbar routes={routesConfig()} />
+        <header class="bg-white shadow relative">
+          <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900">
+                {currentRoute()?.text}
+              </h1>
+              <span>{currentRoute()?.description}</span>
+            </div>
+
+            <Username />
+          </div>
+        </header>
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <Routes>
+            {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}
+            <Route
+              path={routes.PriceCalculator.href}
+              element={<PriceCalculator />}
+            />
+            <Route path={routes.Market.href} element={<Market />} />
+            <Route path={routes.RawData.href} element={<RawData />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/*all" element={<Home />} />
+          </Routes>
+        </main>
+      </div>
+    </MainContextProvider>
+  );
+};
 
 export default App;
