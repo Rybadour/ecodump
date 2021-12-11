@@ -141,13 +141,13 @@ export const MainContextProvider = (props: Props) => {
 
   const allCurrencies = createMemo(() =>
     storesResource()
-      ?.Stores.map((store) => store.CurrencyName)
+      ?.Stores?.map((store) => store.CurrencyName)
       .filter(filterUnique)
       .sort(sortByTextExcludingWord("Credit"))
   );
   const allProductsInStores = createMemo(() =>
     storesResource()
-      ?.Stores.map((store) =>
+      ?.Stores?.map((store) =>
         store.AllOffers.map(
           (offer) =>
             ({

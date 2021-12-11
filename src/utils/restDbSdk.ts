@@ -5,14 +5,14 @@ const endpoints = {
   readDB: (fileName: string) => `.netlify/functions/filesDb?file=${fileName}`,
 };
 
-async function fetchAsync<T>(url: string): Promise<T> {
+async function fetchAsync<T>(url: string): Promise<T | undefined> {
   try {
     const response = await fetch(url);
     return (await response.json()) as T;
   } catch (e) {
     console.log(`Could not fetch from ${url}`);
   }
-  return {} as T;
+  return undefined;
 }
 
 export const listDBs = () => fetchAsync<Config>(endpoints.list());
@@ -20,13 +20,13 @@ export const readDB = (fileName: string) =>
   fetchAsync(endpoints.readDB(fileName));
 
 export const getStores = (): Promise<StoresResponse | undefined> =>
-  fetchAsync<StoresResponse>(endpoints.readDB("Stores")).then((response) => ({
+  fetchAsync<StoresResponse>(endpoints.readDB("Stores")).then((response) => response ? ({
     ...response,
-    Stores: response.Stores.map((store) => ({
+    Stores: response?.Stores?.map((store) => ({
       ...store,
       Name: removeXmlTags(store.Name),
     })),
-  }));
+  }):undefined);
 
 export const getRecipes = (): Promise<Recipe[] | undefined> =>
   fetchAsync<Recipe[]>(endpoints.readDB("Recipes"));
