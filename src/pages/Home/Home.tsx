@@ -12,17 +12,20 @@ export default () => {
         <b>Price calculator</b> page is where you can find all recipes in game
         and use them to figure out how much you should price your products in
         your store. No more excel or calculator, this tool does all those
-        calculations for you.
+        calculations for you. <br/>
+        Video tutorial here: <a class="no-underline hover:underline text-blue-600 hover:text-blue-800 visited:text-purple-600" target="_blank" href="https://youtu.be/F3RWjCK5VcM">https://youtu.be/F3RWjCK5VcM</a>
       </p>
       <p>
         <b>Ingame market</b> page is where you can check the products that are
         being sold at this moment in ingame stores. There are currently two
         views with different visibility level: one for stores and one for
-        products.
+        products. <br />
+        Video tutorial here: <a class="no-underline hover:underline text-blue-600 hover:text-blue-800 visited:text-purple-600" target="_blank" href="https://youtu.be/ZraPFAxvyjo">https://youtu.be/ZraPFAxvyjo</a>
       </p>
       <p>
         <b>Raw data</b> page is where you can download the raw files i use on
-        this tool to check raw data or to create your own tool.
+        this tool to check raw data or to create your own tool.<br />
+        Video tutorial here: <a class="no-underline hover:underline text-blue-600 hover:text-blue-800 visited:text-purple-600" target="_blank" href="https://youtu.be/sUkygO9QyOE">https://youtu.be/sUkygO9QyOE</a>
       </p>
       <br />
       <p>
@@ -41,22 +44,17 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.2.1 (2021-11-28)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Minor bug fix for when db file server is offline</li>
+          <li>Added video tutorial links on the main page</li>
+        </ul>
         <h3>2.2.0 (2021-11-28)</h3>
         <h4>Features</h4>
         <ul>
           <li>Improvement on price calculator: recipe tree navigation</li>
           <li>Added easy way to filter by current user</li>
-        </ul>
-        <h3>2.1.0 (2021-11-23)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Added Price calculator page</li>
-        </ul>
-        <h3>2.0.0 (2021-11-21)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Added Ingame Market page</li>
-          <li>Added Raw data page</li>
         </ul>
       </div>
     </div>
