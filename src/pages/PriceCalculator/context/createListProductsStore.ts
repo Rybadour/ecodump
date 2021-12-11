@@ -4,6 +4,7 @@ import { useMainContext } from "../../../hooks/MainContext";
 import { createLocalStore } from "../../../utils/createLocalStore";
 import { filterByIncludesAny, filterByText } from "../../../utils/helpers";
 import { Store } from "solid-js/store";
+import { Direction } from "../../../components/Table/TableHeaderCol";
 
 const pageSize = 100;
 export type StoreType = {
@@ -13,6 +14,10 @@ export type StoreType = {
   currentPage: number;
   showPricesForProductsModal?: { name: string; isSpecificProduct: boolean };
   filterByOwner: boolean;
+  sortTableByCol?: {
+    col: string;
+    dir: Direction;
+  };
 };
 export type StoreUpdate = {
   setSearch: (newSearch: string) => void;
@@ -25,6 +30,7 @@ export type StoreUpdate = {
   ) => void;
   hidePricesForProductsModal: () => void;
   setFilterByOwner: (filterByOwner: boolean) => void;
+  setSortByTableCol: (colName: string, direction: Direction) => void;
 };
 export type ListProductsStore = {
   state: Store<StoreType>;
@@ -44,6 +50,7 @@ export default (): ListProductsStore => {
       currentPage: 1,
       showPricesForProductsModal: undefined,
       filterByOwner: false,
+      sortTableByCol: undefined,
     },
     "PriceCalculatorListProductsStore"
   );
@@ -112,6 +119,8 @@ export default (): ListProductsStore => {
       hidePricesForProductsModal: () =>
         setState({ showPricesForProductsModal: undefined }),
       setFilterByOwner: (filterByOwner: boolean) => setState({ filterByOwner }),
+      setSortByTableCol: (colName: string, direction: Direction) =>
+        setState({ sortTableByCol: { col: colName, dir: direction } }),
     },
   };
 };

@@ -17,6 +17,7 @@ import AveragePrice from "../../components/AveragePrice";
 import { useCalcContext } from "./context/CalcContext";
 import classNames from "classnames";
 import Checkbox from "../../components/Checkbox";
+import { Direction } from "../../components/Table/TableHeaderCol";
 
 export default () => {
   const { mainState, update, allCurrencies, allProfessions, allCraftStations } =
@@ -92,7 +93,13 @@ export default () => {
           </div>
           <Table>
             <TableHeader>
-              <TableHeaderCol>Product Name</TableHeaderCol>
+              <TableHeaderCol
+                name="ProdName"
+                sortTableByCol={props.state.sortTableByCol}
+                onSort={props.update.setSortByTableCol}
+              >
+                Product Name
+              </TableHeaderCol>
               <TableHeaderCol>Profession/Craft Station</TableHeaderCol>
               <TableHeaderCol>Average price</TableHeaderCol>
               <TableHeaderCol>Personal price</TableHeaderCol>
