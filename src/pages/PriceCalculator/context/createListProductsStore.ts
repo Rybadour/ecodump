@@ -53,7 +53,7 @@ export default (): ListProductsStore => {
     if (!state.filterByOwner || mainState.userName.length === 0) return [];
     return (
       allProductsInStores()
-        ?.filter((t) => t.StoreOwner === mainState.userName)
+        ?.filter((t) => t.StoreOwner === mainState.userName && !t.Buying)
         .map((t) => t.ItemName) ?? []
     );
   });

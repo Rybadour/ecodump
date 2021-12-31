@@ -36,7 +36,7 @@ export default () => {
             direction="NE"
           >
             <Checkbox
-              label="only my store's"
+              label="Only show my store's"
               checked={state.filterByOwner}
               onChange={(checked) => setFilterByOwner(checked)}
             />

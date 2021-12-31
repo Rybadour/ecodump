@@ -34,7 +34,7 @@ export default () => {
                 direction="NE"
               >
                 <Checkbox
-                  label="only what i'm selling"
+                  label="Only show what I'm selling"
                   checked={props.state.filterByOwner}
                   onChange={(checked) => props.update.setFilterByOwner(checked)}
                 />
