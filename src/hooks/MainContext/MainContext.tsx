@@ -160,8 +160,8 @@ export const MainContextProvider = (props: Props) => {
       )
       .flat()
       .sort((a, b) => {
-        const nameSort = a.ItemName.toLowerCase().localeCompare(
-          b.ItemName.toLowerCase()
+        const nameSort = a.ItemName?.toLowerCase().localeCompare(
+          b.ItemName?.toLowerCase()
         );
         if (nameSort !== 0) {
           return nameSort;
@@ -254,7 +254,16 @@ export const MainContextProvider = (props: Props) => {
     },
     update: {
       currency: (newCurrency: string) => setState({ currency: newCurrency }),
-      userName: (username: string) => setState({ userName: username }),
+      userName: (username: string) => {
+        // If no currency is selected, select the user's currency
+        if (mainState.currency.length == 0 || allCurrencies()?.filter(t => t === mainState.currency).length === 0){
+          const userPersonalCurrency = allCurrencies()?.find(t => t.indexOf(username) === 1);
+          if (userPersonalCurrency) {
+            setState({currency: userPersonalCurrency});
+          }
+        }
+        setState({ userName: username });
+      },
       personalPrice: (product: string, currency: string, newPrice: number) =>
         setPersonalPricesState((prev) => ({
           [product]: { ...(prev[product] ?? {}), [currency]: newPrice },

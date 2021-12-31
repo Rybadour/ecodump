@@ -11,6 +11,7 @@ type Props = {
   onChange: (newValue: string | number) => void;
   origin?: CardinalPoint;
   direction?: CardinalPoint;
+  class?: string;
 };
 export default (props: Props) => {
   const [isMenuOpen, setMenuOpen] = createSignal(false);
@@ -62,7 +63,7 @@ export default (props: Props) => {
       origin={props.origin}
       direction={props.direction}
     >
-      <div class="inline-block text-left">
+      <div class={classNames("inline-block text-left", props.class)}>
         <button
           type="button"
           class="inline-flex justify-center w-full rounded-md border border-gray-300 h-8 px-2 py-1 bg-white text-sm font-small text-black hover:bg-gray-50 focus:outline-none"

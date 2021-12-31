@@ -25,6 +25,7 @@ export type StoreUpdate = {
   ) => void;
   hidePricesForProductsModal: () => void;
   setFilterByOwner: (filterByOwner: boolean) => void;
+  clearFilters: () => void;
 };
 export type ListProductsStore = {
   state: Store<StoreType>;
@@ -112,6 +113,8 @@ export default (): ListProductsStore => {
       hidePricesForProductsModal: () =>
         setState({ showPricesForProductsModal: undefined }),
       setFilterByOwner: (filterByOwner: boolean) => setState({ filterByOwner }),
+      clearFilters: () => 
+        setState({search: "", currentPage: 1, filterProfession: "", filterCraftStation: "", filterByOwner: false}),
     },
   };
 };

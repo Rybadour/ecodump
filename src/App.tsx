@@ -1,10 +1,10 @@
-import type { Component } from "solid-js";
+import { Component } from "solid-js";
 import { lazy, createMemo } from "solid-js";
 import { Routes, Route, useLocation } from "solid-app-router";
 import Navbar from "./Navbar/Navbar";
 import PriceCalculator from "./pages/PriceCalculator";
 import { MainContextProvider } from "./hooks/MainContext";
-import Username from "./components/Username";
+import Header from "./Header";
 
 const Market = lazy(() => import("./pages/Market"));
 const RawData = lazy(() => import("./pages/RawData"));
@@ -49,22 +49,12 @@ const App: Component = () => {
     routesConfig().find((t) => t.highlight)
   );
 
+
   return (
     <MainContextProvider>
       <div class="min-h-full">
         <Navbar routes={routesConfig()} />
-        <header class="bg-white shadow relative">
-          <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between">
-            <div>
-              <h1 class="text-3xl font-bold text-gray-900">
-                {currentRoute()?.text}
-              </h1>
-              <span>{currentRoute()?.description}</span>
-            </div>
-
-            <Username />
-          </div>
-        </header>
+        <Header currentRoute={currentRoute} />
         <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <Routes>
             {/* <Route path={routes.Recipes.href} element={<Recipes />} /> */}

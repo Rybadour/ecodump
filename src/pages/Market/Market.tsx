@@ -3,28 +3,27 @@ import Dropdown from "../../components/Dropdown";
 import createMarketStore from "./createMarketStore";
 import StoresTable from "./StoresTable";
 import RadioToggle from "../../components/RadioToggle";
-import { Show } from "solid-js";
+import { createEffect, Show } from "solid-js";
 import ProductsTable from "./ProductsTable";
 import Pagination from "../../components/Pagination";
 import Tooltip from "../../components/Tooltip";
 import Checkbox from "../../components/Checkbox";
+import Button from "../../components/Button";
 
 export default () => {
   const {
-    mainState,
     state,
-    storesResource,
     stores,
     setSearch,
     setCurrencyFilter,
     toggleTableType,
-    allCurrencies,
     products,
     storesTotalPages,
     productsTotalPages,
     setStoresPage,
     setProductsPage,
     setFilterByOwner,
+    clearFilters
   } = createMarketStore();
 
   return (
@@ -45,17 +44,6 @@ export default () => {
         </div>
         <div class="flex items-center gap-2 mb-2">
           <SearchInput value={state.search} onChange={setSearch} />
-          <Dropdown
-            value={mainState.currency}
-            values={[
-              { value: "", text: "All Currencies" },
-              ...(allCurrencies()?.map((name) => ({
-                value: name,
-                text: name,
-              })) ?? []),
-            ]}
-            onChange={(newValue) => setCurrencyFilter(`${newValue}`)}
-          />
           <RadioToggle
             options={[
               { text: "Stores", value: "Stores" },
@@ -64,6 +52,7 @@ export default () => {
             onChange={() => toggleTableType()}
             selected={state.isStoresTable ? "Stores" : "Products"}
           />
+          <Button onClick={() => clearFilters()}>Clear filters</Button>
         </div>
       </div>
       <Show when={state.isStoresTable}>

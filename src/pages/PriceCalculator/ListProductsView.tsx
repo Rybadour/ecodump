@@ -75,19 +75,7 @@ export default () => {
                 origin="SE"
                 direction="SW"
               />
-              <Dropdown
-                value={mainState.currency}
-                values={[
-                  { value: "", text: "All Currencies" },
-                  ...(allCurrencies()?.map((name) => ({
-                    value: name,
-                    text: name,
-                  })) ?? []),
-                ]}
-                onChange={(newValue) => update.currency(`${newValue}`)}
-                origin="SE"
-                direction="SW"
-              />
+              <Button onClick={() => props.update.clearFilters()}>Clear filters</Button>
             </div>
           </div>
           <Table>

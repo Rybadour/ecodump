@@ -15,7 +15,6 @@ type Store = {
 export default () => {
   const {
     storesResource,
-    allCurrencies,
     allProductsInStores,
     mainState,
     update,
@@ -30,6 +29,7 @@ export default () => {
     },
     "MarketStore"
   );
+
   const stores = createMemo(
     () =>
       storesResource()
@@ -87,9 +87,7 @@ export default () => {
     setState({ storesPage: 1, productsPage: 1 });
   });
   return {
-    mainState,
     state,
-    storesResource,
     stores,
     setSearch,
     setCurrencyFilter: (newValue: string) => update.currency(newValue),
@@ -99,9 +97,14 @@ export default () => {
     setProductsPage: (pageNum: number) => setState({ productsPage: pageNum }),
     setFilterByOwner: (filterByOwner: boolean) =>
       setState({ filterByOwner: filterByOwner }),
-    allCurrencies,
     products,
     storesTotalPages,
     productsTotalPages,
+    clearFilters: () => setState({
+      search: "",
+      storesPage: 1,
+      productsPage: 1,
+      filterByOwner:false
+    })
   };
 };
