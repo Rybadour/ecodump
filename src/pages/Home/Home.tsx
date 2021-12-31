@@ -44,6 +44,15 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.2.2 (2021-12-31)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Moved previous home page into a "less visible" About page</li>
+          <li>When the user types his username for the first time, his own currency gets selected by default</li>
+          <li>Added option to clear all filters for a table</li>
+          <li>Moved currency selector to header (it looked like a regular filter)</li>
+          <li>Minor bug fix for the option "only show what i'm selling" also showing buy orders</li>
+        </ul>
         <h3>2.2.1 (2021-11-28)</h3>
         <h4>Features</h4>
         <ul>
