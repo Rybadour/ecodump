@@ -28,8 +28,7 @@ export const getSelectedOrFirstRecipeVariant = (
   recipeVariants: RecipeVariant[],
   recipeVariantKey?: string
 ): RecipeVariant | undefined =>
-  getSelectedRecipeVariant(recipeVariants, recipeVariantKey) ??
-  recipeVariants?.[0];
+  recipeVariants.length === 1 ? recipeVariants?.[0] : getSelectedRecipeVariant(recipeVariants, recipeVariantKey);
 
 export const getRecipeTreeForProduct = (
   allCraftableProducts: CraftableProduct[],

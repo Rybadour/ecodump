@@ -2,17 +2,15 @@ import Button from "../../../components/Button";
 import Tooltip from "../../../components/Tooltip";
 import { useMainContext } from "../../../hooks/MainContext";
 import { getIngredientId } from "../../../utils/helpers";
-import { getRecipeTreeForIngredient } from "../../../utils/recipeHelper";
 import { useCalcContext } from "../context/CalcContext";
 
 type Props = {
     ingredient: RecipeIngredient;
 }
 export default (props: Props) => {
-    const { tagsResource, allCraftableProducts } = useMainContext();
+    const { tagsResource } = useMainContext();
     const { priceCalcStore } = useCalcContext();
-    const recipeTree = getRecipeTreeForIngredient(allCraftableProducts() ?? [], {}, tagsResource() ?? {}, props.ingredient, []);
-    const isCraftableProduct = recipeTree?.recipeVariants?.length > 0;
+    const isCraftableProduct = (priceCalcStore.focusedNode()?.recipeVariants?.length ?? 0) > 0;
         
     if (!isCraftableProduct && props.ingredient.IsSpecificItem) {
         return <>{props.ingredient.Name}</>;

@@ -35,99 +35,101 @@ export default () => {
         </span>
       }
     >
-      <div class="flex gap-5 flex-wrap">
-        <LabeledField vertical text="Recipe margin:">
-          <RadioToggle
-            options={recipeMargins}
-            onChange={(selected: string | number) =>
-              update.recipeMargin(
-                priceCalcStore.selectedVariant()?.Recipe.Key ?? "",
-                Number(selected)
-              )
-            }
-            selected={priceCalcStore.recipeMargin()}
-          />
-        </LabeledField>
-      </div>
-      <div class="flex items-center mt-2">
-        Cost per recipe with margin applied is <Highlight class="px-1" text={`${priceCalcStore.unitCostWithProfit()}`} />
-        {mainState.currency}
-      </div>
-      <div class="mt-8">
-        <Table>
-          <TableHeader>
-            <TableHeaderCol>Product name</TableHeaderCol>
-            <TableHeaderCol>Ammount</TableHeaderCol>
-            <TableHeaderCol>Cost Percentage</TableHeaderCol>
-            <TableHeaderCol>Production cost</TableHeaderCol>
-            <TableHeaderCol>Retail price</TableHeaderCol>
-            <TableHeaderCol>Personal price</TableHeaderCol>
-          </TableHeader>
-          <TableBody>
-            <For each={priceCalcStore.recipeProducts()}>
-              {(product) => (
-                <tr>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {product.Name}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {product.Ammount}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <NumericInput
-                      value={product.costPercentage}
-                      onChange={(newValue) =>
-                        update.costPercentage(
-                          priceCalcStore.selectedVariant()?.Variant.Key ?? "",
-                          fixPercentages(
-                            priceCalcStore.costPercentages(),
-                            product.Name,
-                            newValue
-                          )
-                        )
-                      }
-                    />
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Tooltip noStyle text="Click to set your personal price">
-                      <Button
-                        onClick={() =>
-                          update.personalPrice(
-                            product.Name,
-                            mainState.currency,
-                            product.productionCost
+      {priceCalcStore.selectedVariant() && <>
+        <div class="flex gap-5 flex-wrap">
+          <LabeledField vertical text="Recipe margin:">
+            <RadioToggle
+              options={recipeMargins}
+              onChange={(selected: string | number) =>
+                update.recipeMargin(
+                  priceCalcStore.selectedVariant()?.Recipe.Key ?? "",
+                  Number(selected)
+                )
+              }
+              selected={priceCalcStore.recipeMargin()}
+            />
+          </LabeledField>
+        </div>
+        <div class="flex items-center mt-2">
+          Cost per recipe with margin applied is <Highlight class="px-1" text={`${priceCalcStore.unitCostWithProfit()}`} />
+          {mainState.currency}
+        </div>
+        <div class="mt-8">
+          <Table>
+            <TableHeader>
+              <TableHeaderCol>Product name</TableHeaderCol>
+              <TableHeaderCol>Ammount</TableHeaderCol>
+              <TableHeaderCol>Cost Percentage</TableHeaderCol>
+              <TableHeaderCol>Production cost</TableHeaderCol>
+              <TableHeaderCol>Retail price</TableHeaderCol>
+              <TableHeaderCol>Personal price</TableHeaderCol>
+            </TableHeader>
+            <TableBody>
+              <For each={priceCalcStore.recipeProducts()}>
+                {(product) => (
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.Name}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.Ammount}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <NumericInput
+                        value={product.costPercentage}
+                        onChange={(newValue) =>
+                          update.costPercentage(
+                            priceCalcStore.selectedVariant()?.Variant.Key ?? "",
+                            fixPercentages(
+                              priceCalcStore.costPercentages(),
+                              product.Name,
+                              newValue
+                            )
                           )
                         }
-                      >
-                        {`${product.productionCost} ${mainState.currency}`}
-                      </Button>
-                    </Tooltip>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Tooltip noStyle text="Click to set your personal price">
-                      <Button
-                        class="px-2 py-1"
-                        onClick={() =>
-                          update.personalPrice(
-                            product.Name,
-                            mainState.currency,
-                            product.retailPrice
-                          )
-                        }
-                      >
-                        {`${product.retailPrice} ${mainState.currency}`}
-                      </Button>
-                    </Tooltip>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <PersonalPrice personalPriceId={product.Name} />
-                  </td>
-                </tr>
-              )}
-            </For>
-          </TableBody>
-        </Table>
-      </div>
+                      />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <Tooltip noStyle text="Click to set your personal price">
+                        <Button
+                          onClick={() =>
+                            update.personalPrice(
+                              product.Name,
+                              mainState.currency,
+                              product.productionCost
+                            )
+                          }
+                        >
+                          {`${product.productionCost} ${mainState.currency}`}
+                        </Button>
+                      </Tooltip>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <Tooltip noStyle text="Click to set your personal price">
+                        <Button
+                          class="px-2 py-1"
+                          onClick={() =>
+                            update.personalPrice(
+                              product.Name,
+                              mainState.currency,
+                              product.retailPrice
+                            )
+                          }
+                        >
+                          {`${product.retailPrice} ${mainState.currency}`}
+                        </Button>
+                      </Tooltip>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <PersonalPrice personalPriceId={product.Name} />
+                    </td>
+                  </tr>
+                )}
+              </For>
+            </TableBody>
+          </Table>
+        </div>
+      </>}
     </Accordion>
   );
 };

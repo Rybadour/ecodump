@@ -19,7 +19,7 @@ export default () => {
   );
   return (
     <div class="border rounded px-8 py-3 bg-gray-50 mt-4">
-      <div class="font-semibold text-sm">Breadcrumb</div>
+      <div class="font-semibold text-sm">Calculating price for: </div>
       <div class="flex items-center gap-2">
         <For each={breadcrumb()}>
           {(node, index) => (

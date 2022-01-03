@@ -91,6 +91,16 @@ export default (): PriceCalcStore => {
     {}
   );
 
+  // Ingredients for the selected product (NOT the focused product!)
+  const flatRecipeIngredientsTree = createMemo(() =>
+    getFlatRecipeIngredients(
+      allCraftableProducts() ?? [],
+      selectedRecipes(),
+      tagsResource() ?? {},
+      selectedProduct() ?? ""
+    )
+  );
+  
   const focusedProd = createMemo(() => state.focusedProdPath.length === 0 ? undefined : state.focusedProdPath[state.focusedProdPath.length - 1]);
 
   const craftModule = createMemo(() =>
@@ -100,17 +110,8 @@ export default (): PriceCalcStore => {
     get.craftAmmount(focusedProd())
   );
 
-  const flatRecipeIngredients = createMemo(() =>
-    getFlatRecipeIngredients(
-      allCraftableProducts() ?? [],
-      selectedRecipes(),
-      tagsResource() ?? {},
-      focusedProd() ?? ""
-    )
-  );
-
   const focusedNode = createMemo(() =>
-    flatRecipeIngredients().find(
+    flatRecipeIngredientsTree().find(
       (t) => t.ingredientId == focusedProd()
     )
   );
@@ -132,6 +133,7 @@ export default (): PriceCalcStore => {
     return get.costPercentage(variant.Key) ?? getRecipeEvenPercentages(variant);
   });
 
+  // This is the recipe ingredients for the focused product
   const recipeIngredients = createMemo(() => {
     const variant = selectedVariant();
     if (variant == undefined) return [];
