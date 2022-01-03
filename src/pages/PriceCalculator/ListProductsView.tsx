@@ -19,7 +19,7 @@ import classNames from "classnames";
 import Checkbox from "../../components/Checkbox";
 
 export default () => {
-  const { mainState, update, allCurrencies, allProfessions, allCraftStations } =
+  const { mainState, allProfessions, allCraftStations } =
     useMainContext();
   const { listProductsStore: props, priceCalcStore } = useCalcContext();
   return (
