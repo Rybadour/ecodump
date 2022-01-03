@@ -58,7 +58,7 @@ export default () => {
                 </Tooltip>
               )}
               {recipe.recipeVariants.length === 0 && (
-                <div class="inline-block border rounded py-1 px-4">
+                <div class="inline-block py-1 px-4">
                   {recipe.productName}
                 </div>
               )}

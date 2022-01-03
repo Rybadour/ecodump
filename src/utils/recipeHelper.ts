@@ -126,7 +126,7 @@ const getRecipeTreeForTag = (
   };
 };
 
-const getRecipeTreeForIngredient = (
+export const getRecipeTreeForIngredient = (
   allCraftableProducts: CraftableProduct[],
   selectedVariants: SelectedRecipeVariants,
   allTags: Record<string, string[]>,

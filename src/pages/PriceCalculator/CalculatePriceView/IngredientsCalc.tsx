@@ -10,14 +10,14 @@ import Table, {
   TableHeader,
   TableHeaderCol,
 } from "../../../components/Table";
-import Tooltip from "../../../components/Tooltip";
 import { useMainContext } from "../../../hooks/MainContext";
 import { formatNumber, getIngredientId } from "../../../utils/helpers";
 import { useCalcContext } from "../context/CalcContext";
+import IngredientsCalcName from "./IngredientsCalcName";
 import RecipePicker from "./RecipePicker";
 
 export default () => {
-  const { get, update, tagsResource } = useMainContext();
+  const { get, update } = useMainContext();
   const { priceCalcStore, listProductsStore } = useCalcContext();
 
   return (
@@ -102,19 +102,7 @@ export default () => {
                 {(ingredient) => (
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {ingredient.IsSpecificItem ? (
-                        ingredient.Name
-                      ) : (
-                        <Tooltip
-                          text={`One of: ${tagsResource()?.[
-                            ingredient.Tag
-                          ]?.join(", ")}`}
-                          origin="NW"
-                          direction="NE"
-                        >
-                          <div class="inline-block px-2 py-1">{`Tag ${ingredient.Tag}`}</div>
-                        </Tooltip>
-                      )}
+                      <IngredientsCalcName ingredient={ingredient} />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {ingredient.calcQuantity}
