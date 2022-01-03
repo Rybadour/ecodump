@@ -5,6 +5,8 @@ import Table, {
 } from "../../components/Table";
 import { Accessor, For } from "solid-js";
 import Tooltip from "../../components/Tooltip";
+import Button from "../../components/Button";
+import Highlight from "../../components/Highlight";
 
 type Props = {
   products: Accessor<ProductOffer[] | undefined>;
@@ -25,52 +27,42 @@ export default (props: Props) => (
         {(product) => (
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by product name">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to filter by product name">
+                <Button
                   onClick={() => props.setSearch(product.ItemName)}
                 >
                   {product.ItemName}
-                </button>
+                </Button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by store name">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to filter by store name">
+                <Button
                   onClick={() => props.setSearch(product.StoreName)}
                 >
                   {product.StoreName}
-                </button>
+                </Button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by store owner">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to filter by store owner">
+                <Button
                   onClick={() => props.setSearch(product.StoreOwner)}
                 >
                   {product.StoreOwner}
-                </button>
+                </Button>
               </Tooltip>
             </td>
 
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
               {product.Buying
-                ? `Buying ${product.Limit} for`
-                : `Selling ${product.MaxNumWanted} for`}
+                ? <>Buying <Highlight text={`${product.Limit}`} /> for</>
+                : <>Selling <Highlight text={`${product.MaxNumWanted}`} /> for</>}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {product.Price}
+              <Highlight text={`${product.Price}`} />
               &nbsp;
-              <Tooltip text="Click to filter by currency">
-                <button
-                  class="px-2 py-1"
-                  onClick={() => props.setCurrencyFilter(product.CurrencyName)}
-                >
-                  {product.CurrencyName}
-                </button>
-              </Tooltip>
+              {product.CurrencyName}
             </td>
           </tr>
         )}

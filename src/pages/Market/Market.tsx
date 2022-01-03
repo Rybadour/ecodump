@@ -31,7 +31,7 @@ export default () => {
       <div class="flex justify-between">
         <div>
           <Tooltip
-            text="click to filter by stores owned by you (set your name on top right corner)"
+            text="click to filter by stores owned by you (set your name in the header above)"
             origin="NW"
             direction="NE"
           >

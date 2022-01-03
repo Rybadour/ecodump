@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createMemo, For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
+import Button from "../../../components/Button";
 import PersonalPrice from "../../../components/PersonalPrice";
 import Tooltip from "../../../components/Tooltip";
 import { useMainContext } from "../../../hooks/MainContext";
@@ -38,25 +39,22 @@ export default () => {
               style={{ "margin-left": `${recipe.level * 30}px` }}
             >
               {recipe.recipeVariants.length > 0 && (
-                <Tooltip text="Click to calculate price">
-                  <button
-                    onclick={() =>
+                <Tooltip noStyle text="Click to calculate price">
+                  <Button
+                  class={classNames("inline-block py-1 px-4", {
+                    "bg-gray-300":
+                      priceCalcStore.state.focusedProd?.name ==
+                      recipe.ingredientId,
+                  })}
+                    onClick={() =>
                       priceCalcStore.update.setFocusedProduct(
                         recipe.ingredientId,
                         !recipe.isTag
                       )
                     }
                   >
-                    <div
-                      class={classNames("inline-block py-1 px-4", {
-                        "bg-gray-300":
-                          priceCalcStore.state.focusedProd?.name ==
-                          recipe.ingredientId,
-                      })}
-                    >
                       {recipe.productName}
-                    </div>
-                  </button>
+                  </Button>
                 </Tooltip>
               )}
               {recipe.recipeVariants.length === 0 && (

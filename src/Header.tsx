@@ -17,10 +17,9 @@ export default (props: Props) => {
                     </h1>
                     <span>{props.currentRoute()?.description}</span>
                 </div>
-                <div class="flex pt-3">
+                <div class="flex pt-3 gap-2">
                     <Username />
                     <Dropdown
-                    class="pl-2"
                     value={mainState.currency}
                     values={[
                         { value: "", text: "Select a currency" },

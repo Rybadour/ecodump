@@ -44,8 +44,6 @@ const App: Component = () => {
     }))
   );
 
-  createEffect(() => console.log("routesConfig", routesConfig()))
-
   const currentRoute = createMemo(() =>
     routesConfig().find((t) => t.highlight)
   );

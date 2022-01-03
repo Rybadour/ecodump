@@ -2,6 +2,7 @@ import { useMainContext } from "../../hooks/MainContext";
 import Tooltip from "../Tooltip";
 import { calcAvgPrice } from "../../utils/helpers";
 import { createMemo } from "solid-js";
+import Button from "../Button";
 
 type Props = {
   name: string;
@@ -44,9 +45,8 @@ export default (props: Props) => {
   }
 
   return (
-    <Tooltip text="Click for ingame prices. Select currency for average.">
-      <button
-        class="px-2 py-1"
+    <Tooltip noStyle text="Click for ingame prices. Select currency for average.">
+      <Button
         onClick={() =>
           props.showPricesForProductsModal(props.name, props.isSpecificItem)
         }
@@ -55,7 +55,7 @@ export default (props: Props) => {
         {mainState.currency &&
           avgPrice() &&
           `${avgPrice().calculatedPrice ?? "?"} ${mainState.currency}`}
-      </button>
+      </Button>
     </Tooltip>
   );
 };

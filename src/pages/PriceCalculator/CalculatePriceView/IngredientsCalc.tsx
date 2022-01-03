@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
 import AveragePrice from "../../../components/AveragePrice";
+import Highlight from "../../../components/Highlight";
 import LabeledField from "../../../components/LabeledField";
 import PersonalPrice from "../../../components/PersonalPrice";
 import RadioToggle from "../../../components/RadioToggle";
@@ -45,9 +46,7 @@ export default () => {
             {!!priceCalcStore.focusedNode()?.selectedVariant?.Variant.Key && (
               <>
                 at table
-                <span class="border rounded px-2 py-1 mx-2 font-normal">
-                  {priceCalcStore.selectedVariant()?.Recipe.CraftStation[0]}
-                </span>
+                <Highlight text={priceCalcStore.selectedVariant()?.Recipe.CraftStation[0]} class="pl-2" />
               </>
             )}
           </span>
@@ -153,22 +152,15 @@ export default () => {
 
         <div class="flex items-center mt-8">
           Recipe production cost is
-          <span class="border rounded px-2 font-normal mx-1">
-            {priceCalcStore.totalIngredientCost()}
-          </span>
-          .
+          <Highlight class="pl-1" text={`${priceCalcStore.totalIngredientCost()}`} />
           {priceCalcStore.craftAmmount() > 1 &&
             (priceCalcStore.totalIngredientCost() ?? 0) > 0 && (
               <>
-                {" "}
-                Cost for each repetition is
-                <span class="border rounded px-2 font-normal mx-1">
-                  {formatNumber(
+                , cost per repetition is
+                <Highlight class="pl-1" text={`${formatNumber(
                     (priceCalcStore.totalIngredientCost() ?? 0) /
                       priceCalcStore.craftAmmount()
-                  )}
-                </span>
-                .
+                  )}`} />
               </>
             )}
         </div>

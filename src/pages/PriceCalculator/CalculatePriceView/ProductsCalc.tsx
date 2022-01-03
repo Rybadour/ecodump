@@ -1,5 +1,7 @@
 import { For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
+import Button from "../../../components/Button";
+import Highlight from "../../../components/Highlight";
 import LabeledField from "../../../components/LabeledField";
 import NumericInput from "../../../components/NumericInput";
 import PersonalPrice from "../../../components/PersonalPrice";
@@ -48,10 +50,7 @@ export default () => {
         </LabeledField>
       </div>
       <div class="flex items-center mt-2">
-        Cost per recipe with margin applied is
-        <span class="font-bold border rounded px-2 font-normal mx-1">
-          {priceCalcStore.unitCostWithProfit()}
-        </span>
+        Cost per recipe with margin applied is <Highlight class="px-1" text={`${priceCalcStore.unitCostWithProfit()}`} />
         {mainState.currency}
       </div>
       <div class="mt-8">
@@ -90,9 +89,8 @@ export default () => {
                     />
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Tooltip text="Click to set your personal price">
-                      <button
-                        class="px-2 py-1"
+                    <Tooltip noStyle text="Click to set your personal price">
+                      <Button
                         onClick={() =>
                           update.personalPrice(
                             product.Name,
@@ -102,12 +100,12 @@ export default () => {
                         }
                       >
                         {`${product.productionCost} ${mainState.currency}`}
-                      </button>
+                      </Button>
                     </Tooltip>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Tooltip text="Click to set your personal price">
-                      <button
+                    <Tooltip noStyle text="Click to set your personal price">
+                      <Button
                         class="px-2 py-1"
                         onClick={() =>
                           update.personalPrice(
@@ -118,7 +116,7 @@ export default () => {
                         }
                       >
                         {`${product.retailPrice} ${mainState.currency}`}
-                      </button>
+                      </Button>
                     </Tooltip>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

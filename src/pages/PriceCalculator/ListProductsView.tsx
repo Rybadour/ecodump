@@ -29,7 +29,7 @@ export default () => {
           <div class="flex justify-between">
             <div>
               <Tooltip
-                text="click to filter items being sold by stores owned by you (set your name on top right corner)"
+                text="Click to filter items being sold by stores owned by you (set your name in the header above)"
                 origin="NW"
                 direction="NE"
               >
@@ -40,7 +40,7 @@ export default () => {
                 />
               </Tooltip>
             </div>
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex gap-2 mb-2">
               <SearchInput
                 value={props.state.search}
                 onChange={props.update.setSearch}
@@ -90,17 +90,16 @@ export default () => {
                 {(product) => (
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <Tooltip
+                      <Tooltip noStyle
                         text="Click to filter by recipe name"
                         origin="NW"
                         direction="NE"
                       >
-                        <button
-                          class="px-2 py-1"
+                        <Button
                           onClick={() => props.update.setSearch(product.Name)}
                         >
                           {product.Name}
-                        </button>
+                        </Button>
                       </Tooltip>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -142,9 +141,8 @@ export default () => {
                         .map((recipe, index) => (
                           <div class={classNames({ "mt-1": index > 0 })}>
                             <>
-                              <Tooltip text="Click to filter by profession">
-                                <button
-                                  class="px-2 py-1"
+                              <Tooltip noStyle text="Click to filter by profession">
+                                <Button
                                   onClick={() =>
                                     props.update.setFilterProfession(
                                       recipe.Skill
@@ -152,14 +150,13 @@ export default () => {
                                   }
                                 >
                                   {recipe.Skill}
-                                </button>
+                                </Button>
                               </Tooltip>
                               {` lvl${recipe.SkillLevel}`}
                             </>
                             {recipe.Skill && ` @ `}
-                            <Tooltip text="Click to filter by craft station">
-                              <button
-                                class="px-2 py-1"
+                            <Tooltip noStyle text="Click to filter by craft station">
+                              <Button
                                 onClick={() =>
                                   props.update.setFilterCraftStation(
                                     recipe.craftStation
@@ -167,7 +164,7 @@ export default () => {
                                 }
                               >
                                 {recipe.craftStation}
-                              </button>
+                              </Button>
                             </Tooltip>
                           </div>
                         ))}

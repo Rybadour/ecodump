@@ -9,7 +9,7 @@ type Props = {
 export default (props: Props) => (
   <button
     class={classNames(
-      "bg-white text-black font-semibold py-1 px-2 border border-gray-300 rounded hover:bg-gray-100",
+      "bg-white text-black text-sm font-semibold py-1 px-2 border border-gray-300 rounded hover:bg-gray-100",
       props.class ?? ""
     )}
     onClick={props.onClick}

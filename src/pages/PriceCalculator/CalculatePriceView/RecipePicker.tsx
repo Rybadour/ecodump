@@ -1,4 +1,5 @@
 import Dropdown from "../../../components/Dropdown";
+import Highlight from "../../../components/Highlight";
 import { sortByTextFn } from "../../../utils/helpers";
 
 type Props = {
@@ -11,9 +12,7 @@ export default (props: Props) => {
   return (
     <>
       {(props.recipeVariants?.length ?? 0) === 1 && (
-        <span class="border rounded px-2 py-1 mx-2 font-normal">
-          {props.recipeVariants?.[0].Recipe.Untranslated}
-        </span>
+        <Highlight class="px-2" text={props.recipeVariants?.[0].Recipe.Untranslated} />
       )}
       {(props.recipeVariants?.length ?? 0) > 1 && (
         <div class="inline-block mx-2">

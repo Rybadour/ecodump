@@ -5,6 +5,7 @@ import Table, {
 } from "../../components/Table";
 import { Accessor, For } from "solid-js";
 import Tooltip from "../../components/Tooltip";
+import Button from "../../components/Button";
 
 type Props = {
   stores: Accessor<Stores[]>;
@@ -25,33 +26,30 @@ export default (props: Props) => (
         {(store) => (
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by store name">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to filter by store name">
+                <Button
                   onClick={() => props.setSearch(store.Name)}
                 >
                   {store.Name}
-                </button>
+                </Button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by store owner">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to filter by store owner">
+                <Button
                   onClick={() => props.setSearch(store.Owner)}
                 >
                   {store.Owner}
-                </button>
+                </Button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip text="Click to filter by currency">
-                <button
-                  class="px-2 py-1"
+              <Tooltip noStyle text="Click to select this currency">
+                <Button
                   onClick={() => props.setCurrencyFilter(store.CurrencyName)}
                 >
                   {store.CurrencyName}
-                </button>
+                </Button>
               </Tooltip>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

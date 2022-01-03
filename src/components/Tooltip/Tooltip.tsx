@@ -3,11 +3,13 @@ import styles from "./Tooltip.module.css";
 import PortalMenuPosition, {
   CardinalPoint,
 } from "../PortalMenuPosition/PortalMenuPosition";
+import classNames from "classnames";
 type Props = {
   text: string;
   children: JSXElement;
   origin?: CardinalPoint;
   direction?: CardinalPoint;
+  noStyle?: boolean;
 };
 export default (props: Props) => {
   let el: any;
@@ -37,7 +39,9 @@ export default (props: Props) => {
       class="z-50"
     >
       <div class="inline-block relative" ref={el}>
-        <div class="border rounded border-dashed border-gray-200 hover:border-gray-500 inline-block">
+        <div class={classNames({
+            ["text-sm border rounded border-gray-300 inline-block border-dashed hover:border-gray-500"]: !props.noStyle
+          })}>
           {props.children}
         </div>
         {isMenuOpen() && <div class={styles.tooltipArrow}></div>}

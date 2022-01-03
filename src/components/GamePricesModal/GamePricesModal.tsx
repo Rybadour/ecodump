@@ -16,6 +16,7 @@ import ModalHeader from "../Modal/ModalHeader";
 import Pagination from "../Pagination";
 import Tooltip from "../Tooltip";
 import { useCalcContext } from "../../pages/PriceCalculator/context/CalcContext";
+import Button from "../Button";
 const pageSize = 10;
 
 export default () => {
@@ -94,9 +95,8 @@ export default () => {
                               : `Selling ${product.MaxNumWanted} for`}
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <Tooltip text="Click to set your personal price">
-                              <button
-                                class="px-2 py-1"
+                            <Tooltip noStyle text="Click to set your personal price">
+                              <Button
                                 onClick={() => {
                                   //Updates both personal price for this product as well as tag price if !isSpecificProduct
                                   update.personalPrice(
@@ -121,7 +121,7 @@ export default () => {
                                 }}
                               >
                                 {`${product.Price} ${product.CurrencyName}`}
-                              </button>
+                              </Button>
                             </Tooltip>
                           </td>
                         </tr>
