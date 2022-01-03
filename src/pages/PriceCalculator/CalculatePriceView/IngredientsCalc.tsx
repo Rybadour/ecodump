@@ -62,12 +62,12 @@ export default () => {
               ]}
               onChange={(selected: string | number) =>
                 update.craftAmmount(
-                  priceCalcStore.state.focusedProd?.name ?? "",
+                  priceCalcStore.focusedNode()?.productName ?? "",
                   Number(selected)
                 )
               }
               selected={get.craftAmmount(
-                priceCalcStore.state.focusedProd?.name
+                priceCalcStore.focusedNode()?.productName
               )}
             />
           </LabeledField>
@@ -79,11 +79,11 @@ export default () => {
               }))}
               onChange={(selected: string | number) =>
                 update.craftModule(
-                  priceCalcStore.state.focusedProd?.name ?? "",
+                  priceCalcStore.focusedNode()?.productName ?? "",
                   Number(selected)
                 )
               }
-              selected={get.craftModule(priceCalcStore.state.focusedProd?.name)}
+              selected={get.craftModule(priceCalcStore.focusedNode()?.productName)}
             />
           </LabeledField>
         </div>

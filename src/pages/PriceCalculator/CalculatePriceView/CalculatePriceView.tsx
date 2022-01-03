@@ -3,6 +3,7 @@ import CalculatorRecipeTree from "./CalculatorRecipeTree";
 import { useCalcContext } from "../context/CalcContext";
 import IngredientsCalc from "./IngredientsCalc";
 import ProductsCalc from "./ProductsCalc";
+import CalculatorRecipeBreadcrumb from "./CalculatorRecipeBreadcrumb";
 
 export default () => {
   const { priceCalcStore } = useCalcContext();
@@ -15,6 +16,7 @@ export default () => {
             Back
           </Button>
           <CalculatorRecipeTree />
+          <CalculatorRecipeBreadcrumb />
           <IngredientsCalc />
           <ProductsCalc />
         </>

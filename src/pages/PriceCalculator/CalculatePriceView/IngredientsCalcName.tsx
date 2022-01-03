@@ -20,7 +20,7 @@ export default (props: Props) => {
     if (isCraftableProduct && props.ingredient.IsSpecificItem) {
         return (
             <Tooltip noStyle text={`Click to calculate price for ${props.ingredient.Name}`}>
-                <Button onClick={() => priceCalcStore.update.setFocusedProduct(getIngredientId(props.ingredient), true)}>
+                <Button onClick={() => priceCalcStore.update.focusChildProduct(getIngredientId(props.ingredient))}>
                     {props.ingredient.Name}
                 </Button>
             </Tooltip>
@@ -44,7 +44,7 @@ export default (props: Props) => {
             origin="NW"
             direction="NE"
         >
-            <Button onClick={() => priceCalcStore.update.setFocusedProduct(getIngredientId(props.ingredient), false)}>
+            <Button onClick={() => priceCalcStore.update.focusChildProduct(getIngredientId(props.ingredient))}>
                 {`Tag ${props.ingredient.Tag}`}
             </Button>
         </Tooltip>

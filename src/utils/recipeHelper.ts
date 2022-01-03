@@ -13,6 +13,7 @@ type RecipeNodeTree = RecipeNode & {
 };
 export type RecipeNodeFlat = RecipeNode & {
   level: number;
+  path: string[];
 };
 
 export const getSelectedRecipeVariant = (
@@ -30,7 +31,7 @@ export const getSelectedOrFirstRecipeVariant = (
   getSelectedRecipeVariant(recipeVariants, recipeVariantKey) ??
   recipeVariants?.[0];
 
-const getRecipeTreeForProduct = (
+export const getRecipeTreeForProduct = (
   allCraftableProducts: CraftableProduct[],
   selectedVariants: SelectedRecipeVariants,
   allTags: Record<string, string[]>,
@@ -155,25 +156,51 @@ export const getRecipeTreeForIngredient = (
         avoidLoop,
         ingredient.Ammount
       );
+
+const createFlatNode = (
+  node: RecipeNodeTree,
+  level: number,
+  path: string[]) => ({
+    ingredientId: node.ingredientId,
+    isTag: node.isTag,
+    productName: node.productName,
+    recipeVariants: node.recipeVariants,
+    selectedVariant: node.selectedVariant,
+    level,
+    path,
+    quantity: node.quantity,
+  } as RecipeNodeFlat);
+
 const flattenRecipeTreeNode = (
   node: RecipeNodeTree,
-  level = 0
+  level = 0,
+  prevPath = [] as string[]
 ): RecipeNodeFlat[] => {
+  const path = [...prevPath, node.ingredientId];
   return [
-    {
-      ingredientId: node.ingredientId,
-      isTag: node.isTag,
-      productName: node.productName,
-      recipeVariants: node.recipeVariants,
-      selectedVariant: node.selectedVariant,
-      level,
-      quantity: node.quantity,
-    },
+    createFlatNode(node, level, path),
     ...(
-      node.ancestors?.map((t) => flattenRecipeTreeNode(t, level + 1)) ?? []
+      node.ancestors?.map((t) => flattenRecipeTreeNode(t, level + 1, path)) ?? []
     ).flat(),
   ];
 };
+
+const isolateBreadcrumbPath = (
+  node: RecipeNodeTree,
+  breadcrumbIngredientIds: string[],
+  prevPath = [] as string[]): RecipeNodeFlat[] => {
+    const path = [...prevPath, node.ingredientId];
+    // Should hit on last ancestor
+    if (breadcrumbIngredientIds.length <= 1 || node.ingredientId !== breadcrumbIngredientIds[0]) {
+      return [createFlatNode(node, 0, path)];
+    }
+    // Should not hit, just a failsafe
+    const ancestor = node.ancestors?.find(t => t.ingredientId === breadcrumbIngredientIds[1]);
+    if (ancestor == null) {
+      return [createFlatNode(node, 0, path)];
+    }
+    return [createFlatNode(node, 0, path), ...isolateBreadcrumbPath(ancestor, breadcrumbIngredientIds.slice(1), [...prevPath, node.ingredientId])];
+  };
 
 export const getFlatRecipeIngredients = (
   allCraftableProducts: CraftableProduct[],
@@ -191,3 +218,23 @@ export const getFlatRecipeIngredients = (
   );
   return flattenRecipeTreeNode(result);
 };
+
+export const getRecipeBreadcrumb = (
+  allCraftableProducts: CraftableProduct[],
+  selectedRecipes: SelectedRecipeVariants,
+  allTags: Record<string, string[]>,
+  productName: string,
+  breadcrumbIngredientIds: string[]
+) => {
+  const result = getRecipeTreeForProduct(
+    allCraftableProducts,
+    selectedRecipes,
+    allTags,
+    productName,
+    [],
+    1
+  );
+  return isolateBreadcrumbPath(result, breadcrumbIngredientIds);
+};
+
+export const joinPath = (path: string[]) => path.join('=>');

@@ -21,13 +21,14 @@ import {
 type StoreType = {
   showRecipes: boolean;
   showPersonalPrices: boolean;
-  focusedProd?: { name: string; isSpecificProduct: boolean };
+  focusedProdPath: string[];
 };
 
 type StoreUpdate = {
   setShowRecipes: (showRecipes: boolean) => void;
   setShowPersonalPrices: (showPersonalProces: boolean) => void;
-  setFocusedProduct: (focusedProd: string, isSpecificProduct: boolean) => void;
+  replaceFocusedProductPath: (focusedProductPath: string[]) => void;
+  focusChildProduct: (focusedProd: string) => void;
 };
 
 type SelectedRecipes = {
@@ -79,7 +80,7 @@ export default (): PriceCalcStore => {
     {
       showRecipes: false,
       showPersonalPrices: false,
-      focusedProd: undefined,
+      focusedProdPath: [],
     },
     "PriceCalculatorPriceCalcStore"
   );
@@ -90,11 +91,13 @@ export default (): PriceCalcStore => {
     {}
   );
 
+  const focusedProd = createMemo(() => state.focusedProdPath.length === 0 ? undefined : state.focusedProdPath[state.focusedProdPath.length - 1]);
+
   const craftModule = createMemo(() =>
-    get.craftModule(state.focusedProd?.name)
+    get.craftModule(focusedProd())
   );
   const craftAmmount = createMemo(() =>
-    get.craftAmmount(state.focusedProd?.name)
+    get.craftAmmount(focusedProd())
   );
 
   const flatRecipeIngredients = createMemo(() =>
@@ -102,20 +105,20 @@ export default (): PriceCalcStore => {
       allCraftableProducts() ?? [],
       selectedRecipes(),
       tagsResource() ?? {},
-      selectedProduct() ?? ""
+      focusedProd() ?? ""
     )
   );
 
   const focusedNode = createMemo(() =>
     flatRecipeIngredients().find(
-      (t) => t.ingredientId == state.focusedProd?.name
+      (t) => t.ingredientId == focusedProd()
     )
   );
 
   const selectedVariant = createMemo(() =>
     getSelectedOrFirstRecipeVariant(
       focusedNode()?.recipeVariants ?? [],
-      selectedRecipes()[state.focusedProd?.name ?? ""]
+      selectedRecipes()[focusedProd() ?? ""]
     )
   );
 
@@ -203,7 +206,7 @@ export default (): PriceCalcStore => {
     setSelectedProduct: (prod: string | undefined) => {
       setSelectedProduct(prod);
       if (prod != undefined)
-        setState({ focusedProd: { name: prod, isSpecificProduct: true } });
+        setState({ focusedProdPath: [prod] });
     },
     setSelectedRecipes,
     update: {
@@ -211,10 +214,8 @@ export default (): PriceCalcStore => {
         setState({ showRecipes: newValue }),
       setShowPersonalPrices: (newValue: boolean) =>
         setState({ showPersonalPrices: newValue }),
-      setFocusedProduct: (prod: string, isSpecificProduct: boolean) =>
-        setState({
-          focusedProd: { name: prod, isSpecificProduct },
-        }),
+      replaceFocusedProductPath: (focusedProductPath: string[]) => setState({focusedProdPath: focusedProductPath}),
+      focusChildProduct: (focusedProd: string) => setState(prev => ({focusedProdPath: [...prev.focusedProdPath, focusedProd]})),
     } as StoreUpdate,
   };
 };

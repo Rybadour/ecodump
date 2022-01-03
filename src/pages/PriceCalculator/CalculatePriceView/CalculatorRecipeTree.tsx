@@ -1,11 +1,11 @@
 import classNames from "classnames";
-import { createMemo, For } from "solid-js";
+import { createEffect, createMemo, For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
 import Button from "../../../components/Button";
 import PersonalPrice from "../../../components/PersonalPrice";
 import Tooltip from "../../../components/Tooltip";
 import { useMainContext } from "../../../hooks/MainContext";
-import { getFlatRecipeIngredients } from "../../../utils/recipeHelper";
+import { getFlatRecipeIngredients, joinPath } from "../../../utils/recipeHelper";
 import { useCalcContext } from "../context/CalcContext";
 import RecipePicker from "./RecipePicker";
 import RecipeTreeCheckboxes from "./RecipeTreeCheckboxes";
@@ -21,6 +21,7 @@ export default () => {
       priceCalcStore.selectedProduct() ?? ""
     )
   );
+  const pathJoined = createMemo(() => joinPath(priceCalcStore.state.focusedProdPath));
   return (
     <Accordion
       headerText={
@@ -42,15 +43,10 @@ export default () => {
                 <Tooltip noStyle text="Click to calculate price">
                   <Button
                   class={classNames("inline-block py-1 px-4", {
-                    "bg-gray-300":
-                      priceCalcStore.state.focusedProd?.name ==
-                      recipe.ingredientId,
+                    "bg-gray-300": joinPath(recipe.path) === pathJoined(),
                   })}
                     onClick={() =>
-                      priceCalcStore.update.setFocusedProduct(
-                        recipe.ingredientId,
-                        !recipe.isTag
-                      )
+                      priceCalcStore.update.replaceFocusedProductPath(recipe.path)
                     }
                   >
                       {recipe.productName}
