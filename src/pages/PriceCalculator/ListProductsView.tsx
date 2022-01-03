@@ -91,12 +91,12 @@ export default () => {
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <Tooltip noStyle
-                        text="Click to filter by recipe name"
+                        text="Click to calculate price for this item"
                         origin="NW"
                         direction="NE"
                       >
                         <Button
-                          onClick={() => props.update.setSearch(product.Name)}
+                          onClick={() => priceCalcStore.setSelectedProduct(product.Name)}
                         >
                           {product.Name}
                         </Button>
