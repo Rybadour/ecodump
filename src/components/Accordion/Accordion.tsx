@@ -6,6 +6,7 @@ type Props = {
   startsOpen?: boolean;
   headerText: JSXElement;
   class?: string;
+  notCollapsible?: boolean;
 };
 export default (props: Props) => {
   const [isOpen, setIsOpen] = createSignal(props.startsOpen ?? false);
@@ -16,13 +17,15 @@ export default (props: Props) => {
           "px-8 py-5 bg-gray-50 px-5 py-3 flex w-full justify-between",
           {
             "border-b": isOpen(),
+            "cursor-default": props.notCollapsible
           }
         )}
-        onclick={() => setIsOpen((prev) => !prev)}
+        disabled={props.notCollapsible}
+        onclick={() => !props.notCollapsible && setIsOpen((prev) => !prev)}
       >
         {props.headerText}
         <div>
-          {isOpen() && (
+          {!props.notCollapsible && isOpen() && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
@@ -38,7 +41,7 @@ export default (props: Props) => {
               />
             </svg>
           )}
-          {!isOpen() && (
+          {!props.notCollapsible && !isOpen() && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"

@@ -26,6 +26,7 @@ export default () => {
   const { priceCalcStore } = useCalcContext();
   return (
     <Accordion
+      notCollapsible
       startsOpen
       class="mt-6"
       headerText={

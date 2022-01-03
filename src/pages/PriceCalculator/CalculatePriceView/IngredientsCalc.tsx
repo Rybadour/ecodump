@@ -23,6 +23,7 @@ export default () => {
   return (
     <>
       <Accordion
+        notCollapsible
         startsOpen
         class="mt-4"
         headerText={

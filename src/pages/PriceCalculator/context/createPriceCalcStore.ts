@@ -21,12 +21,14 @@ import {
 type StoreType = {
   showRecipes: boolean;
   showPersonalPrices: boolean;
+  showRecipeTree: boolean;
   focusedProdPath: string[];
 };
 
 type StoreUpdate = {
   setShowRecipes: (showRecipes: boolean) => void;
   setShowPersonalPrices: (showPersonalProces: boolean) => void;
+  toggleShowRecipeTree: () => void;
   replaceFocusedProductPath: (focusedProductPath: string[]) => void;
   focusChildProduct: (focusedProd: string) => void;
 };
@@ -80,6 +82,7 @@ export default (): PriceCalcStore => {
     {
       showRecipes: false,
       showPersonalPrices: false,
+      showRecipeTree: false,
       focusedProdPath: [],
     },
     "PriceCalculatorPriceCalcStore"
@@ -216,6 +219,8 @@ export default (): PriceCalcStore => {
         setState({ showRecipes: newValue }),
       setShowPersonalPrices: (newValue: boolean) =>
         setState({ showPersonalPrices: newValue }),
+      toggleShowRecipeTree: () =>
+        setState(prev => ({ showRecipeTree: !prev.showRecipeTree })),
       replaceFocusedProductPath: (focusedProductPath: string[]) => setState({focusedProdPath: focusedProductPath}),
       focusChildProduct: (focusedProd: string) => setState(prev => ({focusedProdPath: [...prev.focusedProdPath, focusedProd]})),
     } as StoreUpdate,

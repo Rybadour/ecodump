@@ -24,6 +24,8 @@ export default () => {
   const pathJoined = createMemo(() => joinPath(priceCalcStore.state.focusedProdPath));
   return (
     <Accordion
+      notCollapsible
+      startsOpen
       headerText={
         <span>
           Recipe tree for product{" "}
