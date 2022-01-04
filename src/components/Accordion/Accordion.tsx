@@ -20,7 +20,6 @@ export default (props: Props) => {
             "cursor-default": props.notCollapsible
           }
         )}
-        disabled={props.notCollapsible}
         onclick={() => !props.notCollapsible && setIsOpen((prev) => !prev)}
       >
         {props.headerText}

@@ -4,6 +4,10 @@
   margin: 0;
 }
 
+.custom-number-input input[type="number"] {
+  -moz-appearance:textfield;
+}
+
 .custom-number-input input:focus {
   outline: none !important;
 }

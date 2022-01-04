@@ -44,6 +44,11 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.4.1 (2022-01-04)</h3>
+        <h4>Fixes</h4>
+        <ul>
+          <li>Small firefox fixes</li>
+        </ul>
         <h3>2.4.0 (2022-01-03)</h3>
         <h4>Features</h4>
         <ul>
@@ -66,18 +71,6 @@ export default () => {
         <h4>Fixes</h4>
         <ul>
           <li>Minor bug fix for the option "only show what i'm selling" also showing buy orders</li>
-        </ul>
-        <h3>2.2.1 (2021-11-28)</h3>
-        <h4>Fixes</h4>
-        <ul>
-          <li>Minor bug fix for when db file server is offline</li>
-          <li>Added video tutorial links on the main page</li>
-        </ul>
-        <h3>2.2.0 (2021-11-28)</h3>
-        <h4>Features</h4>
-        <ul>
-          <li>Improvement on price calculator: recipe tree navigation</li>
-          <li>Added easy way to filter by current user</li>
         </ul>
       </div>
     </div>
