@@ -9,6 +9,7 @@ import Pagination from "../../components/Pagination";
 import Tooltip from "../../components/Tooltip";
 import Checkbox from "../../components/Checkbox";
 import Button from "../../components/Button";
+import { OrderTypes } from "../../utils/constants";
 
 export default () => {
   const {
@@ -17,6 +18,7 @@ export default () => {
     setSearch,
     setCurrencyFilter,
     toggleTableType,
+    setOrderType,
     products,
     storesTotalPages,
     productsTotalPages,
@@ -52,6 +54,17 @@ export default () => {
             onChange={() => toggleTableType()}
             selected={state.isStoresTable ? "Stores" : "Products"}
           />
+          <Show when={!state.isStoresTable}>
+            <RadioToggle
+              options={[
+                { text: "Buy", value: OrderTypes.BUY },
+                { text: "Sell", value: OrderTypes.SELL },
+                { text: "Both", value: OrderTypes.BOTH },
+              ]}
+              onChange={(value) => setOrderType(Number(value))}
+              selected={state.filterOrderType}
+            />
+          </Show>
           <Button onClick={() => clearFilters()}>Clear filters</Button>
         </div>
       </div>

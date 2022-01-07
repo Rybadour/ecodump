@@ -1,4 +1,5 @@
 import { createEffect, createMemo } from "solid-js";
+import { OrderTypes } from "../../utils/constants";
 import createDebounce from "../../hooks/createDebounce";
 import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
@@ -8,6 +9,7 @@ const pageSize = 100;
 type Store = {
   search: string;
   isStoresTable: boolean;
+  filterOrderType: OrderTypes;
   storesPage: number;
   productsPage: number;
   filterByOwner: boolean;
@@ -23,6 +25,7 @@ export default () => {
     {
       search: "",
       isStoresTable: true,
+      filterOrderType: OrderTypes.BOTH,
       storesPage: 1,
       productsPage: 1,
       filterByOwner: false,
@@ -63,7 +66,9 @@ export default () => {
         filterByText(mainState.currency, product.CurrencyName ?? "") &&
         (!state.filterByOwner ||
           mainState.userName.length === 0 ||
-          filterByText(mainState.userName, product.StoreOwner ?? ""))
+          filterByText(mainState.userName, product.StoreOwner ?? "")) &&
+        (state.filterOrderType === OrderTypes.BOTH || 
+          state.filterOrderType === OrderTypes.BUY && product.Buying || state.filterOrderType === OrderTypes.SELL && !product.Buying)
     )
   );
   const productsTotalPages = createMemo(() =>
@@ -93,6 +98,7 @@ export default () => {
     setCurrencyFilter: (newValue: string) => update.currency(newValue),
     toggleTableType: () =>
       setState((prev) => ({ isStoresTable: !prev.isStoresTable })),
+    setOrderType: (newType: OrderTypes) => setState({ filterOrderType: newType}),
     setStoresPage: (pageNum: number) => setState({ storesPage: pageNum }),
     setProductsPage: (pageNum: number) => setState({ productsPage: pageNum }),
     setFilterByOwner: (filterByOwner: boolean) =>
