@@ -11,6 +11,7 @@ type Props = {
   stores: Accessor<Stores[]>;
   setSearch: (search: string) => void;
   setCurrencyFilter: (currency: string) => void;
+  setShowStoreModal: (storeName: string) => void;
 };
 export default (props: Props) => (
   <Table>
@@ -26,9 +27,9 @@ export default (props: Props) => (
         {(store) => (
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <Tooltip noStyle text="Click to filter by store name">
+              <Tooltip noStyle text="Click to show store orders">
                 <Button
-                  onClick={() => props.setSearch(store.Name)}
+                  onClick={() => props.setShowStoreModal(store.Name)}
                 >
                   {store.Name}
                 </Button>

@@ -3,13 +3,14 @@ import Dropdown from "../../components/Dropdown";
 import createMarketStore from "./createMarketStore";
 import StoresTable from "./StoresTable";
 import RadioToggle from "../../components/RadioToggle";
-import { createEffect, Show } from "solid-js";
+import { Show } from "solid-js";
 import ProductsTable from "./ProductsTable";
 import Pagination from "../../components/Pagination";
 import Tooltip from "../../components/Tooltip";
 import Checkbox from "../../components/Checkbox";
 import Button from "../../components/Button";
 import { OrderTypes } from "../../utils/constants";
+import StoreModal from "../../components/StoreModal";
 
 export default () => {
   const {
@@ -25,6 +26,7 @@ export default () => {
     setStoresPage,
     setProductsPage,
     setFilterByOwner,
+    setShowStoreModal,
     clearFilters
   } = createMarketStore();
 
@@ -73,6 +75,7 @@ export default () => {
           stores={stores}
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
+          setShowStoreModal={setShowStoreModal}
         />
         <Pagination
           currentPage={state.storesPage}
@@ -85,6 +88,7 @@ export default () => {
           products={products}
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
+          setShowStoreModal={setShowStoreModal}
         />
         <Pagination
           currentPage={state.productsPage}
@@ -92,6 +96,8 @@ export default () => {
           onChange={setProductsPage}
         />
       </Show>
+
+      <StoreModal storeName={state.showStoreModal} hideModal={() => setShowStoreModal(undefined)} />
     </div>
   );
 };

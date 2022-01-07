@@ -13,6 +13,7 @@ type Store = {
   storesPage: number;
   productsPage: number;
   filterByOwner: boolean;
+  showStoreModal: string | undefined;
 };
 export default () => {
   const {
@@ -29,6 +30,7 @@ export default () => {
       storesPage: 1,
       productsPage: 1,
       filterByOwner: false,
+      showStoreModal: undefined,
     },
     "MarketStore"
   );
@@ -103,6 +105,7 @@ export default () => {
     setProductsPage: (pageNum: number) => setState({ productsPage: pageNum }),
     setFilterByOwner: (filterByOwner: boolean) =>
       setState({ filterByOwner: filterByOwner }),
+    setShowStoreModal: (storeName: string | undefined) => setState({showStoreModal: storeName}),
     products,
     storesTotalPages,
     productsTotalPages,

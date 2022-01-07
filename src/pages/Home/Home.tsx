@@ -44,6 +44,12 @@ export default () => {
       <br />
       <div class={styles.changelog}>
         <h2>Latest changes</h2>
+        <h3>2.5.0 (2022-01-07)</h3>
+        <h4>Features</h4>
+        <ul>
+          <li>Added store modal that lists buy and sell orders of a single store</li>
+          <li>Added filter buttons that allows filtering of products that are being sold or purchased in ingame market page</li>
+        </ul>
         <h3>2.4.1 (2022-01-04)</h3>
         <h4>Fixes</h4>
         <ul>
