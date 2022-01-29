@@ -81,10 +81,12 @@ export default () => {
     Math.ceil((filteredProducts()?.length ?? 0) / state.pageSize)
   );
   const products = createMemo(() =>
-    filteredProducts().slice(
-      (state.productsPage - 1) * pageSize,
-      state.productsPage * pageSize
-    )
+    filteredProducts()
+      .sort((a, b) => sortByCustomOrdering(a, b, state.orderingType))
+      .slice(
+        (state.productsPage - 1) * state.pageSize,
+        state.productsPage * state.pageSize
+      )
   );
   const [setSearch] = createDebounce(
     (newValue: string) =>
@@ -121,7 +123,8 @@ export default () => {
       storesPage: 1,
       productsPage: 1,
       pageSize: 100,
-      filterByOwner:false
+      filterByOwner:false,
+      orderingType: Orderings.PRODUCT,
     })
   };
 };
