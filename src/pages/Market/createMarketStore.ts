@@ -14,7 +14,7 @@ type Store = {
   productsPage: number;
   filterByOwner: boolean;
   showStoreModal: string | undefined;
-  orderingType: Orderings | undefined;
+  orderingType: Orderings;
   pageSize: number;
 };
 export default () => {
@@ -33,7 +33,7 @@ export default () => {
       productsPage: 1,
       filterByOwner: false,
       showStoreModal: undefined,
-      orderingType: undefined,
+      orderingType: Orderings.PRODUCT,
       pageSize: 100,
     },
     "MarketStore"
