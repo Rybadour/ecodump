@@ -6,6 +6,7 @@ import RadioToggle from "../../components/RadioToggle";
 import { Show } from "solid-js";
 import ProductsTable from "./ProductsTable";
 import Pagination from "../../components/Pagination";
+import PageSize from "../../components/PageSize";
 import Tooltip from "../../components/Tooltip";
 import Checkbox from "../../components/Checkbox";
 import Button from "../../components/Button";
@@ -70,18 +71,10 @@ export default () => {
             />
           </Show>
           <Button onClick={() => clearFilters()}>Clear filters</Button>
-          <Dropdown
-          value={state.pageSize}
-                      values={[
-                        { value: 50, text: "50 rows" },
-                        { value: 100, text: "100 rows" },
-                        { value: 200, text: "200 rows" },
-                        { value: 1000, text: "1000 rows" },
-                      ]}
-                      onChange={(value) => setPageSize((value))}
-                      origin="SE"
-                      direction="SW"
-                    />
+          <PageSize
+            pageSize={state.pageSize}
+            onChange={setPageSize}
+          />
         </div>
       </div>
       <Show when={state.isStoresTable}>
