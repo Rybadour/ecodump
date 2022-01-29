@@ -1,3 +1,5 @@
+import { Orderings } from "./constants";
+
 const removeTagsRegex = /(<([^>]+)>)/gi;
 export const removeXmlTags = (name: string) =>
   name.replace(removeTagsRegex, "");
@@ -63,7 +65,7 @@ export const sortByCustomOrdering =
         return a.ItemName.toLowerCase().localeCompare(b.ItemName.toLowerCase());
     }
   };
-  
+
 export const calcAvgPrice = (items: { price: number; quantity: number }[]) => {
   const avgCalc = items.reduce(
     (agg, next) => ({
