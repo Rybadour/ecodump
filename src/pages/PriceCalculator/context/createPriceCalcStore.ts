@@ -41,6 +41,7 @@ export type PriceCalcStore = {
   state: Store<StoreType>;
   craftModule: Accessor<number>;
   craftAmmount: Accessor<number>;
+  craftLavish: Accessor<boolean>;
   recipeMargin: Accessor<number>;
   focusedNode: Accessor<RecipeNodeFlat | undefined>;
   selectedVariant: Accessor<RecipeVariant | undefined>;
@@ -112,6 +113,9 @@ export default (): PriceCalcStore => {
   const craftAmmount = createMemo(() =>
     get.craftAmmount(focusedProd())
   );
+  const craftLavish = createMemo(() => 
+    get.craftLavish(focusedProd())
+  );
 
   const focusedNode = createMemo(() =>
     flatRecipeIngredientsTree().find(
@@ -141,9 +145,10 @@ export default (): PriceCalcStore => {
     const variant = selectedVariant();
     if (variant == undefined) return [];
     return variant.Variant.Ingredients.map((ingredient) => {
+      const reduction = multipliers[craftModule()] * (craftLavish() ? 0.95 : 1);
       const quantity = formatNumber(
         ingredient.Ammount *
-          (ingredient.IsStatic ? 1 : multipliers[craftModule()])
+          (ingredient.IsStatic ? 1 : reduction)
       );
       const quantityBasedOnCraftAmmount = calcAmmount(quantity, craftAmmount());
       return {
@@ -198,6 +203,7 @@ export default (): PriceCalcStore => {
     state,
     craftModule,
     craftAmmount,
+    craftLavish,
     recipeMargin,
     recipeIngredients,
     totalIngredientCost,

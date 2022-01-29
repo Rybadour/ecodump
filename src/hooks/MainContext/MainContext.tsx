@@ -32,6 +32,7 @@ type MainContextType = {
     personalPrice: (productName?: string) => number;
     craftAmmount: (productName?: string) => number;
     craftModule: (productName?: string) => number;
+    craftLavish: (productName?: string) => boolean;
     recipeMargin: (recipeKey?: string) => number;
     costPercentage: (variantKey?: string) => {
       prod: string;
@@ -48,6 +49,7 @@ type MainContextType = {
     ) => void;
     craftAmmount: (product: string, ammount: number) => void;
     craftModule: (product: string, module: number) => void;
+    craftLavish: (product: string, lavishEnabled: boolean) => void;
     recipeMargin: (recipeKey: string, margin: number) => void;
     costPercentage: (
       variantKey: string,
@@ -83,6 +85,7 @@ const MainContext = createContext<MainContextType>({
     personalPrice: (productName?: string) => 0,
     craftAmmount: (productName?: string) => 1,
     craftModule: (productName?: string) => 0,
+    craftLavish: (productName?: string) => true,
     recipeMargin: (recipeKey?: string) => 0,
     costPercentage: (variantKey?: string) => [],
   },
@@ -93,6 +96,7 @@ const MainContext = createContext<MainContextType>({
       undefined,
     craftAmmount: (product: string, ammount: number) => undefined,
     craftModule: (product: string, module: number) => undefined,
+    craftLavish: (product: string, lavishEnabled: boolean) => undefined,
     recipeMargin: (recipeKey: string, module: number) => undefined,
     costPercentage: () => undefined,
   },
@@ -113,6 +117,10 @@ type ProdNumberStore = {
   [productName: string]: number;
 };
 
+type ProdBoolStore = {
+  [productName: string]: boolean;
+};
+
 type CostPercentagesStore = {
   [variantKey: string]: { prod: string; perc: number }[];
 };
@@ -124,6 +132,8 @@ export const MainContextProvider = (props: Props) => {
     createLocalStore<ProdNumberStore>({}, "craftAmmountStore");
   const [craftModuleState, setCraftModuleState] =
     createLocalStore<ProdNumberStore>({}, "craftModuleStore");
+  const [craftLavishState, setCraftLavishState] =
+    createLocalStore<ProdBoolStore>({}, "craftLavishStore");
   const [recipeMarginState, setRecipeMarginState] =
     createLocalStore<ProdNumberStore>({}, "recipeMarginStore");
   const [CostPercentagesState, setCostPercentagesState] =
@@ -247,6 +257,8 @@ export const MainContextProvider = (props: Props) => {
         craftAmmoutState[productName ?? ""] ?? 1,
       craftModule: (productName?: string) =>
         craftModuleState[productName ?? ""] ?? 0,
+      craftLavish: (productName?: string) =>
+        craftLavishState[productName ?? ""],
       recipeMargin: (recipeKey?: string) =>
         recipeMarginState[recipeKey ?? ""] ?? 0,
       costPercentage: (variantKey?: string) =>
@@ -272,6 +284,8 @@ export const MainContextProvider = (props: Props) => {
         setCraftAmmoutState({ [product]: ammount }),
       craftModule: (product: string, module: number) =>
         setCraftModuleState({ [product]: module }),
+      craftLavish: (product: string, lavishEnabled: boolean) =>
+        setCraftLavishState({ [product]: lavishEnabled }),
       recipeMargin: (recipeKey: string, margin: number) =>
         setRecipeMarginState({ [recipeKey]: margin }),
       costPercentage: (

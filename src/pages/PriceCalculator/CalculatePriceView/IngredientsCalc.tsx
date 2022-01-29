@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import Accordion from "../../../components/Accordion/Accordion";
 import AveragePrice from "../../../components/AveragePrice";
+import Checkbox from "../../../components/Checkbox";
 import Highlight from "../../../components/Highlight";
 import LabeledField from "../../../components/LabeledField";
 import PersonalPrice from "../../../components/PersonalPrice";
@@ -85,6 +86,18 @@ export default () => {
                   )
                 }
                 selected={get.craftModule(priceCalcStore.focusedNode()?.productName)}
+              />
+            </LabeledField>
+            <LabeledField vertical text="Lavish Talent:">
+              <Checkbox
+                label="Enabled"
+                onChange={(isChecked: boolean) =>
+                  update.craftLavish(
+                    priceCalcStore.focusedNode()?.productName ?? "",
+                    isChecked,
+                  )
+                }
+                checked={get.craftLavish(priceCalcStore.focusedNode()?.productName)}
               />
             </LabeledField>
           </div>
