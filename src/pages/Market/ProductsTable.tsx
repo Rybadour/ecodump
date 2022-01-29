@@ -20,12 +20,12 @@ export default (props: Props) => (
   <Table>
     <TableHeader>
       <TableHeaderCol>
-              <a onClick={() => props.setOrdering(Orderings.PRODUCT)}>
-              Product Name</a>
+        <a onClick={() => props.setOrdering(Orderings.PRODUCT)}>
+        Product Name</a>
       </TableHeaderCol>
       <TableHeaderCol>
-              <a onClick={() => props.setOrdering(Orderings.STORE)}>
-              Store Name</a>
+        <a onClick={() => props.setOrdering(Orderings.STORE)}>
+        Store Name</a>
       </TableHeaderCol>
       <TableHeaderCol>Store Owner</TableHeaderCol>
       <TableHeaderCol>
