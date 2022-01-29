@@ -58,9 +58,9 @@ export const sortByCustomOrdering =
       case Orderings.STORE:
         return a.StoreName.toLowerCase().localeCompare(b.StoreName.toLowerCase());
       case Orderings.QUANTITY:
-        return a.Quantity - b.Quantity;
+        return b.Quantity - a.Quantity;
       case Orderings.PRICE:
-        return a.Price - b.Price;
+        return b.Price - a.Price;
       default:
         return a.ItemName.toLowerCase().localeCompare(b.ItemName.toLowerCase());
     }
