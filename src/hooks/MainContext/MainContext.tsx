@@ -33,6 +33,8 @@ type MainContextType = {
     craftAmmount: (productName?: string) => number;
     craftModule: (productName?: string) => number;
     craftLavish: (productName?: string) => boolean;
+    craftLevel: (productName?: string) => number;
+    calorieCostPerRecipe: (productName?: string) => number;
     recipeMargin: (recipeKey?: string) => number;
     costPercentage: (variantKey?: string) => {
       prod: string;
@@ -50,6 +52,7 @@ type MainContextType = {
     craftAmmount: (product: string, ammount: number) => void;
     craftModule: (product: string, module: number) => void;
     craftLavish: (product: string, lavishEnabled: boolean) => void;
+    craftLevel: (product: string, level: number) => void;
     recipeMargin: (recipeKey: string, margin: number) => void;
     costPercentage: (
       variantKey: string,
@@ -58,6 +61,8 @@ type MainContextType = {
         perc: number;
       }[]
     ) => void;
+    calorieCost: (cost: number) => void;
+    calorieCostPerRecipe: (product: string, cost: number) => void;
   };
 };
 
@@ -80,14 +85,17 @@ const MainContext = createContext<MainContextType>({
   mainState: {
     currency: "",
     userName: "",
+    calorieCost: 0,
   },
   get: {
     personalPrice: (productName?: string) => 0,
     craftAmmount: (productName?: string) => 1,
     craftModule: (productName?: string) => 0,
     craftLavish: (productName?: string) => true,
+    calorieCostPerRecipe: (productName?: string) => 0,
     recipeMargin: (recipeKey?: string) => 0,
     costPercentage: (variantKey?: string) => [],
+    craftLevel: (productName?: string) => 0,
   },
   update: {
     currency: () => undefined,
@@ -97,8 +105,11 @@ const MainContext = createContext<MainContextType>({
     craftAmmount: (product: string, ammount: number) => undefined,
     craftModule: (product: string, module: number) => undefined,
     craftLavish: (product: string, lavishEnabled: boolean) => undefined,
+    craftLevel: (product: string, level: number) => undefined,
     recipeMargin: (recipeKey: string, module: number) => undefined,
     costPercentage: () => undefined,
+    calorieCost: (cost: number) => undefined,
+    calorieCostPerRecipe: (product: string, cost: number) => undefined,
   },
 });
 type Props = {
@@ -107,6 +118,7 @@ type Props = {
 type MainStore = {
   currency: string;
   userName: string;
+  calorieCost: number;
 };
 
 type PersonalPricesStore = {
@@ -134,15 +146,20 @@ export const MainContextProvider = (props: Props) => {
     createLocalStore<ProdNumberStore>({}, "craftModuleStore");
   const [craftLavishState, setCraftLavishState] =
     createLocalStore<ProdBoolStore>({}, "craftLavishStore");
+  const [craftLevelState, setCraftLevelState] =
+    createLocalStore<ProdNumberStore>({}, "craftLevelStore");
   const [recipeMarginState, setRecipeMarginState] =
     createLocalStore<ProdNumberStore>({}, "recipeMarginStore");
   const [CostPercentagesState, setCostPercentagesState] =
     createLocalStore<CostPercentagesStore>({}, "CostPercentagesStore");
+  const [CalorieCostPerRecipeState, setCalorieCostPerRecipeState] =
+    createLocalStore<ProdNumberStore>({}, "CalorieCostPerRecipeStore");
 
   const [mainState, setState] = createLocalStore<MainStore>(
     {
       currency: "",
       userName: "",
+      calorieCost: 0,
     },
     "MainStore"
   );
@@ -259,6 +276,10 @@ export const MainContextProvider = (props: Props) => {
         craftModuleState[productName ?? ""] ?? 0,
       craftLavish: (productName?: string) =>
         craftLavishState[productName ?? ""],
+      craftLevel: (productName?: string) =>
+        craftLevelState[productName ?? ""] ?? 0,
+      calorieCostPerRecipe: (productName?: string) =>
+        CalorieCostPerRecipeState[productName ?? ""],
       recipeMargin: (recipeKey?: string) =>
         recipeMarginState[recipeKey ?? ""] ?? 0,
       costPercentage: (variantKey?: string) =>
@@ -286,6 +307,8 @@ export const MainContextProvider = (props: Props) => {
         setCraftModuleState({ [product]: module }),
       craftLavish: (product: string, lavishEnabled: boolean) =>
         setCraftLavishState({ [product]: lavishEnabled }),
+      craftLevel: (product: string, level: number) =>
+        setCraftLevelState({ [product]: level }),
       recipeMargin: (recipeKey: string, margin: number) =>
         setRecipeMarginState({ [recipeKey]: margin }),
       costPercentage: (
@@ -299,6 +322,10 @@ export const MainContextProvider = (props: Props) => {
           ...prev,
           [variantKey]: percentages,
         })),
+      calorieCost: (cost: number) => 
+        setState({ calorieCost: cost }),
+      calorieCostPerRecipe: (product: string, cost: number) =>
+        setCalorieCostPerRecipeState({ [product]: cost })
     },
   } as MainContextType;
 

@@ -2,6 +2,7 @@ import { createEffect } from "solid-js";
 import Username from "./components/Username";
 import Dropdown from "./components/Dropdown";
 import { useMainContext } from "./hooks/MainContext";
+import Calories from "./components/Calories";
 
 type Props = {
     currentRoute: () => {text: string, description: string} | undefined;
@@ -17,7 +18,7 @@ export default (props: Props) => {
                     </h1>
                     <span>{props.currentRoute()?.description}</span>
                 </div>
-                <div class="flex pt-3 gap-2">
+                <div class="flex pt-3 gap-4">
                     <Username />
                     <Dropdown
                     value={mainState.currency}
@@ -32,6 +33,7 @@ export default (props: Props) => {
                     origin="SE"
                     direction="SW"
                     />
+                    <Calories />
                 </div>
             </div>
         </header>
