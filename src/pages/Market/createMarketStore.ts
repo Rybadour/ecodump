@@ -3,9 +3,14 @@ import { OrderTypes } from "../../utils/constants";
 import createDebounce from "../../hooks/createDebounce";
 import { useMainContext } from "../../hooks/MainContext";
 import { createLocalStore } from "../../utils/createLocalStore";
-import { filterByText } from "../../utils/helpers";
+import { filterByText, sortByText } from "../../utils/helpers";
 
-const pageSize = 100;
+export enum SortableColumnsProductsTable {
+  PRODUCT, STORE, QUANTITY, PRICE
+}
+export enum SortableColumnsStoresTable {
+  STORE, BALANCE, OFFERS
+}
 type Store = {
   search: string;
   isStoresTable: boolean;
@@ -14,7 +19,38 @@ type Store = {
   productsPage: number;
   filterByOwner: boolean;
   showStoreModal: string | undefined;
+  sortingProducts: { column: SortableColumnsProductsTable, directionDesc: boolean };
+  sortingStores: { column: SortableColumnsStoresTable, directionDesc: boolean };
+  pageSize: number;
 };
+
+const sortByStoresColumn =
+  (a: Stores, b: Stores, column: SortableColumnsStoresTable, directionDesc: boolean) => {
+    const direction = directionDesc ? -1 : 1;
+    switch(column){
+      case SortableColumnsStoresTable.BALANCE:
+        return (a.Balance - b.Balance) * direction;
+      case SortableColumnsStoresTable.OFFERS:
+        return (a.AllOffers.length - b.AllOffers.length) * direction;
+      default:
+        return sortByText(a.Name, b.Name) * direction;
+    }
+  };
+const sortByProductsColumn =
+  (a: ProductOffer, b: ProductOffer, column: SortableColumnsProductsTable, directionDesc: boolean) => {
+    const direction = directionDesc ? -1 : 1;
+    switch(column){
+      case SortableColumnsProductsTable.STORE:
+        return sortByText(a.StoreName, b.StoreName) * direction;
+      case SortableColumnsProductsTable.QUANTITY:
+        return (a.Quantity - b.Quantity) * direction;
+      case SortableColumnsProductsTable.PRICE:
+        return (a.Price - b.Price) * direction;
+      default:
+        return sortByText(a.ItemName, b.ItemName) * direction;
+    }
+  };
+
 export default () => {
   const {
     storesResource,
@@ -31,6 +67,9 @@ export default () => {
       productsPage: 1,
       filterByOwner: false,
       showStoreModal: undefined,
+      sortingProducts: {column: SortableColumnsProductsTable.PRODUCT, directionDesc: false},
+      sortingStores: {column: SortableColumnsStoresTable.STORE, directionDesc: false},
+      pageSize: 100,
     },
     "MarketStore"
   );
@@ -47,16 +86,14 @@ export default () => {
               mainState.userName.length === 0 ||
               filterByText(mainState.userName, store.Owner ?? ""))
         )
-        .sort((a, b) =>
-          a.Name.toLowerCase().localeCompare(b.Name.toLowerCase())
-        )
+        .sort((a, b) => sortByStoresColumn(a, b, state.sortingStores.column, state.sortingStores.directionDesc))
         .slice(
-          (state.storesPage - 1) * pageSize,
-          state.storesPage * pageSize
+          (state.storesPage - 1) * state.pageSize,
+          state.storesPage * state.pageSize
         ) as Stores[]
   );
   const storesTotalPages = createMemo(() =>
-    Math.ceil((storesResource()?.Stores?.length ?? 0) / pageSize)
+    Math.ceil((storesResource()?.Stores?.length ?? 0) / state.pageSize)
   );
 
   const filteredProducts = createMemo(() =>
@@ -69,18 +106,20 @@ export default () => {
         (!state.filterByOwner ||
           mainState.userName.length === 0 ||
           filterByText(mainState.userName, product.StoreOwner ?? "")) &&
-        (state.filterOrderType === OrderTypes.BOTH || 
+        (state.filterOrderType === OrderTypes.BOTH ||
           state.filterOrderType === OrderTypes.BUY && product.Buying || state.filterOrderType === OrderTypes.SELL && !product.Buying)
     )
   );
   const productsTotalPages = createMemo(() =>
-    Math.ceil((filteredProducts()?.length ?? 0) / pageSize)
+    Math.ceil((filteredProducts()?.length ?? 0) / state.pageSize)
   );
   const products = createMemo(() =>
-    filteredProducts().slice(
-      (state.productsPage - 1) * pageSize,
-      state.productsPage * pageSize
-    )
+    filteredProducts()
+      .sort((a, b) => sortByProductsColumn(a, b, state.sortingProducts.column, state.sortingProducts.directionDesc))
+      .slice(
+        (state.productsPage - 1) * state.pageSize,
+        state.productsPage * state.pageSize
+      )
   );
   const [setSearch] = createDebounce(
     (newValue: string) =>
@@ -102,10 +141,25 @@ export default () => {
       setState((prev) => ({ isStoresTable: !prev.isStoresTable })),
     setOrderType: (newType: OrderTypes) => setState({ filterOrderType: newType}),
     setStoresPage: (pageNum: number) => setState({ storesPage: pageNum }),
+    setPageSize: (newPageSize: number) => setState({ pageSize: newPageSize }),
     setProductsPage: (pageNum: number) => setState({ productsPage: pageNum }),
     setFilterByOwner: (filterByOwner: boolean) =>
       setState({ filterByOwner: filterByOwner }),
     setShowStoreModal: (storeName: string | undefined) => setState({showStoreModal: storeName}),
+    toggleSortStoresTable: (column: SortableColumnsStoresTable) => {
+      setState(prev => ({
+        sortingStores: { 
+          column,
+          directionDesc: prev.sortingStores.column !== column ? false : !prev.sortingStores.directionDesc }
+      }))
+    },
+    toggleSortProductTable: (column: SortableColumnsProductsTable) => {
+      setState(prev => ({
+        sortingProducts: { 
+          column,
+          directionDesc: prev.sortingProducts.column !== column ? false : !prev.sortingProducts.directionDesc }
+      }))
+    },
     products,
     storesTotalPages,
     productsTotalPages,
@@ -113,7 +167,7 @@ export default () => {
       search: "",
       storesPage: 1,
       productsPage: 1,
-      filterByOwner:false
+      filterByOwner: false,
     })
   };
 };

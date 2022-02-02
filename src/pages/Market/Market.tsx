@@ -1,11 +1,11 @@
 import SearchInput from "../../components/SearchInput";
-import Dropdown from "../../components/Dropdown";
 import createMarketStore from "./createMarketStore";
 import StoresTable from "./StoresTable";
 import RadioToggle from "../../components/RadioToggle";
 import { Show } from "solid-js";
 import ProductsTable from "./ProductsTable";
 import Pagination from "../../components/Pagination";
+import PageSize from "../../components/PageSize";
 import Tooltip from "../../components/Tooltip";
 import Checkbox from "../../components/Checkbox";
 import Button from "../../components/Button";
@@ -27,6 +27,9 @@ export default () => {
     setProductsPage,
     setFilterByOwner,
     setShowStoreModal,
+    setPageSize,
+    toggleSortStoresTable,
+    toggleSortProductTable,
     clearFilters
   } = createMarketStore();
 
@@ -68,6 +71,10 @@ export default () => {
             />
           </Show>
           <Button onClick={() => clearFilters()}>Clear filters</Button>
+          <PageSize
+            pageSize={state.pageSize}
+            onChange={setPageSize}
+          />
         </div>
       </div>
       <Show when={state.isStoresTable}>
@@ -76,6 +83,8 @@ export default () => {
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
           setShowStoreModal={setShowStoreModal}
+          currentSort={state.sortingStores}
+          toggleSortColumn={toggleSortStoresTable}
         />
         <Pagination
           currentPage={state.storesPage}
@@ -89,6 +98,8 @@ export default () => {
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
           setShowStoreModal={setShowStoreModal}
+          currentSort={state.sortingProducts}
+          toggleSortColumn={toggleSortProductTable}
         />
         <Pagination
           currentPage={state.productsPage}
