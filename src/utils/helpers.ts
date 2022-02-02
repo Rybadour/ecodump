@@ -1,5 +1,3 @@
-import { Orderings } from "./constants";
-
 const removeTagsRegex = /(<([^>]+)>)/gi;
 export const removeXmlTags = (name: string) =>
   name.replace(removeTagsRegex, "");
@@ -50,20 +48,6 @@ export const sortByTextExcludingWord =
       return a.toLowerCase().localeCompare(b.toLowerCase());
 
     return aContainsWord ? 1 : -1;
-  };
-
-export const sortByCustomOrdering =
-  (a: ProductOffer, b: ProductOffer, ordering: string) => {
-    switch(ordering){
-      case Orderings.STORE:
-        return a.StoreName.toLowerCase().localeCompare(b.StoreName.toLowerCase());
-      case Orderings.QUANTITY:
-        return b.Quantity - a.Quantity;
-      case Orderings.PRICE:
-        return b.Price - a.Price;
-      default:
-        return a.ItemName.toLowerCase().localeCompare(b.ItemName.toLowerCase());
-    }
   };
 
 export const calcAvgPrice = (items: { price: number; quantity: number }[]) => {

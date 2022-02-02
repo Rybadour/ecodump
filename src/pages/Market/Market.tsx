@@ -1,5 +1,4 @@
 import SearchInput from "../../components/SearchInput";
-import Dropdown from "../../components/Dropdown";
 import createMarketStore from "./createMarketStore";
 import StoresTable from "./StoresTable";
 import RadioToggle from "../../components/RadioToggle";
@@ -29,7 +28,8 @@ export default () => {
     setFilterByOwner,
     setShowStoreModal,
     setPageSize,
-    setOrdering,
+    toggleSortStoresTable,
+    toggleSortProductTable,
     clearFilters
   } = createMarketStore();
 
@@ -83,6 +83,8 @@ export default () => {
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
           setShowStoreModal={setShowStoreModal}
+          currentSort={state.sortingStores}
+          toggleSortColumn={toggleSortStoresTable}
         />
         <Pagination
           currentPage={state.storesPage}
@@ -96,7 +98,8 @@ export default () => {
           setSearch={setSearch}
           setCurrencyFilter={setCurrencyFilter}
           setShowStoreModal={setShowStoreModal}
-          setOrdering={setOrdering}
+          currentSort={state.sortingProducts}
+          toggleSortColumn={toggleSortProductTable}
         />
         <Pagination
           currentPage={state.productsPage}
