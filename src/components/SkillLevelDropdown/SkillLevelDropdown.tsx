@@ -6,18 +6,13 @@ type Props = {
     onSelectLevel: (level: number) => void;
 };
 
-export default (props: Props) => {
-    let values = [];
-    for (let i = 0; i < 7; ++i)
-        values.push({
-            value: i,
-            text: "Level " + (i + 1)
-        });
+const levelOptions = Array.from(Array(7)).map((_,i) => ({ value: i, text: "Level " + (i + 1) }));
 
+export default (props: Props) => {
     return (
         <Dropdown
             value={props.level}
-            values={values}
+            values={levelOptions}
             onChange={(newValue) => props.onSelectLevel(Number(newValue))}
         />
     );

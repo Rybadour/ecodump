@@ -161,15 +161,13 @@ export default () => {
                     </tr>
                   )}
                 </For>
-              </TableBody>
-              <TableBody>
                 <tr>
                   <td class={cellClass}>Labor</td>
                   <td class={cellClass}>
-                    <div>{priceCalcStore.recipe()?.BaseLaborCost}</div>
-                    <div>({formatNumber(priceCalcStore.recipeCalories() ?? 0)} Calories)</div>
+                    <div>{(priceCalcStore.recipe()?.BaseLaborCost ?? 0) * priceCalcStore.craftAmmount()}</div>
+                    <div>({formatNumber((priceCalcStore.recipeCalories() ?? 0) * priceCalcStore.craftAmmount())} Calories)</div>
                   </td>
-                  <td class={cellClass}>TBD</td>
+                  <td class={cellClass}></td>
                   <td class={cellClass}>
                     <NumericInput
                       value={formatNumber(priceCalcStore.calorieCost())}
