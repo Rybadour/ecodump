@@ -12,6 +12,7 @@ export type StoreType = {
   filterCraftStation: string;
   currentPage: number;
   showPricesForProductsModal?: { name: string; isSpecificProduct: boolean };
+  massCalcVisible: boolean;
   filterByOwner: boolean;
 };
 export type StoreUpdate = {
@@ -19,6 +20,8 @@ export type StoreUpdate = {
   setFilterProfession: (newSearch: string) => void;
   setFilterCraftStation: (newSearch: string) => void;
   setCurrentPage: (newPage: number) => void;
+  showMassCalc: () => void;
+  hideMassCalc: () => void;
   showPricesForProductsModal: (
     name: string,
     isSpecificProduct: boolean
@@ -31,6 +34,7 @@ export type ListProductsStore = {
   state: Store<StoreType>;
   paginatedProducts: Accessor<CraftableProduct[] | undefined>;
   totalPages: Accessor<number>;
+  filteredProducts: Accessor<CraftableProduct[] | undefined>;
   update: StoreUpdate;
 };
 export const Survivalist = "Survivalist";
@@ -44,6 +48,7 @@ export default (): ListProductsStore => {
       filterCraftStation: "",
       currentPage: 1,
       showPricesForProductsModal: undefined,
+      massCalcVisible: false,
       filterByOwner: false,
     },
     "PriceCalculatorListProductsStore"
@@ -98,6 +103,7 @@ export default (): ListProductsStore => {
     state,
     paginatedProducts,
     totalPages,
+    filteredProducts,
     update: {
       setSearch,
       setFilterProfession: (newSearch: string) =>
@@ -112,6 +118,8 @@ export default (): ListProductsStore => {
         setState({ showPricesForProductsModal: { name, isSpecificProduct } }),
       hidePricesForProductsModal: () =>
         setState({ showPricesForProductsModal: undefined }),
+      showMassCalc: () => setState({ massCalcVisible: true }),
+      hideMassCalc: () => setState({ massCalcVisible: false }),
       setFilterByOwner: (filterByOwner: boolean) => setState({ filterByOwner }),
       clearFilters: () => 
         setState({search: "", currentPage: 1, filterProfession: "", filterCraftStation: "", filterByOwner: false}),

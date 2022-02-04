@@ -24,8 +24,19 @@ export default () => {
   const { listProductsStore: props, priceCalcStore } = useCalcContext();
   return (
     <>
-      {priceCalcStore.selectedProduct() == undefined && (
+      {priceCalcStore.selectedProduct() == undefined &&
+      !props.state.massCalcVisible && (
         <>
+          <div>
+            <Tooltip
+              text="Calculate everything present with current filters all at once."
+              origin="NW"
+            >
+              <Button
+                onClick={() => props.update.showMassCalc()}
+              >Mass Calculate</Button>
+            </Tooltip>
+          </div>
           <div class="flex justify-between">
             <div>
               <Tooltip
