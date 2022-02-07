@@ -48,6 +48,7 @@ export type PriceCalcStore = {
   selectedVariant: Accessor<RecipeVariant | undefined>;
   recipe: Accessor<Recipe | undefined>;
   recipeSkill: Accessor<string>;
+  storeKey: Accessor<string>;
   recipeIngredients: Accessor<
     (RecipeIngredient & {
       calcQuantity: number;
@@ -147,8 +148,10 @@ export default (): PriceCalcStore => {
     )
   );
 
+  const storeKey = createMemo(() => selectedVariant()?.Variant.Key ?? "");
+
   const recipeMargin = createMemo(() =>
-    get.recipeMargin(selectedVariant()?.Recipe.Key)
+    get.recipeMargin(storeKey())
   );
 
   const costPercentages = createMemo(() => {
@@ -247,6 +250,7 @@ export default (): PriceCalcStore => {
     selectedVariant,
     recipe,
     recipeSkill,
+    storeKey,
     selectedProduct,
     selectedRecipes,
     costPercentages,
