@@ -47,6 +47,7 @@ export type PriceCalcStore = {
   focusedNode: Accessor<RecipeNodeFlat | undefined>;
   selectedVariant: Accessor<RecipeVariant | undefined>;
   recipe: Accessor<Recipe | undefined>;
+  recipeSkill: Accessor<string>;
   recipeIngredients: Accessor<
     (RecipeIngredient & {
       calcQuantity: number;
@@ -122,6 +123,10 @@ export default (): PriceCalcStore => {
     focusedNode()?.selectedVariant?.Recipe
   );
 
+  const recipeSkill = createMemo(() => 
+    recipe()?.SkillNeeds?.[0]?.Skill ?? ""
+  );
+
   const craftModule = createMemo(() =>
     get.craftModule(focusedProd())
   );
@@ -132,7 +137,7 @@ export default (): PriceCalcStore => {
     get.craftLavish(focusedProd())
   );
   const craftLevel = createMemo(() => 
-    get.craftLevel(recipe()?.SkillNeeds[0].Skill ?? "")
+    get.craftLevel(recipeSkill())
   );
 
   const selectedVariant = createMemo(() =>
@@ -241,6 +246,7 @@ export default (): PriceCalcStore => {
     focusedNode,
     selectedVariant,
     recipe,
+    recipeSkill,
     selectedProduct,
     selectedRecipes,
     costPercentages,

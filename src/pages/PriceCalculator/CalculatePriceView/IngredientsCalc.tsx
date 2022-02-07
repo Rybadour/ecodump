@@ -107,10 +107,10 @@ export default () => {
               />
             </LabeledField>
             {(priceCalcStore.recipe()?.SkillNeeds.length ?? 0 > 0) &&
-              <LabeledField vertical text={priceCalcStore.recipe()?.SkillNeeds[0].Skill + " Level:"}>
+              <LabeledField vertical text={priceCalcStore.recipeSkill() + " Level:"}>
                 <SkillLevelDropdown
                   level={priceCalcStore.craftLevel()}
-                  onSelectLevel={(level) => update.craftLevel(priceCalcStore.recipe()?.SkillNeeds[0].Skill ?? "", level)} />
+                  onSelectLevel={(level) => update.craftLevel(priceCalcStore.recipeSkill(), level)} />
               </LabeledField>
             }
           </div>
