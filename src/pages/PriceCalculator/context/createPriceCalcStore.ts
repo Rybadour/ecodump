@@ -42,9 +42,12 @@ export type PriceCalcStore = {
   craftModule: Accessor<number>;
   craftAmmount: Accessor<number>;
   craftLavish: Accessor<boolean>;
+  craftLevel: Accessor<number>;
   recipeMargin: Accessor<number>;
   focusedNode: Accessor<RecipeNodeFlat | undefined>;
   selectedVariant: Accessor<RecipeVariant | undefined>;
+  recipe: Accessor<Recipe | undefined>;
+  recipeSkill: Accessor<string>;
   recipeIngredients: Accessor<
     (RecipeIngredient & {
       calcQuantity: number;
@@ -52,6 +55,9 @@ export type PriceCalcStore = {
       calcPrice: number;
     })[]
   >;
+  recipeCalories: Accessor<number | undefined>;
+  recipeCalorieCost: Accessor<number | undefined>;
+  recipeCalorieTotalCost: Accessor<number | undefined>;
   totalIngredientCost: Accessor<number>;
   unitCostWithProfit: Accessor<number>;
   recipeProducts: Accessor<
@@ -76,9 +82,9 @@ export type PriceCalcStore = {
   update: StoreUpdate;
 };
 
-const multipliers = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
+const moduleReductions = [1, 0.9, 0.75, 0.6, 0.55, 0.5];
 export default (): PriceCalcStore => {
-  const { get, allCraftableProducts, tagsResource } = useMainContext();
+  const { mainState, get, allCraftableProducts, tagsResource } = useMainContext();
   const [state, setState] = createLocalStore<StoreType>(
     {
       showRecipes: false,
@@ -107,6 +113,20 @@ export default (): PriceCalcStore => {
   
   const focusedProd = createMemo(() => state.focusedProdPath.length === 0 ? undefined : state.focusedProdPath[state.focusedProdPath.length - 1]);
 
+  const focusedNode = createMemo(() =>
+    flatRecipeIngredientsTree().find(
+      (t) => t.ingredientId == focusedProd()
+    )
+  );
+
+  const recipe = createMemo(() =>
+    focusedNode()?.selectedVariant?.Recipe
+  );
+
+  const recipeSkill = createMemo(() => 
+    recipe()?.SkillNeeds?.[0]?.Skill ?? ""
+  );
+
   const craftModule = createMemo(() =>
     get.craftModule(focusedProd())
   );
@@ -116,11 +136,8 @@ export default (): PriceCalcStore => {
   const craftLavish = createMemo(() => 
     get.craftLavish(focusedProd())
   );
-
-  const focusedNode = createMemo(() =>
-    flatRecipeIngredientsTree().find(
-      (t) => t.ingredientId == focusedProd()
-    )
+  const craftLevel = createMemo(() => 
+    get.craftLevel(recipeSkill())
   );
 
   const selectedVariant = createMemo(() =>
@@ -145,7 +162,7 @@ export default (): PriceCalcStore => {
     const variant = selectedVariant();
     if (variant == undefined) return [];
     return variant.Variant.Ingredients.map((ingredient) => {
-      const reduction = multipliers[craftModule()] * (craftLavish() ? 0.95 : 1);
+      const reduction = moduleReductions[craftModule()] * (craftLavish() ? 0.95 : 1);
       const quantity = formatNumber(
         ingredient.Ammount *
           (ingredient.IsStatic ? 1 : reduction)
@@ -166,9 +183,22 @@ export default (): PriceCalcStore => {
     });
   });
 
+  const skillLevelReductions = [0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2];
+  const recipeCalories = createMemo(() => {
+    const reduction = (recipe()?.SkillNeeds.length ?? 0 > 0) ? skillLevelReductions[craftLevel()] : 1;
+    return (recipe()?.BaseLaborCost ?? 0) * reduction;
+  });
+  const recipeCalorieCost = createMemo(() => 
+    (recipeCalories() / 1000 * mainState.calorieCost)
+  );
+  const recipeCalorieTotalCost = createMemo(() => 
+    (recipeCalorieCost() * craftAmmount())
+  );
+
   const totalIngredientCost = createMemo(() =>
     formatNumber(
-      recipeIngredients()?.reduce((prev, next) => prev + next.calcPrice, 0) ?? 0
+      (recipeIngredients()?.reduce((prev, next) => prev + next.calcPrice, 0) ?? 0) +
+      recipeCalorieTotalCost()
     )
   );
 
@@ -204,13 +234,19 @@ export default (): PriceCalcStore => {
     craftModule,
     craftAmmount,
     craftLavish,
+    craftLevel,
     recipeMargin,
     recipeIngredients,
+    recipeCalories,
+    recipeCalorieCost,
+    recipeCalorieTotalCost,
     totalIngredientCost,
     unitCostWithProfit,
     recipeProducts,
     focusedNode,
     selectedVariant,
+    recipe,
+    recipeSkill,
     selectedProduct,
     selectedRecipes,
     costPercentages,

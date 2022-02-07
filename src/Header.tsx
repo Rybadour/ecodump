@@ -17,7 +17,7 @@ export default (props: Props) => {
                     </h1>
                     <span>{props.currentRoute()?.description}</span>
                 </div>
-                <div class="flex pt-3 gap-2">
+                <div class="flex pt-3 gap-4">
                     <Username />
                     <Dropdown
                     value={mainState.currency}
