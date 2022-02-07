@@ -128,19 +128,6 @@ export default (): PriceCalcStore => {
     recipe()?.SkillNeeds?.[0]?.Skill ?? ""
   );
 
-  const craftModule = createMemo(() =>
-    get.craftModule(focusedProd())
-  );
-  const craftAmmount = createMemo(() =>
-    get.craftAmmount(focusedProd())
-  );
-  const craftLavish = createMemo(() => 
-    get.craftLavish(focusedProd())
-  );
-  const craftLevel = createMemo(() => 
-    get.craftLevel(recipeSkill())
-  );
-
   const selectedVariant = createMemo(() =>
     getSelectedOrFirstRecipeVariant(
       focusedNode()?.recipeVariants ?? [],
@@ -149,6 +136,19 @@ export default (): PriceCalcStore => {
   );
 
   const storeKey = createMemo(() => selectedVariant()?.Variant.Key ?? "");
+
+  const craftModule = createMemo(() =>
+    get.craftModule(storeKey())
+  );
+  const craftAmmount = createMemo(() =>
+    get.craftAmmount(storeKey())
+  );
+  const craftLavish = createMemo(() => 
+    get.craftLavish(storeKey())
+  );
+  const craftLevel = createMemo(() => 
+    get.craftLevel(recipeSkill())
+  );
 
   const recipeMargin = createMemo(() =>
     get.recipeMargin(storeKey())
