@@ -22,7 +22,7 @@ import IngredientsCalcName from "./IngredientsCalcName";
 import RecipePicker from "./RecipePicker";
 
 export default () => {
-  const { get, update } = useMainContext();
+  const { mainState, get, update } = useMainContext();
   const { priceCalcStore, listProductsStore } = useCalcContext();
 
   const cellClass = "px-6 py-4 whitespace-nowrap text-sm text-gray-500";
@@ -109,8 +109,8 @@ export default () => {
             {(priceCalcStore.recipe()?.SkillNeeds.length ?? 0 > 0) &&
               <LabeledField vertical text={priceCalcStore.recipe()?.SkillNeeds[0].Skill + " Level:"}>
                 <SkillLevelDropdown
-                  level={get.craftLevel(priceCalcStore.focusedNode()?.productName)}
-                  onSelectLevel={(level) => update.craftLevel(priceCalcStore.focusedNode()?.productName ?? "", level)} />
+                  level={priceCalcStore.craftLevel()}
+                  onSelectLevel={(level) => update.craftLevel(priceCalcStore.recipe()?.SkillNeeds[0].Skill ?? "", level)} />
               </LabeledField>
             }
           </div>
@@ -169,12 +169,19 @@ export default () => {
                   </td>
                   <td class={cellClass}></td>
                   <td class={cellClass}>
-                    <NumericInput
-                      value={formatNumber(priceCalcStore.calorieCost())}
-                      onChange={(val) =>
-                        update.calorieCostPerRecipe(priceCalcStore.focusedNode()?.productName ?? "", val)
-                      }
-                    />
+                    <div class="flex flex-row gap-2">
+                      <NumericInput
+                        value={formatNumber(mainState.calorieCost)}
+                        onChange={(val) =>
+                          update.calorieCost(val)
+                        }
+                      />
+                      <Tooltip noStyle text="Labor cost is calculated using price per 1000 calories.">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block self-center" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </Tooltip>
+                    </div>
                   </td>
                   <td class={cellClass}>
                     <Tooltip noStyle text="Labor cost is calculated using price per 1000 calories.">

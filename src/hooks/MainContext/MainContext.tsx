@@ -62,7 +62,6 @@ type MainContextType = {
       }[]
     ) => void;
     calorieCost: (cost: number) => void;
-    calorieCostPerRecipe: (product: string, cost: number) => void;
   };
 };
 
@@ -109,7 +108,6 @@ const MainContext = createContext<MainContextType>({
     recipeMargin: (recipeKey: string, module: number) => undefined,
     costPercentage: () => undefined,
     calorieCost: (cost: number) => undefined,
-    calorieCostPerRecipe: (product: string, cost: number) => undefined,
   },
 });
 type Props = {
@@ -152,8 +150,6 @@ export const MainContextProvider = (props: Props) => {
     createLocalStore<ProdNumberStore>({}, "recipeMarginStore");
   const [CostPercentagesState, setCostPercentagesState] =
     createLocalStore<CostPercentagesStore>({}, "CostPercentagesStore");
-  const [CalorieCostPerRecipeState, setCalorieCostPerRecipeState] =
-    createLocalStore<ProdNumberStore>({}, "CalorieCostPerRecipeStore");
 
   const [mainState, setState] = createLocalStore<MainStore>(
     {
@@ -278,8 +274,6 @@ export const MainContextProvider = (props: Props) => {
         craftLavishState[productName ?? ""],
       craftLevel: (productName?: string) =>
         craftLevelState[productName ?? ""] ?? 0,
-      calorieCostPerRecipe: (productName?: string) =>
-        CalorieCostPerRecipeState[productName ?? ""],
       recipeMargin: (recipeKey?: string) =>
         recipeMarginState[recipeKey ?? ""] ?? 0,
       costPercentage: (variantKey?: string) =>
@@ -324,8 +318,6 @@ export const MainContextProvider = (props: Props) => {
         })),
       calorieCost: (cost: number) => 
         setState({ calorieCost: cost }),
-      calorieCostPerRecipe: (product: string, cost: number) =>
-        setCalorieCostPerRecipeState({ [product]: cost })
     },
   } as MainContextType;
 

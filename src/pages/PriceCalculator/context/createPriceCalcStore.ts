@@ -42,7 +42,7 @@ export type PriceCalcStore = {
   craftModule: Accessor<number>;
   craftAmmount: Accessor<number>;
   craftLavish: Accessor<boolean>;
-  calorieCost: Accessor<number>;
+  craftLevel: Accessor<number>;
   recipeMargin: Accessor<number>;
   focusedNode: Accessor<RecipeNodeFlat | undefined>;
   selectedVariant: Accessor<RecipeVariant | undefined>;
@@ -112,6 +112,16 @@ export default (): PriceCalcStore => {
   
   const focusedProd = createMemo(() => state.focusedProdPath.length === 0 ? undefined : state.focusedProdPath[state.focusedProdPath.length - 1]);
 
+  const focusedNode = createMemo(() =>
+    flatRecipeIngredientsTree().find(
+      (t) => t.ingredientId == focusedProd()
+    )
+  );
+
+  const recipe = createMemo(() =>
+    focusedNode()?.selectedVariant?.Recipe
+  );
+
   const craftModule = createMemo(() =>
     get.craftModule(focusedProd())
   );
@@ -122,16 +132,7 @@ export default (): PriceCalcStore => {
     get.craftLavish(focusedProd())
   );
   const craftLevel = createMemo(() => 
-    get.craftLevel(focusedProd())
-  );
-  const calorieCost = createMemo(() => 
-    get.calorieCostPerRecipe(focusedProd()) ?? mainState.calorieCost
-  );
-
-  const focusedNode = createMemo(() =>
-    flatRecipeIngredientsTree().find(
-      (t) => t.ingredientId == focusedProd()
-    )
+    get.craftLevel(recipe()?.SkillNeeds[0].Skill ?? "")
   );
 
   const selectedVariant = createMemo(() =>
@@ -139,10 +140,6 @@ export default (): PriceCalcStore => {
       focusedNode()?.recipeVariants ?? [],
       selectedRecipes()[focusedProd() ?? ""]
     )
-  );
-
-  const recipe = createMemo(() =>
-    focusedNode()?.selectedVariant?.Recipe
   );
 
   const recipeMargin = createMemo(() =>
@@ -187,7 +184,7 @@ export default (): PriceCalcStore => {
     return (recipe()?.BaseLaborCost ?? 0) * reduction;
   });
   const recipeCalorieCost = createMemo(() => 
-    (recipeCalories() / 1000 * calorieCost())
+    (recipeCalories() / 1000 * mainState.calorieCost)
   );
   const recipeCalorieTotalCost = createMemo(() => 
     (recipeCalorieCost() * craftAmmount())
@@ -232,7 +229,7 @@ export default (): PriceCalcStore => {
     craftModule,
     craftAmmount,
     craftLavish,
-    calorieCost,
+    craftLevel,
     recipeMargin,
     recipeIngredients,
     recipeCalories,
